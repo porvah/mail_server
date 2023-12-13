@@ -1,12 +1,13 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import LoginForm from '../views/LoginForm.vue'
 import SignUpForm from '../views/SignUpForm.vue'
+import Home from '../views/Home.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     {
-      path: '/',
+      path: '/login',
       name: 'login',
       component: LoginForm
     },
@@ -16,8 +17,13 @@ const router = createRouter({
       component: SignUpForm
     },
     {
+      path: '/home',
+      name: 'home',
+      component: Home
+    },
+    {
       path: '/:catchAll(.*)',
-      redirect: '/'
+      redirect: '/login'
     }
   ]
 })

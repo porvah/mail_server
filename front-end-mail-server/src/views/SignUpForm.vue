@@ -1,6 +1,8 @@
 <template>
+  <h2 class="welcome">Welcome to Mail Pulse</h2>
+
   <form @submit.prevent>
-    <h2>Sign Up</h2>
+    <h2 class="signup">Sign Up</h2>
 
     <label>Name:</label>
     <input type="text" name="name" required />
@@ -11,17 +13,46 @@
     <label>Password:</label>
     <input type="password" name="password" required />
 
-    <button>Sign Up</button>
+    <button @click="signup">Sign Up</button>
+
+    <p>Already have an account? <span @click="goToLogin">Login</span></p>
   </form>
 </template>
 
 <script>
-export default {}
+import { useRouter } from 'vue-router'
+
+export default {
+  setup() {
+    const router = useRouter()
+
+    const signup = () => {
+      router.push('/home')
+    }
+
+    const goToLogin = () => {
+      router.push('/login')
+    }
+
+    return { signup, goToLogin }
+  }
+}
 </script>
 
 <style scoped>
-h2 {
+.signup {
   border-bottom: 1px solid #555;
+}
+
+.welcome {
+  margin: 15px;
+  padding: 15px;
+  color: white;
+  background: #999;
+  border-radius: 12px;
+  margin: 20px auto;
+  left: 50%;
+  position: relative;
 }
 
 form {
@@ -65,5 +96,17 @@ button {
   border-radius: 12px;
   font-weight: bold;
   font-size: 16px;
+  cursor: pointer;
+}
+
+p {
+  color: #555;
+  margin-top: 12px;
+  text-align: center;
+}
+
+span {
+  color: green;
+  cursor: pointer;
 }
 </style>
