@@ -33,23 +33,15 @@ export default {
 
 .sender,
 .subject,
-.date .description {
-  padding: 0 5px;
-  /* background-color: gray; */
-  /* color: white; */
-}
-
-/* .subject,
-.date {
+.date,
+.description {
   padding: 5px;
-  background-color: rgb(64, 59, 59);
-  color: white;
-} */
+}
 
 .description {
   display: inherit;
   white-space: nowrap;
-  width: 100vh;
+  /* width: 100vh; */
   text-overflow: ellipsis;
   overflow: hidden;
 }
