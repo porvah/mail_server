@@ -1,5 +1,5 @@
 <template>
-  <div class="main-body">
+  <div id="main-body">
     <SideBar />
     <router-view />
   </div>
@@ -13,7 +13,7 @@ export default { components: { SideBar, Inbox } }
 </script>
 
 <style scoped>
-.main-body {
+#main-body {
   display: flex;
 }
 </style>

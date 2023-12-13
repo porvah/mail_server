@@ -1,8 +1,8 @@
 <template>
-  <h2 class="welcome">Welcome to Mail Pulse</h2>
+  <h2 id="welcome">Welcome to Mail Pulse</h2>
 
   <form @submit.prevent>
-    <h2 class="login">Login</h2>
+    <h2 id="login">Login</h2>
 
     <label>Email:</label>
     <input type="email" name="email" required />
@@ -37,12 +37,12 @@ export default {
 </script>
 
 <style scoped>
-.login {
+#login {
   border-bottom: 1px solid #555;
   background: white;
 }
 
-.welcome {
+#welcome {
   padding: 15px 40px;
   width: 420px;
   color: white;

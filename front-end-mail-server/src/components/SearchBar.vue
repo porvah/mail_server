@@ -1,5 +1,5 @@
 <template>
-  <div class="search-bar">
+  <div id="search-bar">
     <div class="left">
       <span class="material-symbols-outlined"> search </span>
 
@@ -42,7 +42,7 @@ export default {
 </script>
 
 <style scoped>
-.search-bar {
+#search-bar {
   display: flex;
   align-items: center;
   justify-content: space-between;

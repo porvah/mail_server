@@ -1,5 +1,5 @@
 <template>
-  <div class="side-bar">
+  <div id="side-bar">
     <button class="compose">
       <span class="material-symbols-outlined"> stylus </span>
       Compose
@@ -75,7 +75,7 @@ export default {
 </script>
 
 <style scoped>
-.side-bar {
+#side-bar {
   text-align: left;
   flex: 0.2;
   width: 200px;

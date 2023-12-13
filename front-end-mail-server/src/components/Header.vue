@@ -1,5 +1,5 @@
 <template>
-  <div class="header">
+  <div id="header">
     <div class="left">
       <span class="material-symbols-outlined logo"> mail </span>
       <p class="title">Mail Pulse</p>
@@ -20,7 +20,7 @@ export default {}
 </script>
 
 <style scoped>
-.header {
+#header {
   display: flex;
   align-items: center;
   justify-content: space-between;
