@@ -12,47 +12,61 @@
     >
       <span class="material-symbols-outlined"> {{ option.icon }} </span>
       <h3 class="option-title">{{ option.title }}</h3>
+      <h3 class="">{{ option.count }}</h3>
     </div>
   </div>
 </template>
 
 <script>
 import { ref, computed } from 'vue'
+import { useRouter } from 'vue-router'
 
 export default {
   setup() {
+    const router = useRouter()
     const activeOption = ref('Inbox')
 
     const options = computed(() => [
-      { title: 'Inbox', icon: 'inbox' },
+      {
+        title: 'Inbox',
+        icon: 'inbox',
+        count: 20
+      },
       {
         title: 'Sent',
-        icon: 'send'
+        icon: 'send',
+        count: 12
       },
       {
         title: 'Contacts',
-        icon: 'contacts'
+        icon: 'contacts',
+        count: 3
       },
       {
         title: 'Draft',
-        icon: 'draft'
+        icon: 'draft',
+        count: 2
       },
       {
         title: 'Starred',
-        icon: 'star'
+        icon: 'star',
+        count: 4
       },
       {
         title: 'Folders',
-        icon: 'folder_open'
+        icon: 'folder_open',
+        count: 0
       },
       {
         title: 'Trash',
-        icon: 'delete'
+        icon: 'delete',
+        count: 1
       }
     ])
 
     const chooseOption = (op) => {
       activeOption.value = op
+      router.push('/home/' + op)
     }
 
     return { activeOption, options, chooseOption }
@@ -63,9 +77,11 @@ export default {
 <style scoped>
 .side-bar {
   text-align: left;
-  flex: 0.3;
-  max-width: 200px;
+  flex: 0.2;
+  width: 200px;
   padding-right: 20px;
+  border-right: 1px solid gray;
+  height: 100%;
 }
 
 .compose {
