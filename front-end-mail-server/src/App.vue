@@ -1,14 +1,14 @@
 <template>
   <div>
-    <LoginForm />
+    <RegisterBar />
   </div>
 </template>
 
 <script>
-import LoginForm from './views/LoginForm.vue'
+import RegisterBar from './components/RegisterBar.vue'
 
 export default {
-  components: { LoginForm }
+  components: { RegisterBar }
 }
 </script>
 

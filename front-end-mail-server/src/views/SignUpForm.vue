@@ -1,6 +1,9 @@
 <template>
   <form @submit.prevent>
-    <h2>Login</h2>
+    <h2>Sign Up</h2>
+
+    <label>Name:</label>
+    <input type="text" name="name" required />
 
     <label>Email:</label>
     <input type="email" name="email" required />
@@ -8,9 +11,8 @@
     <label>Password:</label>
     <input type="password" name="password" required />
 
-    <button>Login</button>
+    <button>Sign Up</button>
   </form>
-  <router-view></router-view>
 </template>
 
 <script>
