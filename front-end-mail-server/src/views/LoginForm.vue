@@ -39,16 +39,16 @@ export default {
 <style scoped>
 #login {
   border-bottom: 1px solid #555;
-  background: white;
+  background: transparent;
 }
 
 #welcome {
   padding: 15px 40px;
   width: 420px;
-  color: white;
-  background: #999;
+  color: green;
+  background: #eee;
   border-radius: 12px;
-  margin: 20px auto;
+  margin: 0 auto 20px auto;
   box-sizing: content-box;
 }
 

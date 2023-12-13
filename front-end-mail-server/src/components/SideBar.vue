@@ -81,7 +81,9 @@ export default {
   width: 200px;
   padding-right: 20px;
   border-right: 1px solid gray;
+  border-radius: 12px;
   height: 100%;
+  background-color: #eeeeeead;
 }
 
 .compose {
@@ -109,7 +111,7 @@ export default {
 .compose:hover span {
   background-color: green;
   color: white;
-  transition: 0.6s;
+  transition: 0.5s;
 }
 
 .option {
@@ -121,12 +123,12 @@ export default {
   border-radius: 0 20px 20px 0;
   cursor: pointer;
   color: #666;
-  transition: 0.5s;
+  transition: 0.3s;
 }
 
 .option span {
   padding: 5px;
-  transition: 0.5s;
+  transition: 0.3s;
 }
 
 .option h3 {
@@ -134,7 +136,7 @@ export default {
   margin-left: 10px;
   font-size: 14px;
   font-weight: 400;
-  transition: 0.5s;
+  transition: 0.3s;
 }
 
 .option:hover,

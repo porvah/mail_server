@@ -52,7 +52,7 @@ export default {
   display: flex;
   flex: 0.7;
   align-items: center;
-  background-color: #ddd;
+  background-color: #eee;
   padding: 10px;
   margin: 10px;
   border-radius: 18px;
@@ -90,7 +90,7 @@ option {
   flex: 0.3;
   justify-content: space-between;
   align-items: center;
-  background-color: #ddd;
+  background-color: #eee;
   padding: 10px;
   margin: 10px;
   border-radius: 18px;

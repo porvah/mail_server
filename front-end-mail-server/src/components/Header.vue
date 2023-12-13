@@ -25,6 +25,7 @@ export default {}
   align-items: center;
   justify-content: space-between;
   border-bottom: 1px solid #aaa;
+  background: transparent;
 }
 
 .left {

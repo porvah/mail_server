@@ -19,5 +19,8 @@ export default {
   flex: 0.8;
   overflow-x: hidden;
   height: 90vh;
+
+  background-color: #eeeeeead;
+  border-radius: 12px;
 }
 </style>
