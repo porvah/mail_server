@@ -87,6 +87,13 @@ export default {
   margin-right: 5px;
 }
 
+.compose:hover,
+.compose:hover span {
+  background-color: green;
+  color: white;
+  transition: 0.6s;
+}
+
 .option {
   display: flex;
   align-items: center;
@@ -96,10 +103,12 @@ export default {
   border-radius: 0 20px 20px 0;
   cursor: pointer;
   color: #666;
+  transition: 0.5s;
 }
 
 .option span {
   padding: 5px;
+  transition: 0.5s;
 }
 
 .option h3 {
@@ -107,6 +116,7 @@ export default {
   margin-left: 10px;
   font-size: 14px;
   font-weight: 400;
+  transition: 0.5s;
 }
 
 .option:hover,
@@ -122,5 +132,15 @@ export default {
 .activeOption h3,
 .option:hover h3 {
   font-weight: 600;
+}
+
+.option:hover h3,
+.option:hover span,
+.activeOption h3,
+.activeOption span {
+  color: green;
+  background-color: rgb(177, 255, 228);
+  translate: 10px 0;
+  transition: 0.3s;
 }
 </style>
