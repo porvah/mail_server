@@ -1,0 +1,68 @@
+<template>
+  <div class="header">
+    <div class="left">
+      <span class="material-symbols-outlined logo"> mail </span>
+      <p class="title">Mail Pulse</p>
+    </div>
+    <div class="middle">
+      <span class="material-symbols-outlined"> refresh </span>
+      <p>Registered as ...</p>
+    </div>
+    <div class="right">
+      <span class="material-symbols-outlined"> account_circle </span>
+      <span class="material-symbols-outlined"> settings </span>
+    </div>
+  </div>
+</template>
+
+<script>
+export default {}
+</script>
+
+<style scoped>
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid #aaa;
+}
+
+.left {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+}
+
+.left span {
+  padding: 10px;
+  font-size: 50px;
+  color: green;
+}
+
+.middle {
+  display: flex;
+  align-items: center;
+  padding: 10px;
+}
+
+.middle span {
+  padding: 6px;
+  margin-right: 10px;
+  cursor: pointer;
+  background-color: green;
+  color: white;
+  border: none;
+  border-radius: 10px;
+}
+
+.right {
+  display: flex;
+  padding-right: 20px;
+}
+
+.right span {
+  padding: 10px;
+  cursor: pointer;
+  font-size: 30px;
+}
+</style>

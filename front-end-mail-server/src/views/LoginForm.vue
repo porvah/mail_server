@@ -39,23 +39,21 @@ export default {
 <style scoped>
 .login {
   border-bottom: 1px solid #555;
+  background: white;
 }
 
 .welcome {
-  margin: 15px;
-  padding: 15px;
+  padding: 15px 40px;
+  width: 420px;
   color: white;
   background: #999;
   border-radius: 12px;
   margin: 20px auto;
-  left: 50%;
-  position: relative;
+  box-sizing: content-box;
 }
 
 form {
   width: 420px;
-  left: 50%;
-  position: relative;
   margin: 0 auto;
   background: white;
   text-align: left;
@@ -70,6 +68,7 @@ label {
   font-size: 12px;
   letter-spacing: 1px;
   font-weight: bold;
+  background: white;
 }
 
 input {
@@ -80,6 +79,7 @@ input {
   border: none;
   border-bottom: 1px solid #ddd;
   color: #555;
+  background: white;
 }
 
 button {
@@ -100,10 +100,12 @@ p {
   color: #555;
   margin-top: 12px;
   text-align: center;
+  background: white;
 }
 
 span {
   color: green;
   cursor: pointer;
+  background: white;
 }
 </style>

@@ -1,7 +1,7 @@
 <template>
-  <div>
-    <router-view />
-  </div>
+  <!-- <div> -->
+  <router-view />
+  <!-- </div> -->
 </template>
 
 <script>
@@ -20,7 +20,7 @@ export default {
   text-align: center;
 }
 
-body {
+* {
   margin: 0px;
   padding: 0px;
   background: #eee;
