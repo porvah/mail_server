@@ -6,7 +6,7 @@
     </div>
     <div class="middle">
       <span class="material-symbols-outlined"> refresh </span>
-      <p>Registered as ...</p>
+      <p id="user">Registered as ...</p>
     </div>
     <div class="right">
       <span class="material-symbols-outlined"> account_circle </span>
@@ -39,6 +39,12 @@ export default {}
   color: green;
 }
 
+.title {
+  font-weight: bold;
+  font-size: 20px;
+  color: green;
+}
+
 .middle {
   display: flex;
   align-items: center;
@@ -64,5 +70,11 @@ export default {}
   padding: 10px;
   cursor: pointer;
   font-size: 30px;
+}
+
+#user {
+  border: 2px solid green;
+  border-radius: 10px;
+  padding: 10px;
 }
 </style>

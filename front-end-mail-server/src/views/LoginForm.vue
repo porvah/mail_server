@@ -24,7 +24,7 @@ export default {
     const router = useRouter()
 
     const login = () => {
-      router.push('/home')
+      router.push('/home/inbox')
     }
 
     const goToSignUp = () => {

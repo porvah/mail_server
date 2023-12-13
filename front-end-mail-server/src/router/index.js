@@ -26,6 +26,36 @@ const router = createRouter({
           path: 'inbox',
           name: 'inbox',
           component: Inbox
+        },
+        {
+          path: 'sent',
+          // name: 'inbox',
+          component: Inbox
+        },
+        {
+          path: 'contacts',
+          // name: 'inbox',
+          component: Inbox
+        },
+        {
+          path: 'draft',
+          // name: 'inbox',
+          component: Inbox
+        },
+        {
+          path: 'starred',
+          // name: 'inbox',
+          component: Inbox
+        },
+        {
+          path: 'folders',
+          // name: 'inbox',
+          component: Inbox
+        },
+        {
+          path: 'trash',
+          // name: 'inbox',
+          component: Inbox
         }
       ]
     },
