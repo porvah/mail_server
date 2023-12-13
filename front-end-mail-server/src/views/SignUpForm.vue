@@ -66,15 +66,4 @@ button {
   font-weight: bold;
   font-size: 16px;
 }
-
-p {
-  color: #555;
-  margin-top: 12px;
-  text-align: center;
-}
-
-span {
-  color: green;
-  cursor: pointer;
-}
 </style>
