@@ -25,8 +25,8 @@ public class MailController {
         String password = (String) body.get("password");
         String name = (String) body.get("name");
 
-        verificationProxy.signUpUser(name, email, password);
-        return true;
+        return verificationProxy.signUpUser(name, email, password);
+
     }
 
     @PostMapping("/login")
