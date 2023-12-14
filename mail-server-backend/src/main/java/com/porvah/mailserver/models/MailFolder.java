@@ -8,7 +8,7 @@ import java.util.List;
 public class MailFolder {
     private List<ROMail> mails;
 
-    MailFolder(){
+    public MailFolder(){
         this.mails = new ArrayList<>();
     }
 

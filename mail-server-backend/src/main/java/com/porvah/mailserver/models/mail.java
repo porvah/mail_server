@@ -15,12 +15,12 @@ public class mail implements ROMail{
     private Date sentDate;
     private int priority;
     private List<File> attachments;
-    mail(User sender, User receiver){
+    public mail(User sender, User receiver){
         this.sender = sender;
         this.receiver = receiver;
         this.attachments = new ArrayList<>();
     }
-    mail(User sender, User receiver, String subject, String body, Date sentDate, List<File> attachments, int priority){
+    public mail(User sender, User receiver, String subject, String body, Date sentDate, List<File> attachments, int priority){
         this.sender = sender;
         this.receiver = receiver;
         this.subject = subject;

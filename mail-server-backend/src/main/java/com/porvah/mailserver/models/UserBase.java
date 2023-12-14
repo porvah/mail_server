@@ -48,6 +48,9 @@ public class UserBase {
 
     public int logUser(String email, String password){
         User user = this.getUser(email);
+
+
+
         if (user.getPassword().equals(password)) {
             this.loggedUsers.put(curId, user);
             return curId++;
