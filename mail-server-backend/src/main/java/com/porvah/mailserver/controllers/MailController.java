@@ -24,8 +24,8 @@ public class MailController {
         String password = (String) body.get("password");
         String name = (String) body.get("name");
 
-        verificationProxy.signUpUser(name, email, password);
-        return true;
+        return verificationProxy.signUpUser(name, email, password);
+
     }
 
     @PostMapping("/login")
@@ -49,8 +49,10 @@ public class MailController {
         return true;
     }
 
-@GetMapping("/getUser")
-    public User getLoggedUser(int userId) {
+@GetMapping("/getUser/:id")
+    public User getLoggedUser(@RequestParam int userId) {
+
+
         return UserBase.getInstance().getLoggedUser(userId);
     }
 
