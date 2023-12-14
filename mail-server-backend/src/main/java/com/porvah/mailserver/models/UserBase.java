@@ -1,7 +1,9 @@
 package com.porvah.mailserver.models;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class UserBase {
 
@@ -10,11 +12,11 @@ public class UserBase {
 
     private int curId = 0;
     private List<User> users;
-    private List<User> loggedUsers;
+    private Map<Integer, User> loggedUsers;
 
     private UserBase() {
         this.users = new ArrayList<>();
-        this.loggedUsers = new ArrayList<>();
+        this.loggedUsers = new HashMap<>();
     }
 
     public static UserBase getInstance() {
@@ -46,7 +48,7 @@ public class UserBase {
 
     public int logUser(String email) {
         User user = this.getUser(email);
-        this.loggedUsers.add(user);
+        this.loggedUsers.put(curId, user);
         return curId++;
     }
 
@@ -55,5 +57,6 @@ public class UserBase {
     }
     public User getLoggedUser(int id) {
         return this.loggedUsers.get(id);
+
     }
 }
