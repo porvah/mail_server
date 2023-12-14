@@ -9,14 +9,30 @@
       <p id="user">Registered as ...</p>
     </div>
     <div class="right">
-      <span class="material-symbols-outlined"> account_circle </span>
-      <span class="material-symbols-outlined"> settings </span>
+      <span @click="openProfileDialog" class="material-symbols-outlined"> account_circle </span>
+      <span @click="openSettingsDialog" class="material-symbols-outlined"> settings </span>
     </div>
   </div>
 </template>
 
 <script>
-export default {}
+import { useStore } from 'vuex'
+
+export default {
+  setup() {
+    const store = useStore()
+
+    const openProfileDialog = () => {
+      store.commit('openProfileDialog')
+    }
+
+    const openSettingsDialog = () => {
+      store.commit('openSettingsDialog')
+    }
+
+    return { openProfileDialog, openSettingsDialog }
+  }
+}
 </script>
 
 <style scoped>

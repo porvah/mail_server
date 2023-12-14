@@ -12,7 +12,7 @@
       Delete Account
     </button>
 
-    <button @click="closeCompose" id="close-btn" type="button">
+    <button @click="closeSettings" id="close-btn" type="button">
       <span class="material-symbols-outlined"> cancel </span>
       Close
     </button>
@@ -20,7 +20,19 @@
 </template>
 
 <script>
-export default {}
+import { useStore } from 'vuex'
+
+export default {
+  setup() {
+    const store = useStore()
+
+    const closeSettings = () => {
+      store.commit('closeSettingsDialog')
+    }
+
+    return { closeSettings }
+  }
+}
 </script>
 
 <style scoped>

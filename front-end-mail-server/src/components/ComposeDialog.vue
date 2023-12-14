@@ -31,14 +31,19 @@
 
 <script>
 import { ref } from 'vue'
+import { useStore } from 'vuex'
 
 export default {
   setup() {
+    const store = useStore()
+
     const emailTo = ref('')
     const emailSubject = ref('')
     const emailDescription = ref('')
 
-    const closeCompose = () => {}
+    const closeCompose = () => {
+      store.commit('closeComposeDialog')
+    }
 
     return { emailTo, emailSubject, emailDescription, closeCompose }
   }

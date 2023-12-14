@@ -1,6 +1,6 @@
 <template>
   <div id="side-bar">
-    <button class="compose">
+    <button @click="openComposeDialog" class="compose">
       <span class="material-symbols-outlined"> stylus </span>
       Compose
     </button>
@@ -20,10 +20,12 @@
 <script>
 import { ref, computed } from 'vue'
 import { useRouter } from 'vue-router'
+import { useStore } from 'vuex'
 
 export default {
   setup() {
     const router = useRouter()
+    const store = useStore()
     const activeOption = ref('Inbox')
 
     const options = computed(() => [
@@ -69,7 +71,11 @@ export default {
       router.push('/home/' + op)
     }
 
-    return { activeOption, options, chooseOption }
+    const openComposeDialog = () => {
+      store.commit('openComposeDialog')
+    }
+
+    return { activeOption, options, chooseOption, openComposeDialog }
   }
 }
 </script>

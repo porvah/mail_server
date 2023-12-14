@@ -10,7 +10,7 @@
       <h3>{{ email }}</h3>
     </div>
 
-    <button @click="closeCompose" id="close-btn" type="button">
+    <button @click="closeProfile" id="close-btn" type="button">
       <span class="material-symbols-outlined"> cancel </span>
       Close
     </button>
@@ -19,13 +19,19 @@
 
 <script>
 import { ref } from 'vue'
+import { useStore } from 'vuex'
 
 export default {
   setup() {
+    const store = useStore()
     const name = ref('mohamed')
     const email = ref('mohamed@test.com')
 
-    return { name, email }
+    const closeProfile = () => {
+      store.commit('closeProfileDialog')
+    }
+
+    return { name, email, closeProfile }
   }
 }
 </script>
