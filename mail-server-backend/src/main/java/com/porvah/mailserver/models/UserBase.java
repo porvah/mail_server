@@ -10,11 +10,10 @@ public class UserBase {
     //Singleton
     private static UserBase instance;
 
-    private int curId = 0;
     private List<User> users;
     private Map<Integer, User> loggedUsers;
 
-    private UserBase() {
+    public UserBase() {
         this.users = new ArrayList<>();
         this.loggedUsers = new HashMap<>();
     }
@@ -27,39 +26,47 @@ public class UserBase {
     }
 
     public void addUser(User user) {
-        this.users.add(user);
-    }
-
-    public void deleteUser(String email) {
-        for (int i = 0; i < this.users.size(); i++) {
-            if (this.users.get(i).getEmail().equals(email))
-                this.users.remove(i);
-        }
+        users.add(user);
     }
 
     public User getUser(String email) {
-        for (int i = 0; i < this.users.size(); i++) {
-            if (this.users.get(i).getEmail().equals(email)) {
-                return this.users.get(i);
+
+
+        for (User user : users) {
+            if (user.getEmail().equals(email)) {
+                return user;
             }
         }
-        throw new RuntimeException("Couldn't find user with email: " + email + " in the user base.");
+        throw new RuntimeException("Could not find user with email: " + email + " in database");
     }
 
-    public int logUser(String email, String password){
-        User user = this.getUser(email);
-        if (user.getPassword().equals(password)) {
-            this.loggedUsers.put(curId, user);
-            return curId++;
+    public void addLoggedUser(int userId, User user) {
+        loggedUsers.put(userId, user);
+    }
+
+
+
+    public User getLoggedUser(int userId) {
+        return loggedUsers.get(userId);
+    }
+
+    public void removeLoggedUser(int userId){
+        loggedUsers.remove(userId);
+    }
+
+
+
+    public boolean containsUser(String email){
+        for(User user : users){
+            if(user.getEmail().equals(email)){
+                return true;
+            }
         }
-        return -1;
+        return false;
     }
 
-    public void logoutUser(int id) {
-        this.loggedUsers.remove(id);
+    public boolean containsLoggedUser(int userId){
+        return loggedUsers.containsKey(userId);
     }
-    public User getLoggedUser(int id) {
-        return this.loggedUsers.get(id);
 
-    }
 }
