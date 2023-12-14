@@ -5,10 +5,10 @@
     <h2 id="login">Login</h2>
 
     <label>Email:</label>
-    <input type="email" name="email" required />
+    <input v-model="email" type="email" name="email" required />
 
     <label>Password:</label>
-    <input type="password" name="password" required />
+    <input v-model="password" type="password" name="password" required />
 
     <button @click="login">Login</button>
 
@@ -17,13 +17,20 @@
 </template>
 
 <script>
+import { ref } from 'vue'
 import { useRouter } from 'vue-router'
+import { useStore } from 'vuex'
 
 export default {
   setup() {
     const router = useRouter()
+    const store = useStore()
+
+    const email = ref('')
+    const password = ref('')
 
     const login = () => {
+      store.dispatch('login', { email: email.value, password: password.value })
       router.push('/home/inbox')
     }
 
@@ -31,7 +38,7 @@ export default {
       router.push('/signup')
     }
 
-    return { login, goToSignUp }
+    return { login, goToSignUp, email, password }
   }
 }
 </script>

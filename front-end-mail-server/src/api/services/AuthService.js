@@ -15,14 +15,15 @@ class AuthService {
     return await service.makeRequest('login', 'POST', { email, password })
   }
 
-  async signUp(name, email, password) {
+  async signup(name, email, password) {
     const service = ApiService.getInstance()
-    return await service.makeRequest('signup', 'POST', { name, email, password })
+    await service.makeRequest('signup', 'POST', { name, email, password })
+    return await this.login(email, password)
   }
 
   async getUser(token) {
     const service = ApiService.getInstance()
-    return await service.makeRequest('getuser', 'POST', { token })
+    return await service.makeRequest('getuser/' + token, 'GET')
   }
 }
 
