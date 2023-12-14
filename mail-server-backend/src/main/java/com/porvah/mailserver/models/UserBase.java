@@ -7,6 +7,8 @@ public class UserBase {
 
     //Singleton
     private static UserBase instance;
+
+    private int curId = 0;
     private List<User> users;
     private List<User> loggedUsers;
 
@@ -43,10 +45,9 @@ public class UserBase {
     }
 
     public int logUser(String email) {
-        User logged = this.getUser(email);
-        int id = this.loggedUsers.size();
-        this.loggedUsers.add(logged);
-        return id;
+        User user = this.getUser(email);
+        this.loggedUsers.add(user);
+        return curId++;
     }
 
     public User getLoggedUser(int id) {
