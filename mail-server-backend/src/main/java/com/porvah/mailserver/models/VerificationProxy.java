@@ -33,6 +33,7 @@ public class VerificationProxy {
 
 
         if(!userBase.containsUser(email)){
+            System.out.println("Not found");
             throw new RuntimeException("Could not find user with email: " + email + " in UserBase");
         }
 

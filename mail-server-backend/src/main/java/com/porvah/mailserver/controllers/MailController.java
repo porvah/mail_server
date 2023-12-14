@@ -3,6 +3,7 @@ package com.porvah.mailserver.controllers;
 import com.porvah.mailserver.models.User;
 import com.porvah.mailserver.models.UserBase;
 import com.porvah.mailserver.models.VerificationProxy;
+import jakarta.websocket.server.PathParam;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -49,11 +50,10 @@ public class MailController {
         return true;
     }
 
-@GetMapping("/getUser/:id")
-    public User getLoggedUser(@RequestParam int userId) {
-
-
-        return UserBase.getInstance().getLoggedUser(userId);
+    @GetMapping("/getuser/{id}")
+    public String getLoggedUser(@PathVariable int id) {
+        return "{\"name\":\"mohamed\"}";
+//        return UserBase.getInstance().getLoggedUser(id);
     }
 
 }
