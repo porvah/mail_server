@@ -21,12 +21,16 @@
 
 <script>
 import { ref } from 'vue'
+import { useRouter } from 'vue-router'
 
 export default {
   setup() {
+    const router = useRouter()
     const folders = ref(['College', 'Programming', 'Sports', 'Others'])
 
-    const goToFolder = (item) => {}
+    const goToFolder = (item) => {
+      router.push({ name: 'folder-details', params: { name: item } })
+    }
     return { folders, goToFolder }
   }
 }
@@ -72,6 +76,7 @@ export default {
   border-radius: 10px;
   color: white;
   background-color: green;
+  cursor: pointer;
 }
 
 .item {
