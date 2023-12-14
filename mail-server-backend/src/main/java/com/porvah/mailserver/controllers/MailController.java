@@ -28,11 +28,7 @@ public class MailController {
         String email = (String) body.get("email");
         String password = (String) body.get("password");
 
-        User user = UserBase.getInstance().getUser(email);
-        if(user.getPassword().equals(password)){
-            return UserBase.getInstance().logUser(email);
-        }
-        return -1;
+        return UserBase.getInstance().logUser(email, password);
     }
 
     @PostMapping("/logout")

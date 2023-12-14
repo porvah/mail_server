@@ -46,9 +46,8 @@ public class UserBase {
         throw new RuntimeException("Couldn't find user with email: " + email + " in the user base.");
     }
 
-    public int logUser(String email) {
+    public int logUser(String email, String password){
         User user = this.getUser(email);
-        String password = user.getPassword();
         if (user.getPassword().equals(password)) {
             this.loggedUsers.put(curId, user);
             return curId++;
