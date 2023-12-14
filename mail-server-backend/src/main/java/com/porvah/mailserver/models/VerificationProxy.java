@@ -51,4 +51,8 @@ public class VerificationProxy {
         userBase.removeLoggedUser(userId);
     }
 
+    public User getLoggedUser(int userId) {
+        return userBase.getLoggedUser(userId);
+    }
+
 }
