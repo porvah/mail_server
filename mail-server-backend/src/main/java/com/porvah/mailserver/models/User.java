@@ -6,20 +6,20 @@ public class User {
 
 
 
-    User(String email, String password){
+    public User(String email, String password){
         this.email = email;
         this.password = password;
     }
-    String getEmail(){
+    public String getEmail(){
         return this.email;
     }
-    String getPassword(){
+    public String getPassword(){
         return this.password;
     }
-    void setEmail(String email){
+    public void setEmail(String email){
         this.email = email;
     }
-    void setPassword(String password){
+    public void setPassword(String password){
         this.password = password;
     }
 
