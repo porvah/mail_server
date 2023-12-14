@@ -48,8 +48,12 @@ public class UserBase {
 
     public int logUser(String email) {
         User user = this.getUser(email);
-        this.loggedUsers.put(curId, user);
-        return curId++;
+        String password = user.getPassword();
+        if (user.getPassword().equals(password)) {
+            this.loggedUsers.put(curId, user);
+            return curId++;
+        }
+        return -1;
     }
 
     public void logoutUser(int id) {
