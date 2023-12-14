@@ -12,14 +12,13 @@
 
 <script>
 import { ref } from 'vue'
-import { useRoute } from 'vue-router'
 import Email from '@/components/Email.vue'
 
 export default {
   components: { Email },
-  setup() {
-    const route = useRoute()
-    const folderName = route.params.name
+  props: ['name'],
+  setup(props) {
+    const folderName = props.name
 
     const email = ref({
       id: 0,

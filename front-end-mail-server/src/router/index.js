@@ -6,6 +6,7 @@ import Inbox from '../views/Inbox.vue'
 import Contacts from '../views/Contacts.vue'
 import Folders from '../views/Folders.vue'
 import FolderDetails from '../views/FolderDetails.vue'
+import EmailDetails from '../views/EmailDetails.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -29,6 +30,12 @@ const router = createRouter({
           path: 'inbox',
           name: 'inbox',
           component: Inbox
+        },
+        {
+          path: 'inbox/:id',
+          name: 'email-details',
+          component: EmailDetails,
+          props: true
         },
         {
           path: 'sent',
@@ -58,7 +65,8 @@ const router = createRouter({
         {
           path: 'folders/:name',
           name: 'folder-details',
-          component: FolderDetails
+          component: FolderDetails,
+          props: true
         },
         {
           path: 'trash',
