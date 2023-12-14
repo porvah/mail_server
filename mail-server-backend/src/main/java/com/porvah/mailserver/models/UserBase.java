@@ -50,6 +50,9 @@ public class UserBase {
         return curId++;
     }
 
+    public void logoutUser(int id) {
+        this.loggedUsers.remove(id);
+    }
     public User getLoggedUser(int id) {
         return this.loggedUsers.get(id);
     }

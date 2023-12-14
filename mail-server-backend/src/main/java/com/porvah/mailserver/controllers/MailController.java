@@ -35,4 +35,11 @@ public class MailController {
         return -1;
     }
 
+    @PostMapping("/logout")
+    public Boolean logOut(@RequestBody Map<String, Object> body){
+        int id = (int) body.get("id");
+        UserBase.getInstance().logoutUser(id);
+        return true;
+    }
+
 }
