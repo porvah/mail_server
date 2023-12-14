@@ -3,6 +3,7 @@ import LoginForm from '../views/LoginForm.vue'
 import SignUpForm from '../views/SignUpForm.vue'
 import Home from '../views/Home.vue'
 import Inbox from '../views/Inbox.vue'
+import Contacts from '../views/Contacts.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -35,7 +36,7 @@ const router = createRouter({
         {
           path: 'contacts',
           // name: 'inbox',
-          component: Inbox
+          component: Contacts
         },
         {
           path: 'draft',

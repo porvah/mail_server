@@ -1,6 +1,6 @@
 <template>
   <div id="inbox">
-    <SearchBar />
+    <SearchBar title="Search mail" />
     <ListEmails />
   </div>
 </template>

@@ -3,7 +3,7 @@
     <div class="left">
       <span class="material-symbols-outlined"> search </span>
 
-      <input type="text" placeholder="Search mail" />
+      <input type="text" :placeholder="title" />
 
       <select v-model="searchChose" name="search-by" class="dropdown">
         <option value="" selected disabled hidden>Search by</option>
@@ -29,6 +29,7 @@
 import { ref, computed } from 'vue'
 
 export default {
+  props: ['title'],
   setup() {
     const searchChose = ref('')
     const searchOptions = computed(() => ['Subject', 'Sender', 'Description', 'Tag'])
