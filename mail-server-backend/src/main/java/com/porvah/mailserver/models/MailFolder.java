@@ -11,5 +11,4 @@ public class MailFolder {
     public MailFolder(){
         this.mails = new ArrayList<>();
     }
-
 }

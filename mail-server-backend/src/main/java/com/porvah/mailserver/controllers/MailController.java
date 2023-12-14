@@ -16,8 +16,8 @@ public class MailController {
 
         String email = (String) body.get("email");
         String password = (String) body.get("password");
-
-        User user = new User(email, password);
+        String name = (String) body.get("name");
+        User user = new User(email, password, name);
         UserBase.getInstance().addUser(user);
 
         return true;
