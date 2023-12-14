@@ -49,4 +49,9 @@ public class MailController {
         return true;
     }
 
+@GetMapping("/getUser")
+    public User getLoggedUser(int userId) {
+        return UserBase.getInstance().getLoggedUser(userId);
+    }
+
 }
