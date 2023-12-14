@@ -15,8 +15,15 @@
       <textarea v-model="emailDescription" required />
 
       <div id="btns">
-        <button @click="closeCompose" id="cancel-btn" type="button">Cancel</button>
-        <button type="submit" id="send-btn">Send</button>
+        <button @click="closeCompose" id="cancel-btn" type="button">
+          <span class="material-symbols-outlined"> cancel </span>
+          Cancel
+        </button>
+
+        <button type="submit" id="send-btn">
+          <span class="material-symbols-outlined"> send </span>
+          Send
+        </button>
       </div>
     </form>
   </dialog>
@@ -55,6 +62,7 @@ dialog {
 h2 {
   border-bottom: 1px solid gray;
   margin-bottom: 6px;
+  padding-bottom: 4px;
 }
 
 form {
@@ -90,6 +98,9 @@ textarea {
 }
 
 button {
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
   margin: 15px 15px 0 15px;
   padding: 10px;
   width: 40%;
