@@ -12,7 +12,7 @@ import java.util.Map;
 public class MailController {
 
     @PostMapping("/signup")
-    public Boolean signup(@RequestBody Map<String, Object> body){
+    public Boolean signUp(@RequestBody Map<String, Object> body){
 
         String email = (String) body.get("email");
         String password = (String) body.get("password");
@@ -22,6 +22,7 @@ public class MailController {
 
         return true;
     }
+
 
 
 }
