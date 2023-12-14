@@ -2,8 +2,12 @@ package com.porvah.mailserver.controllers;
 
 import com.porvah.mailserver.models.User;
 import com.porvah.mailserver.models.UserBase;
+import com.porvah.mailserver.models.VerificationProxy;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.lang.reflect.Proxy;
 import java.util.Map;
 
 @RestController
@@ -11,30 +15,37 @@ import java.util.Map;
 @CrossOrigin()
 public class MailController {
 
+    final VerificationProxy verificationProxy = new VerificationProxy();
+
     @PostMapping("/signup")
     public Boolean signUp(@RequestBody Map<String, Object> body){
 
         String email = (String) body.get("email");
         String password = (String) body.get("password");
         String name = (String) body.get("name");
-        User user = new User(email, password, name);
-        UserBase.getInstance().addUser(user);
 
+        verificationProxy.signUpUser(name, email, password);
         return true;
     }
 
     @PostMapping("/login")
-    public int logIn(@RequestBody Map<String, Object> body){
+    public ResponseEntity<?> logIn(@RequestBody Map<String, Object> body) {
         String email = (String) body.get("email");
         String password = (String) body.get("password");
 
-        return UserBase.getInstance().logUser(email, password);
+        try {
+            int userId = verificationProxy.loginUser(email, password);
+            return ResponseEntity.ok(userId);
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Failed to login.");
+        }
     }
 
     @PostMapping("/logout")
     public Boolean logOut(@RequestBody Map<String, Object> body){
         int id = (int) body.get("id");
-        UserBase.getInstance().logoutUser(id);
+
+        verificationProxy.logoutUser(id);
         return true;
     }
 
