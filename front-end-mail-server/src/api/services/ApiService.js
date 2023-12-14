@@ -4,7 +4,7 @@ class ApiService {
   static getInstance() {
     if (ApiService.instance == null) {
       ApiService.instance = new ApiService()
-      ApiService.instance.baseUrl = 'http//localhost:8080'
+      ApiService.instance.baseUrl = 'http://localhost:8080'
     }
 
     return ApiService.instance
@@ -12,6 +12,7 @@ class ApiService {
 
   async makeRequest(endpoint, method = 'GET', data = null) {
     const url = `${this.baseUrl}/${endpoint}`
+
     const options = {
       method,
       headers: {
@@ -19,6 +20,8 @@ class ApiService {
       },
       body: data ? JSON.stringify(data) : null
     }
+
+    console.log(options)
 
     const response = await fetch(url, options)
     const resData = await response.json()
