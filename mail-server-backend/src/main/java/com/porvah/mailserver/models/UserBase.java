@@ -13,7 +13,7 @@ public class UserBase {
     private List<User> users;
     private Map<Integer, User> loggedUsers;
 
-    public UserBase() {
+    private UserBase() {
         this.users = new ArrayList<>();
         this.loggedUsers = new HashMap<>();
     }
