@@ -5,12 +5,16 @@ public class User {
     private String email;
     private String password;
 
+    private int userDataId;
+
 
 
     public User(String email, String password, String name){
         this.email = email;
         this.password = password;
         this.name = name;
+
+        userDataId = UserDataRepository.getInstance().addUserData(new UserData());
     }
     public String getEmail(){
         return this.email;
@@ -30,6 +34,14 @@ public class User {
     }
     public void setName(String name){
         this.name = name;
+    }
+
+    public int getUserDataId(){
+        return userDataId;
+    }
+
+    public UserData getUserData(){
+        return UserDataRepository.getInstance().getUserData(userDataId);
     }
 
 }
