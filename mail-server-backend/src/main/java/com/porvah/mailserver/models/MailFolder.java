@@ -11,4 +11,13 @@ public class MailFolder {
     public MailFolder(){
         this.mails = new ArrayList<>();
     }
+
+    public void addMail(ROMail mail){
+        mails.add(mail);
+    }
+
+    public void removeMail(ROMail mail){
+        mails.remove(mail);
+    }
+
 }
