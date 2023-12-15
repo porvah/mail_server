@@ -32,7 +32,7 @@ public class UserBase {
     public User getUser(String email) {
 
 
-        for (User user : users) {
+        for (User user : this.users) {
             if (user.getEmail().equals(email)) {
                 return user;
             }
@@ -41,7 +41,7 @@ public class UserBase {
     }
 
     public void addLoggedUser(int userId, User user) {
-        loggedUsers.put(userId, user);
+        this.loggedUsers.put(userId, user);
     }
 
 
@@ -51,13 +51,13 @@ public class UserBase {
     }
 
     public void removeLoggedUser(int userId){
-        loggedUsers.remove(userId);
+        this.loggedUsers.remove(userId);
     }
 
 
 
     public boolean containsUser(String email){
-        for(User user : users){
+        for(User user : this.users){
             if(user.getEmail().equals(email)){
                 return true;
             }
@@ -66,7 +66,7 @@ public class UserBase {
     }
 
     public boolean containsLoggedUser(int userId){
-        return loggedUsers.containsKey(userId);
+        return this.loggedUsers.containsKey(userId);
     }
 
 }
