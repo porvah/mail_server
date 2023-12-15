@@ -7,7 +7,7 @@ public class VerificationProxy {
     private int curId = 0;
 
     public VerificationProxy() {
-        this.userBase = new UserBase();
+        this.userBase = UserBase.getInstance();
     }
 
     public boolean signUpUser(String name, String email, String password) {

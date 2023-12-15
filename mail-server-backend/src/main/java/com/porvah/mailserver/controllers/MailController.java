@@ -51,9 +51,11 @@ public class MailController {
     }
 
     @GetMapping("/getuser/{id}")
-    public String getLoggedUser(@PathVariable int id) {
-        return "{\"name\":\"mohamed\"}";
-//        return UserBase.getInstance().getLoggedUser(id);
+    public User getLoggedUser(@PathVariable int id) {
+
+        User user = UserBase.getInstance().getLoggedUser(id);
+        System.out.println(user.getEmail());
+        return user;
     }
 
 }
