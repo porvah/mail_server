@@ -22,8 +22,6 @@ const actions = {
     const user = await api.auth.getUser(token)
 
     commit('login', { user, token })
-    console.log(user)
-    console.log(token)
   },
   async signup({ commit }, { name, email, password }) {
     const token = await api.auth.signup(name, email, password)
@@ -35,7 +33,8 @@ const actions = {
 
 const getters = {
   user: (state) => state.user,
-  token: (state) => state.token
+  token: (state) => state.token,
+  isAuthenticated: (state) => state.token != null
 }
 
 export default {

@@ -26,5 +26,6 @@ coverage
 *.njsproj
 *.sln
 *.sw?
+front-end-mail-server/.vite/
 
 *.tsbuildinfo
