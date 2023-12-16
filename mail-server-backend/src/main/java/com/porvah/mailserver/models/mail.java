@@ -7,7 +7,9 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-public class mail implements ROMail{
+public class Mail implements ROMail{
+    private static int counter = 0;
+    private int id;
     private User sender;
     private User receiver;
     private String subject;
@@ -15,12 +17,14 @@ public class mail implements ROMail{
     private Date sentDate;
     private int priority;
     private List<File> attachments;
-    public mail(User sender, User receiver){
+    public Mail(User sender, User receiver){
         this.sender = sender;
         this.receiver = receiver;
         this.attachments = new ArrayList<>();
+        this.id = counter;
+        counter++;
     }
-    public mail(User sender, User receiver, String subject, String body, Date sentDate, List<File> attachments, int priority){
+    public Mail(User sender, User receiver, String subject, String body, Date sentDate, List<File> attachments, int priority){
         this.sender = sender;
         this.receiver = receiver;
         this.subject = subject;
@@ -28,6 +32,11 @@ public class mail implements ROMail{
         this.sentDate = sentDate;
         this.attachments = attachments;
         this.priority = priority;
+        this.id = counter;
+        counter++;
+    }
+    public int getId(){
+        return this.id;
     }
     public User getSender(){
         return this.sender;
@@ -72,7 +81,7 @@ public class mail implements ROMail{
         this.attachments = files;
     }
     public ROMail submit(){
-        ROMail submitted = new mail(this.sender, this.receiver, this.subject, this.body, this.sentDate, this.attachments, this.priority);
+        ROMail submitted = new Mail(this.sender, this.receiver, this.subject, this.body, this.sentDate, this.attachments, this.priority);
         return submitted;
     }
 }

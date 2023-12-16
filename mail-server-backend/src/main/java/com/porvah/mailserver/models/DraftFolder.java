@@ -1,31 +1,31 @@
 package com.porvah.mailserver.models;
 
-import com.porvah.mailserver.interfaces.ROMail;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class MailFolder {
-    private List<ROMail> mails;
+public class DraftFolder{
+    private List<Mail> mails;
 
-    public MailFolder(){
-        this.mails = new ArrayList<ROMail>();
+    public DraftFolder(){
+        this.mails = new ArrayList<Mail>();
     }
-    public void addMail(ROMail mail){
+
+    public void addMail(Mail mail){
         this.mails.add(mail);
     }
     public void removeMail(int id){
-        for(ROMail mail : this.mails){
+        for(Mail mail : this.mails){
             if(mail.getId() == id){
                 this.mails.remove(mail);
             }
         }
     }
-    public List<ROMail> getMails(){
+    public List<Mail> getMails(){
         return this.mails;
     }
-    public ROMail getMail(int id){
-        for(ROMail mail : this.mails){
+    public Mail getMail(int id){
+        for(Mail mail : this.mails){
             if(mail.getId() == id){
                 return mail;
             }

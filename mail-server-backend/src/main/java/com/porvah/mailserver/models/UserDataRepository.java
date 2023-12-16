@@ -35,12 +35,4 @@ public class UserDataRepository {
     public void removeUserData(int userId){
         userDataByUserId.remove(userId);
     }
-
-
-
-
-
-
-
-
 }

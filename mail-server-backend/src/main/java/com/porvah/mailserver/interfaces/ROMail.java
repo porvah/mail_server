@@ -7,6 +7,7 @@ import java.util.Date;
 import java.util.List;
 
 public interface ROMail {
+    public int getId();
     public User getSender();
     public User getReceiver();
     public String getSubject();

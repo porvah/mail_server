@@ -7,16 +7,16 @@ public class UserData {
 
     private MailFolder inbox;
     private MailFolder sent;
-    private MailFolder trash;
-    private MailFolder draft;
+    private TrashFolder trash;
+    private DraftFolder draft;
 
     private Map<String, MailFolder> folders;
 
     public UserData() {
         this.inbox = new MailFolder();
         this.sent = new MailFolder();
-        this.trash = new MailFolder();
-        this.draft = new MailFolder();
+        this.trash = new TrashFolder();
+        this.draft = new DraftFolder();
 
         this.folders = new HashMap<>();
     }
@@ -34,7 +34,7 @@ public class UserData {
         return trash;
     }
 
-    public MailFolder getDraft() {
+    public DraftFolder getDraft() {
         return draft;
     }
 
