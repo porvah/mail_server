@@ -1,5 +1,6 @@
 package com.porvah.mailserver.models;
 
+import com.porvah.mailserver.enums.SortType;
 import com.porvah.mailserver.interfaces.ROMail;
 
 import java.util.*;
@@ -25,9 +26,10 @@ public class MailFolder {
         }
         this.mailsWithsPriority = removeFromQ(this.mailsWithsPriority, id);
     }
-    public List<ROMail> getMails(){
+    public List<ROMail> getMails(SortType sort){
         List<ROMail> result = new ArrayList<ROMail>(this.mails);
-        Collections.reverse(result);
+        if(sort == SortType.DESCEND) Collections.reverse(result);
+        else if(sort == SortType.PRIORITY) return this.mailsWithsPriority.stream().toList();
         return result;
     }
 

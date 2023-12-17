@@ -1,6 +1,8 @@
 package com.porvah.mailserver.models;
 
 
+import com.porvah.mailserver.enums.SortType;
+
 import java.util.*;
 
 public class DraftFolder{
@@ -33,9 +35,10 @@ public class DraftFolder{
         }
         return result;
     }
-    public List<Mail> getMails(){
+    public List<Mail> getMails(SortType sort){
         List<Mail> result = new ArrayList<Mail>(this.mails);
-        Collections.reverse(result);
+        if(sort == SortType.DESCEND) Collections.reverse(result);
+        else if(sort == SortType.PRIORITY) return this.mailsWithsPriority.stream().toList();
         return  result;
     }
     public Mail getMail(int id){
