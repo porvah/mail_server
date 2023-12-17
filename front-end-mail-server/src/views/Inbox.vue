@@ -1,6 +1,12 @@
 <template>
   <div id="inbox">
-    <SearchBar title="Search mail" />
+    <SearchBar
+      :searchValue="searchValue"
+      @update:searchValue="(val) => (searchValue = val)"
+      :filterValue="filterValue"
+      @update:filterValue="(val) => (filterValue = val)"
+      title="Search mail"
+    />
     <ListEmails :emails="filterEmails" />
   </div>
 </template>
@@ -14,6 +20,7 @@ export default {
   components: { SearchBar, ListEmails },
   setup() {
     const searchValue = ref('')
+    const filterValue = ref('')
     const emails = ref([
       {
         id: 0,
@@ -42,11 +49,26 @@ export default {
       }
     ])
 
+    const filterCategory = (email) => {
+      switch (filterValue.value) {
+        case 'Sender':
+          return email.sender
+        case 'Subject':
+          return email.subject
+        case 'Description':
+          return email.description
+        default:
+          return email.description
+      }
+    }
+
     const filterEmails = computed(() => {
-      return emails.value.filter((e) => e.description.includes(searchValue.value))
+      return emails.value.filter((e) =>
+        filterCategory(e).toLowerCase().includes(searchValue.value.toLowerCase())
+      )
     })
 
-    return { emails, filterEmails, searchValue }
+    return { emails, filterEmails, searchValue, filterValue }
   }
 }
 </script>

@@ -3,9 +3,19 @@
     <div class="left">
       <span class="material-symbols-outlined"> search </span>
 
-      <input type="text" :placeholder="title" />
+      <input
+        type="text"
+        :value="searchValue"
+        @input="$emit('update:searchValue', $event.target.value)"
+        :placeholder="title"
+      />
 
-      <select v-model="searchChose" name="search-by" class="dropdown">
+      <select
+        :value="filterValue"
+        @input="$emit('update:filterValue', $event.target.value)"
+        name="search-by"
+        class="dropdown"
+      >
         <option value="" selected disabled hidden>Search by</option>
         <option v-for="option in searchOptions" :value="option" :key="option">{{ option }}</option>
       </select>
@@ -29,15 +39,15 @@
 import { ref, computed } from 'vue'
 
 export default {
-  props: ['title'],
+  props: ['title', 'searchValue', 'filterValue'],
+  emits: ['update:searchValue', 'update:filterValue'],
   setup() {
-    const searchChose = ref('')
     const searchOptions = computed(() => ['Subject', 'Sender', 'Description', 'Tag'])
 
     const sortChose = ref('')
     const sortOptions = computed(() => ['Ascending', 'Descending', 'Priority'])
 
-    return { searchOptions, searchChose, sortChose, sortOptions }
+    return { searchOptions, sortChose, sortOptions }
   }
 }
 </script>
