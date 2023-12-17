@@ -114,8 +114,8 @@ const router = createRouter({
 })
 
 router.beforeEach((to, from, next) => {
-  if (to.matched.some((record) => record.meta.token != null)) {
-    if (!store.getters.isAuthenticated) {
+  if (to.matched.some((record) => record.meta.requiredAuth)) {
+    if (store.getters.token == null) {
       next({ name: 'login' })
     } else {
       next()

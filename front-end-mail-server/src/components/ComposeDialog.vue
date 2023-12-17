@@ -14,6 +14,14 @@
       <label>Description:</label>
       <textarea v-model="emailDescription" required />
 
+      <label>Priority:</label>
+      <div id="priority">
+        <div v-for="p in priorityChoices" class="element">
+          <input type="radio" v-model="priorityChose" name="priority" :value="p" />
+          <label :for="p">{{ p }}</label>
+        </div>
+      </div>
+
       <div id="btns">
         <button @click="closeCompose" id="cancel-btn" type="button">
           <span class="material-symbols-outlined"> cancel </span>
@@ -30,7 +38,7 @@
 </template>
 
 <script>
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
 import { useStore } from 'vuex'
 
 export default {
@@ -40,12 +48,14 @@ export default {
     const emailTo = ref('')
     const emailSubject = ref('')
     const emailDescription = ref('')
+    const priorityChose = ref('1 (Low)')
+    const priorityChoices = computed(() => ['1 (Low)', '2', '3', '4', '5 (High)'])
 
     const closeCompose = () => {
       store.commit('closeComposeDialog')
     }
 
-    return { emailTo, emailSubject, emailDescription, closeCompose }
+    return { emailTo, emailSubject, emailDescription, closeCompose, priorityChose, priorityChoices }
   }
 }
 </script>
@@ -100,6 +110,19 @@ textarea {
 #btns {
   display: flex;
   justify-content: space-around;
+}
+
+#priority {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px 0;
+  align-items: center;
+}
+
+.element label,
+.element input {
+  font-size: 16px;
+  cursor: pointer;
 }
 
 button {
