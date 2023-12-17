@@ -5,8 +5,26 @@
       <label>From:</label>
       <input type="text" value="test@test.test" disabled />
 
-      <label>To:</label>
+      <div id="email-to">
+        <label>To:</label>
+        <button @click="addReceiver" id="add-receiver-btn" type="button">
+          <span class="material-symbols-outlined"> add </span>
+          Add
+        </button>
+      </div>
       <input type="text" v-model="emailTo" required />
+
+      <div id="receivers">
+        <div
+          v-for="receiver in receivers"
+          @click="removeReceiver(receiver)"
+          class="receiver"
+          :key="receiver"
+        >
+          {{ receiver }}
+          <span class="material-symbols-outlined"> delete </span>
+        </div>
+      </div>
 
       <label>Subject:</label>
       <input type="text" v-model="emailSubject" required />
@@ -16,9 +34,9 @@
 
       <label>Priority:</label>
       <div id="priority">
-        <div v-for="p in priorityChoices" class="element">
+        <div v-for="p in priorityChoices" class="element" :key="p">
           <input type="radio" v-model="priorityChose" name="priority" :value="p" />
-          <label :for="p">{{ p }}</label>
+          <label>{{ p }}</label>
         </div>
       </div>
 
@@ -49,13 +67,38 @@ export default {
     const emailSubject = ref('')
     const emailDescription = ref('')
     const priorityChose = ref('1 (Low)')
+    const receivers = ref([])
+
     const priorityChoices = computed(() => ['1 (Low)', '2', '3', '4', '5 (High)'])
 
     const closeCompose = () => {
       store.commit('closeComposeDialog')
     }
 
-    return { emailTo, emailSubject, emailDescription, closeCompose, priorityChose, priorityChoices }
+    const addReceiver = () => {
+      if (emailTo.value && emailTo.value.length > 0) {
+        if (!receivers.value.includes(emailTo.value)) {
+          receivers.value.push(emailTo.value)
+        }
+        emailTo.value = ''
+      }
+    }
+
+    const removeReceiver = (receiver) => {
+      receivers.value = receivers.value.filter((r) => receiver != r)
+    }
+
+    return {
+      emailTo,
+      emailSubject,
+      emailDescription,
+      receivers,
+      priorityChose,
+      priorityChoices,
+      closeCompose,
+      addReceiver,
+      removeReceiver
+    }
   }
 }
 </script>
@@ -63,11 +106,11 @@ export default {
 <style scoped>
 dialog {
   position: absolute;
-  left: 50%;
-  top: 50%;
+  left: 45%;
+  top: 40%;
   margin-left: -25vh;
   margin-top: -25vh;
-  width: 300px;
+  width: 400px;
   padding: 20px;
   box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
   border: 1px solid gray;
@@ -107,6 +150,19 @@ textarea {
   background: white;
 }
 
+#email-to {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 10px;
+}
+
+#email-to button {
+  width: 25%;
+  color: white;
+  background-color: rgb(21, 141, 21);
+}
+
 #btns {
   display: flex;
   justify-content: space-around;
@@ -119,9 +175,29 @@ textarea {
   align-items: center;
 }
 
-.element label,
-.element input {
+#receivers {
+  display: flex;
+  justify-content: left;
+  align-items: center;
+}
+
+.receiver {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  color: white;
+  background-color: gray;
+  border-radius: 12px;
+  padding: 10px;
+  margin: 10px 5px;
+}
+
+.element label {
   font-size: 16px;
+}
+
+.element input {
   cursor: pointer;
 }
 

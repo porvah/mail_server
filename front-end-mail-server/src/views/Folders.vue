@@ -6,7 +6,7 @@
       <button>+ Add folder</button>
     </div>
 
-    <div v-for="item in folders" class="item">
+    <div v-for="item in folders" class="item" :key="item">
       <span class="material-symbols-outlined"> folder </span>
       <h2 @click="goToFolder(item)">
         {{ item }}
