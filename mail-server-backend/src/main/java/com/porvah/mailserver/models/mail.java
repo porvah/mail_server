@@ -81,7 +81,8 @@ public class Mail implements ROMail{
         this.attachments = files;
     }
     public ROMail submit(){
-        ROMail submitted = new Mail(this.sender, this.receiver, this.subject, this.body, this.sentDate, this.attachments, this.priority);
+        ROMail submitted = new Mail(this.sender, this.receiver, this.subject, this.body, this.sentDate,
+                this.attachments, this.priority);
         return submitted;
     }
 }

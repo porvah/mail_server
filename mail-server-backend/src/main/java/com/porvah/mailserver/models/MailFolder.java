@@ -2,27 +2,41 @@ package com.porvah.mailserver.models;
 
 import com.porvah.mailserver.interfaces.ROMail;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 public class MailFolder {
     private List<ROMail> mails;
+    private PriorityQueue<ROMail> mailsWithsPriority;
 
     public MailFolder(){
         this.mails = new ArrayList<ROMail>();
+        this.mailsWithsPriority = new PriorityQueue<ROMail>(Comparator.comparingInt(ROMail::getPriority).reversed());
     }
     public void addMail(ROMail mail){
         this.mails.add(mail);
+        this.mailsWithsPriority.add(mail);
     }
     public void removeMail(int id){
         for(ROMail mail : this.mails){
             if(mail.getId() == id){
                 this.mails.remove(mail);
+                break;
             }
         }
+        this.mailsWithsPriority = removeFromQ(this.mailsWithsPriority, id);
     }
     public List<ROMail> getMails(){
-        return this.mails;
+        List<ROMail> result = new ArrayList<ROMail>(this.mails);
+        Collections.reverse(result);
+        return result;
+    }
+
+    private PriorityQueue<ROMail> removeFromQ(PriorityQueue<ROMail> Q, int id){
+        PriorityQueue<ROMail> result = new PriorityQueue<ROMail>(Comparator.comparingInt(ROMail::getPriority).reversed());
+        for( ROMail mail : Q){
+            if(mail.getId() != id) result.add(mail);
+        }
+        return result;
     }
     public ROMail getMail(int id){
         for(ROMail mail : this.mails){
