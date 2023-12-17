@@ -33,8 +33,12 @@ export default {
     const email = ref('')
     const password = ref('')
 
-    const signup = () => {
-      store.dispatch('signup', { name: name.value, email: email.value, password: password.value })
+    const signup = async () => {
+      await store.dispatch('signup', {
+        name: name.value,
+        email: email.value,
+        password: password.value
+      })
       router.push('/home/inbox')
     }
 

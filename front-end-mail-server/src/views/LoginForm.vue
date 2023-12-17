@@ -29,8 +29,8 @@ export default {
     const email = ref('')
     const password = ref('')
 
-    const login = () => {
-      store.dispatch('login', { email: email.value, password: password.value })
+    const login = async () => {
+      await store.dispatch('login', { email: email.value, password: password.value })
       router.push('/home/inbox')
     }
 
