@@ -7,14 +7,14 @@
 
       <select v-model="searchChose" name="search-by" class="dropdown">
         <option value="" selected disabled hidden>Search by</option>
-        <option v-for="option in searchOptions" :value="option">{{ option }}</option>
+        <option v-for="option in searchOptions" :value="option" :key="option">{{ option }}</option>
       </select>
     </div>
 
     <div class="right">
       <select v-model="sortChose" name="sort-by" class="dropdown">
         <option value="" selected disabled hidden>Sort by</option>
-        <option v-for="option in sortOptions" :value="option">{{ option }}</option>
+        <option v-for="option in sortOptions" :value="option" :key="option">{{ option }}</option>
       </select>
 
       <button class="sort-btn">

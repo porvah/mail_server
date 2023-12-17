@@ -7,6 +7,7 @@ import Contacts from '../views/Contacts.vue'
 import Folders from '../views/Folders.vue'
 import FolderDetails from '../views/FolderDetails.vue'
 import EmailDetails from '../views/EmailDetails.vue'
+import store from '../../store'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -25,53 +26,83 @@ const router = createRouter({
       path: '/home',
       name: 'home',
       component: Home,
+      meta: {
+        requiredAuth: true
+      },
       children: [
         {
           path: 'inbox',
           name: 'inbox',
-          component: Inbox
+          component: Inbox,
+          meta: {
+            requiredAuth: true
+          }
         },
         {
           path: 'inbox/:id',
           name: 'email-details',
           component: EmailDetails,
-          props: true
+          props: true,
+          meta: {
+            requiredAuth: true
+          }
         },
         {
           path: 'sent',
           // name: 'inbox',
-          component: Inbox
+          component: Inbox,
+          meta: {
+            requiredAuth: true
+          }
         },
         {
           path: 'contacts',
           name: 'contacts',
-          component: Contacts
+          component: Contacts,
+          meta: {
+            requiredAuth: true
+          }
         },
         {
           path: 'draft',
           // name: 'inbox',
-          component: Inbox
+          component: Inbox,
+          meta: {
+            requiredAuth: true
+          }
         },
         {
           path: 'starred',
           // name: 'inbox',
-          component: Inbox
+          component: Inbox,
+          meta: {
+            requiredAuth: true
+          }
         },
         {
           path: 'folders',
           name: 'folders',
-          component: Folders
+          component: Folders,
+          meta: {
+            requiredAuth: true
+          }
         },
         {
           path: 'folders/:name',
           name: 'folder-details',
           component: FolderDetails,
-          props: true
+          props: true,
+          meta: {
+            requiredAuth: true
+          }
         },
         {
           path: 'trash',
           // name: 'inbox',
-          component: Inbox
+          component: Inbox,
+          meta: {
+            requiredAuth: true
+          }
         }
       ]
     },
@@ -80,6 +111,18 @@ const router = createRouter({
       redirect: '/login'
     }
   ]
+})
+
+router.beforeEach((to, from, next) => {
+  if (to.matched.some((record) => record.meta.requiredAuth)) {
+    if (store.getters.token == null) {
+      next({ name: 'login' })
+    } else {
+      next()
+    }
+  } else {
+    next()
+  }
 })
 
 export default router

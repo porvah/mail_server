@@ -1,7 +1,7 @@
 <template>
   <h2 id="welcome">Welcome to Mail Pulse</h2>
 
-  <form @submit.prevent>
+  <form @submit.prevent="signup">
     <h2 id="signup">Sign Up</h2>
 
     <label>Name:</label>
@@ -13,7 +13,7 @@
     <label>Password:</label>
     <input v-model="password" type="password" name="password" required />
 
-    <button @click="signup">Sign Up</button>
+    <button type="submit">Sign Up</button>
 
     <p>Already have an account? <span @click="goToLogin">Login</span></p>
   </form>

@@ -6,7 +6,6 @@ const state = {
 
 const mutations = {
   openComposeDialog(state) {
-    console.log('here')
     state.isComposeDialogOpen = true
     state.isSettingsDialogOpen = false
     state.isProfileDialogOpen = false

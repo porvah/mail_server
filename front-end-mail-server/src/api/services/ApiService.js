@@ -21,8 +21,6 @@ class ApiService {
       body: data ? JSON.stringify(data) : null
     }
 
-    console.log(options)
-
     const response = await fetch(url, options)
     const resData = await response.json()
     return resData
