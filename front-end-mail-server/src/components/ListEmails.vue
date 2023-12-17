@@ -1,6 +1,6 @@
 <template>
   <div id="list-emails"></div>
-  <Email v-for="email in emails" :email="email" />
+  <Email v-for="email in emails" :email="email" :key="email.id" />
 </template>
 
 <script>

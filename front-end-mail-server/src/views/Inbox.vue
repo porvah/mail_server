@@ -21,7 +21,7 @@ export default {
   setup() {
     const searchValue = ref('')
     const filterValue = ref('')
-    const emails = ref([
+    const emails = [
       {
         id: 0,
         sender: 'Ahmed',
@@ -47,7 +47,7 @@ export default {
         description: "We didn't finish anything and the deadline is coming for us!!!",
         date: '12/13/2023 12:16'
       }
-    ])
+    ]
 
     const filterCategory = (email) => {
       switch (filterValue.value) {
@@ -63,9 +63,11 @@ export default {
     }
 
     const filterEmails = computed(() => {
-      return emails.value.filter((e) =>
+      const res = emails.filter((e) =>
         filterCategory(e).toLowerCase().includes(searchValue.value.toLowerCase())
       )
+      console.log(res)
+      return res
     })
 
     return { emails, filterEmails, searchValue, filterValue }
