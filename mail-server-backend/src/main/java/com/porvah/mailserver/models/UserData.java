@@ -1,6 +1,8 @@
 package com.porvah.mailserver.models;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class UserData {
@@ -48,6 +50,10 @@ public class UserData {
 
     public void removeCustomFolder(String folderName){
         folders.remove(folderName);
+    }
+
+    public List<MailFolder> getCustomFolders(){
+        return new ArrayList<MailFolder>(this.folders.values());
     }
 
 }

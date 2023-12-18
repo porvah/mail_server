@@ -6,7 +6,7 @@ import com.porvah.mailserver.interfaces.ROMail;
 import java.util.*;
 
 public class MailFolder {
-    private List<ROMail> mails;
+    private final List<ROMail> mails;
     private PriorityQueue<ROMail> mailsWithsPriority;
 
     public MailFolder(){

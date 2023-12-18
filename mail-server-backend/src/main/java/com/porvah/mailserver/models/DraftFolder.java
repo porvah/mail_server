@@ -20,11 +20,7 @@ public class DraftFolder{
         this.mailsWithsPriority.add(mail);
     }
     public void removeMail(int id){
-        for(Mail mail : this.mails){
-            if(mail.getId() == id){
-                this.mails.remove(mail);
-            }
-        }
+        this.mails.removeIf(mail -> mail.getId() == id);
         this.mailsWithsPriority = removeFromQ(this.mailsWithsPriority, id);
     }
 
