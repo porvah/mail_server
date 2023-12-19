@@ -17,7 +17,7 @@ import java.util.Map;
 public class MailController {
 
     final VerificationProxy verificationProxy = new VerificationProxy();
-
+    final MailStrategy strategy = new MailStrategy();
     @PostMapping("/signup")
     public Boolean signUp(@RequestBody Map<String, Object> body){
 
@@ -51,27 +51,35 @@ public class MailController {
     }
     @GetMapping("/inbox/")
     public List<ROMail> getInbox(@RequestParam("token") int token, @RequestParam("sort") int sort){
-        MailStrategy strategy = new MailStrategy();
         return strategy.getInbox(token, SortType.values()[sort]);
     }
     @GetMapping("/trash/")
     public List<ROMail> getTrash(@RequestParam("token") int token, @RequestParam("sort") int sort){
-        MailStrategy strategy = new MailStrategy();
         return strategy.getTrash(token, SortType.values()[sort]);
     }
     @GetMapping("/sent/")
     public List<ROMail> getSent(@RequestParam("token") int token, @RequestParam("sort") int sort){
-        MailStrategy strategy = new MailStrategy();
         return strategy.getSent(token, SortType.values()[sort]);
     }
     @GetMapping("/draft/")
     public List<Mail> getDraft(@RequestParam("token") int token, @RequestParam("sort") int sort){
-        MailStrategy strategy = new MailStrategy();
         return strategy.getDraft(token, SortType.values()[sort]);
     }
-    @GetMapping("/draft/")
-    public List<MailFolder> getMailFolders(@RequestParam("token") int token, @RequestParam("sort") int sort){
-        MailStrategy strategy = new MailStrategy();
+    @GetMapping("/folders/")
+    public List<MailFolder> getMailFolders(@RequestParam("token") int token){
         return strategy.getFolders(token);
+    }
+    @GetMapping("/folderemails/")
+    public List<ROMail> getFolderEmails(@RequestParam("token") int token, @RequestParam("foldername") String foldername, @RequestParam("sort") int sort){
+        return strategy.getFolderEmails(token, foldername, sort);
+    }
+    @PostMapping("/sendemail/0")
+    public void sendEmail(@RequestBody Map<String, Object> body){
+        int token = (int) body.get("token");
+        List<String> receiverEmails = (List<String>)body.get("receiver");
+        String subject = (String) body.get("subject");
+        String discription = (String) body.get("body");
+        int priority = (int) body.get("priority");
+        strategy.sendEmail(token,receiverEmails,subject,discription,priority);
     }
 }

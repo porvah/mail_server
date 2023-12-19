@@ -16,21 +16,22 @@ public class Mail implements ROMail{
     private String body;
     private Date sentDate;
     private int priority;
-    private List<File> attachments;
+//    private List<File> attachments;
     public Mail(User sender, User receiver){
         this.sender = sender;
         this.receiver = receiver;
-        this.attachments = new ArrayList<>();
+//        this.attachments = new ArrayList<>();
         this.id = counter;
         counter++;
     }
-    public Mail(User sender, User receiver, String subject, String body, Date sentDate, List<File> attachments, int priority){
+    public Mail(User sender, User receiver, String subject, String body, Date sentDate, int priority){
+//                List<File> attachments, int priority){
         this.sender = sender;
         this.receiver = receiver;
         this.subject = subject;
         this.body = body;
         this.sentDate = sentDate;
-        this.attachments = attachments;
+//        this.attachments = attachments;
         this.priority = priority;
         this.id = counter;
         counter++;
@@ -74,15 +75,15 @@ public class Mail implements ROMail{
     public void setSentDate(Date date){
         this.sentDate = date;
     }
-    public List<File> getAttachments(){
-        return this.attachments;
-    }
-    public void setAttachments(List<File> files){
-        this.attachments = files;
-    }
+//    public List<File> getAttachments(){
+//        return this.attachments;
+//    }
+//    public void setAttachments(List<File> files){
+//        this.attachments = files;
+//    }
     public ROMail submit(){
-        ROMail submitted = new Mail(this.sender, this.receiver, this.subject, this.body, this.sentDate,
-                this.attachments, this.priority);
+        ROMail submitted = new Mail(this.sender, this.receiver, this.subject, this.body, this.sentDate, this.priority);
+//                this.attachments, this.priority);
         return submitted;
     }
 }

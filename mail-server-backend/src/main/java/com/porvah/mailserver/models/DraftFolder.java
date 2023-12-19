@@ -7,14 +7,17 @@ import java.util.*;
 
 public class DraftFolder{
     private List<Mail> mails;
-
+    private String name;
     private PriorityQueue<Mail> mailsWithsPriority;
 
-    public DraftFolder(){
+    public DraftFolder(String name){
+        this.name = name;
         this.mails = new ArrayList<Mail>();
         this.mailsWithsPriority = new PriorityQueue<Mail>(Comparator.comparingInt(Mail::getPriority).reversed());
     }
-
+    String getName(){
+        return this.name;
+    }
     public void addMail(Mail mail){
         this.mails.add(mail);
         this.mailsWithsPriority.add(mail);

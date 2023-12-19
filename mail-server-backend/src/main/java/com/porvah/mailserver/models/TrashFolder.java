@@ -6,11 +6,14 @@ import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 public class TrashFolder extends MailFolder{
+    private String name;
     private List<ROMail> mails;
+    public TrashFolder(String name){
+        super(name);
+    }
     @Override
     public void addMail(ROMail mail) {
         this.removeOldMails();

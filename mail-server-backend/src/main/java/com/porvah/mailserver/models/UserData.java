@@ -15,10 +15,10 @@ public class UserData {
     private Map<String, MailFolder> folders;
 
     public UserData() {
-        this.inbox = new MailFolder();
-        this.sent = new MailFolder();
-        this.trash = new TrashFolder();
-        this.draft = new DraftFolder();
+        this.inbox = new MailFolder("inbox");
+        this.sent = new MailFolder("sent");
+        this.trash = new TrashFolder("trash");
+        this.draft = new DraftFolder("draft");
 
         this.folders = new HashMap<>();
     }
@@ -45,7 +45,7 @@ public class UserData {
     }
 
     public void addCustomFolder(String folderName){
-        folders.put(folderName, new MailFolder());
+        folders.put(folderName, new MailFolder(folderName));
     }
 
     public void removeCustomFolder(String folderName){
