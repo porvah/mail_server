@@ -14,7 +14,7 @@ public class UserData {
 
     private Map<String, MailFolder> customFolders;
 
-    ArrayList<Contact> contacts;
+    private Map<String, Contact> contacts; // name, contact
 
     public UserData() {
         this.inbox = new MailFolder("inbox");
@@ -24,7 +24,7 @@ public class UserData {
 
         this.customFolders = new HashMap<>();
 
-        this.contacts = new ArrayList<>();
+        this.contacts = new HashMap<>();
     }
 
 
@@ -60,7 +60,7 @@ public class UserData {
         return new ArrayList<MailFolder>(this.customFolders.values());
     }
 
-    public ArrayList<Contact> getContacts() {
+    public Map<String, Contact> getContacts() {
         return contacts;
     }
 }
