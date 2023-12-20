@@ -45,14 +45,10 @@ public class MailController {
     }
     @GetMapping("/getuser/{id}")
     public User getLoggedUser(@PathVariable int id) {
-        User user = UserBase.getInstance().getLoggedUser(id);
-        System.out.println(user.getEmail());
-        return user;
+        return UserBase.getInstance().getLoggedUser(id);
     }
     @GetMapping("/inbox/")
     public List<ROMail> getInbox(@RequestParam("token") int token, @RequestParam("sort") int sort){
-        System.out.println(token);
-        System.out.println(sort);
         return strategy.getInbox(token, SortType.values()[sort]);
     }
     @GetMapping("/trash/")

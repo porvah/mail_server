@@ -19,7 +19,6 @@ public class VerificationProxy {
     }
     public int loginUser(String email, String password) {
         if(!userBase.containsUser(email)){
-            System.out.println("Not found");
             throw new RuntimeException("Could not find user with email: " + email + " in UserBase");
         }
         User user = userBase.getUser(email);
@@ -27,7 +26,6 @@ public class VerificationProxy {
             userBase.addLoggedUser(curId, user);
             return curId++;
         } else {
-            System.out.println("here");
             throw new RuntimeException("Wrong password");
         }
     }
