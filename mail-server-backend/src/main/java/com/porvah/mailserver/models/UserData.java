@@ -7,12 +7,14 @@ import java.util.Map;
 
 public class UserData {
 
-        private MailFolder inbox;
-        private MailFolder sent;
-        private TrashFolder trash;
-        private DraftFolder draft;
+    private MailFolder inbox;
+    private MailFolder sent;
+    private TrashFolder trash;
+    private DraftFolder draft;
 
-        private Map<String, MailFolder> folders;
+    private Map<String, MailFolder> customFolders;
+
+    ArrayList<Contact> contacts;
 
     public UserData() {
         this.inbox = new MailFolder("inbox");
@@ -20,7 +22,9 @@ public class UserData {
         this.trash = new TrashFolder("trash");
         this.draft = new DraftFolder("draft");
 
-        this.folders = new HashMap<>();
+        this.customFolders = new HashMap<>();
+
+        this.contacts = new ArrayList<>();
     }
 
 
@@ -41,19 +45,19 @@ public class UserData {
     }
 
     public MailFolder getCustomFolder(String folderName){
-        return folders.get(folderName);
+        return customFolders.get(folderName);
     }
 
     public void addCustomFolder(String folderName){
-        folders.put(folderName, new MailFolder(folderName));
+        customFolders.put(folderName, new MailFolder(folderName));
     }
 
     public void removeCustomFolder(String folderName){
-        folders.remove(folderName);
+        customFolders.remove(folderName);
     }
 
     public List<MailFolder> getCustomFolders(){
-        return new ArrayList<MailFolder>(this.folders.values());
+        return new ArrayList<MailFolder>(this.customFolders.values());
     }
 
 }

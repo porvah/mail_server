@@ -82,4 +82,7 @@ public class MailController {
         int priority = (int) body.get("priority");
         strategy.sendEmail(token,receiverEmails,subject,discription,priority);
     }
+
+
+
 }
