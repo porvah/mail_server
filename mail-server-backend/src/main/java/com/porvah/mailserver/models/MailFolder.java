@@ -53,4 +53,8 @@ public class MailFolder {
         }
         throw new RuntimeException("mail not found");
     }
+
+    public List<ROMail> getMails() {
+        return mails;
+    }
 }

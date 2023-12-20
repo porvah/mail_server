@@ -12,8 +12,8 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/")
-@CrossOrigin()
+@RequestMapping()
+@CrossOrigin("http://localhost:8080")
 public class MailController {
 
     final VerificationProxy verificationProxy = new VerificationProxy();

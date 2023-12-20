@@ -7,12 +7,12 @@ import java.util.Map;
 
 public class UserData {
 
-    private MailFolder inbox;
-    private MailFolder sent;
-    private TrashFolder trash;
-    private DraftFolder draft;
+        private MailFolder inbox;
+        private MailFolder sent;
+        private TrashFolder trash;
+        private DraftFolder draft;
 
-    private Map<String, MailFolder> folders;
+        private Map<String, MailFolder> folders;
 
     public UserData() {
         this.inbox = new MailFolder("inbox");
