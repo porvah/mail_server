@@ -60,4 +60,7 @@ public class UserData {
         return new ArrayList<MailFolder>(this.customFolders.values());
     }
 
+    public ArrayList<Contact> getContacts() {
+        return contacts;
+    }
 }
