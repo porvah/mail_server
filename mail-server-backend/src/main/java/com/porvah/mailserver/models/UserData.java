@@ -1,5 +1,7 @@
 package com.porvah.mailserver.models;
 
+import com.porvah.mailserver.models.ContactCommands.ContactCommandInvoker;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -16,6 +18,8 @@ public class UserData {
 
     private Map<String, Contact> contacts; // name, contact
 
+    private final ContactCommandInvoker contactCommandInvoker;
+
     public UserData() {
         this.inbox = new MailFolder("inbox");
         this.sent = new MailFolder("sent");
@@ -25,6 +29,8 @@ public class UserData {
         this.customFolders = new HashMap<>();
 
         this.contacts = new HashMap<>();
+
+        this.contactCommandInvoker = new ContactCommandInvoker(this.contacts);
     }
 
 
