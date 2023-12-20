@@ -1,5 +1,7 @@
 package com.porvah.mailserver.models;
 
+import org.springframework.stereotype.Component;
+
 public class User {
     private String name;
     private String email;
@@ -40,8 +42,6 @@ public class User {
         return userDataId;
     }
 
-    public UserData getUserData(){
-        return UserDataRepository.getInstance().getUserData(userDataId);
-    }
+
 
 }

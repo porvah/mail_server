@@ -51,6 +51,8 @@ public class MailController {
     }
     @GetMapping("/inbox/")
     public List<ROMail> getInbox(@RequestParam("token") int token, @RequestParam("sort") int sort){
+        System.out.println(token);
+        System.out.println(sort);
         return strategy.getInbox(token, SortType.values()[sort]);
     }
     @GetMapping("/trash/")
@@ -73,14 +75,15 @@ public class MailController {
     public List<ROMail> getFolderEmails(@RequestParam("token") int token, @RequestParam("foldername") String foldername, @RequestParam("sort") int sort){
         return strategy.getFolderEmails(token, foldername, sort);
     }
-    @PostMapping("/sendemail/0")
-    public void sendEmail(@RequestBody Map<String, Object> body){
+    @PostMapping("/sendemail")
+    public boolean sendEmail(@RequestBody Map<String, Object> body){
         int token = (int) body.get("token");
         List<String> receiverEmails = (List<String>)body.get("receiver");
         String subject = (String) body.get("subject");
         String discription = (String) body.get("body");
         int priority = (int) body.get("priority");
         strategy.sendEmail(token,receiverEmails,subject,discription,priority);
+        return true;
     }
 
 

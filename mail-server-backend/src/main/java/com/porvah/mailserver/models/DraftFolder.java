@@ -2,6 +2,7 @@ package com.porvah.mailserver.models;
 
 
 import com.porvah.mailserver.enums.SortType;
+import com.porvah.mailserver.interfaces.ROMail;
 
 import java.util.*;
 
@@ -41,8 +42,14 @@ public class DraftFolder{
     public List<Mail> getMails(SortType sort){
         List<Mail> result = new ArrayList<Mail>(this.mails);
         if(sort == SortType.DESCEND) Collections.reverse(result);
-        else if(sort == SortType.PRIORITY) return this.mailsWithsPriority.stream().toList();
-        return  result;
+        else if(sort == SortType.PRIORITY) return this.QtoList(this.mailsWithsPriority);
+        return result;
+    }
+    private List<Mail> QtoList(PriorityQueue<Mail> Q){
+        PriorityQueue<Mail> clone = new PriorityQueue<>(Q);
+        List<Mail> newList = new ArrayList<Mail>();
+        while(!clone.isEmpty()) newList.add(clone.poll());
+        return newList;
     }
     public Mail getMail(int id){
         for(Mail mail : this.mails){

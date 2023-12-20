@@ -42,12 +42,12 @@ public class MailStrategy {
     public void sendEmail(int token, List<String> receivers, String subject, String body, int priority){
         UserData senderData = this.userFacade.getUserDataByToken(token);
         User sender = UserBase.getInstance().getLoggedUser(token);
-        for(String receiver : receivers){
-            UserData receiverData = this.userFacade.getUserDataByEmail(receiver);
-            User receiverUser = UserBase.getInstance().getUser(receiver);
-            Mail newEmail = new Mail(sender, receiverUser, subject, body, new Date(), priority);
+        List<UserData> receiversData = this.userFacade.getUserDataByEmail(receivers);
+        for(int i = 0; i < receiversData.size(); i++){
+            User receiverUser = UserBase.getInstance().getUser(receivers.get(i));
+            Mail newEmail = new Mail(sender.getEmail(), receiverUser.getEmail(), subject, body, new Date(), priority);
             senderData.getSent().addMail(newEmail.submit());
-            receiverData.getInbox().addMail(newEmail.submit());
+            receiversData.get(i).getInbox().addMail(newEmail.submit());
         }
     }
 }

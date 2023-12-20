@@ -13,7 +13,7 @@ public class MailFolder {
     public MailFolder(String name){
         this.name = name;
         this.mails = new ArrayList<ROMail>();
-        this.mailsWithsPriority = new PriorityQueue<ROMail>(Comparator.comparingInt(ROMail::getPriority).reversed());
+        this.mailsWithsPriority = new PriorityQueue<ROMail>((Comparator.comparingInt(ROMail::getPriority)).reversed());
     }
     String getName(){
         return this.name;
@@ -34,8 +34,14 @@ public class MailFolder {
     public List<ROMail> getMails(SortType sort){
         List<ROMail> result = new ArrayList<ROMail>(this.mails);
         if(sort == SortType.DESCEND) Collections.reverse(result);
-        else if(sort == SortType.PRIORITY) return this.mailsWithsPriority.stream().toList();
+        else if(sort == SortType.PRIORITY) return this.QtoList(this.mailsWithsPriority);
         return result;
+    }
+    private List<ROMail> QtoList(PriorityQueue<ROMail> Q){
+        PriorityQueue<ROMail> clone = new PriorityQueue<>(Q);
+        List<ROMail> newList = new ArrayList<ROMail>();
+        while(!clone.isEmpty()) newList.add(clone.poll());
+        return newList;
     }
 
     private PriorityQueue<ROMail> removeFromQ(PriorityQueue<ROMail> Q, int id){

@@ -1,5 +1,6 @@
 package com.porvah.mailserver.models;
 
+import com.porvah.mailserver.enums.SortType;
 import com.porvah.mailserver.interfaces.ROMail;
 
 import java.time.Duration;
@@ -14,11 +15,6 @@ public class TrashFolder extends MailFolder{
     public TrashFolder(String name){
         super(name);
     }
-    @Override
-    public void addMail(ROMail mail) {
-        this.removeOldMails();
-        this.mails.add(mail);
-    }
     private void removeOldMails(){
         Date currentDate=new Date();
         LocalDateTime localDateTime = LocalDateTime.ofInstant(currentDate.toInstant(), ZoneId.systemDefault());
@@ -28,5 +24,10 @@ public class TrashFolder extends MailFolder{
                 this.removeMail(mail.getId());
             }
         }
+    }
+    @Override
+    public List<ROMail> getMails(SortType sort) {
+        this.removeOldMails();
+        return super.getMails(sort);
     }
 }
