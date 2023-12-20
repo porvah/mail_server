@@ -1,8 +1,8 @@
 <template>
   <div id="email">
-    <span class="material-symbols-outlined"> star </span>
+    <!-- <span class="material-symbols-outlined"> star </span> -->
 
-    <span class="material-symbols-outlined"> label_important </span>
+    <span @click="addFolder" class="material-symbols-outlined"> create_new_folder </span>
 
     <h3 @click="goToEmail" class="sender">@{{ sender }}</h3>
 
@@ -17,14 +17,21 @@
 </template>
 
 <script>
+import { useStore } from 'vuex'
 import { useRouter } from 'vue-router'
 
 export default {
   props: ['email'],
   setup(props) {
+    const store = useStore()
     const router = useRouter()
+
     const goToEmail = () => {
       router.push({ name: 'email-details', params: { id: props.email.id } })
+    }
+
+    const addFolder = () => {
+      store.commit('openFolderDialog')
     }
 
     return {
@@ -32,7 +39,8 @@ export default {
       subject: props.email.subject,
       description: props.email.description,
       date: props.email.date,
-      goToEmail
+      goToEmail,
+      addFolder
     }
   }
 }

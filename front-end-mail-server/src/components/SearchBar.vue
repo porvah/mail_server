@@ -19,6 +19,18 @@
         <option value="" selected disabled hidden>Search by</option>
         <option v-for="option in searchOptions" :value="option" :key="option">{{ option }}</option>
       </select>
+
+      <select
+        :value="priorityValue"
+        @input="$emit('update:priorityValue', $event.target.value)"
+        name="priority-by"
+        class="dropdown"
+      >
+        <option value="" selected disabled hidden>Any Priority</option>
+        <option v-for="option in priorityOptions" :value="option" :key="option">
+          {{ option }}
+        </option>
+      </select>
     </div>
 
     <div class="right">
@@ -39,15 +51,16 @@
 import { ref, computed } from 'vue'
 
 export default {
-  props: ['title', 'searchValue', 'filterValue'],
-  emits: ['update:searchValue', 'update:filterValue'],
+  props: ['title', 'searchValue', 'filterValue', 'priorityValue'],
+  emits: ['update:searchValue', 'update:filterValue', 'update:priorityValue'],
   setup() {
     const searchOptions = computed(() => ['Subject', 'Sender', 'Description', 'Tag'])
+    const priorityOptions = computed(() => ['Any Priority', '1 (Low)', '2', '3', '4', '5 (High)'])
 
     const sortChose = ref('')
     const sortOptions = computed(() => ['Ascending', 'Descending', 'Priority'])
 
-    return { searchOptions, sortChose, sortOptions }
+    return { searchOptions, priorityOptions, sortChose, sortOptions }
   }
 }
 </script>
@@ -85,6 +98,7 @@ export default {
 
 select {
   padding: 5px;
+  margin: 5px;
   border: none;
   border-bottom: 1px solid gray;
   background-color: transparent;

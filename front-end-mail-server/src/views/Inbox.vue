@@ -5,6 +5,8 @@
       @update:searchValue="(val) => (searchValue = val)"
       :filterValue="filterValue"
       @update:filterValue="(val) => (filterValue = val)"
+      :priorityValue="priorityValue"
+      @update:priorityValue="(val) => (priorityValue = val)"
       title="Search mail"
     />
     <ListEmails :emails="filterEmails" />
@@ -21,6 +23,8 @@ export default {
   setup() {
     const searchValue = ref('')
     const filterValue = ref('')
+    const priorityValue = ref('Any Priority')
+
     const emails = [
       {
         id: 0,
@@ -63,14 +67,12 @@ export default {
     }
 
     const filterEmails = computed(() => {
-      const res = emails.filter((e) =>
+      return emails.filter((e) =>
         filterCategory(e).toLowerCase().includes(searchValue.value.toLowerCase())
       )
-      console.log(res)
-      return res
     })
 
-    return { emails, filterEmails, searchValue, filterValue }
+    return { emails, filterEmails, searchValue, filterValue, priorityValue }
   }
 }
 </script>
