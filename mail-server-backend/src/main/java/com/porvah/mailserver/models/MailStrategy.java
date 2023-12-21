@@ -7,31 +7,31 @@ import java.util.Date;
 import java.util.List;
 
 public class MailStrategy {
-    private UserFacade userFacade;
+    private final UserFacade userFacade;
     public MailStrategy(){
         this.userFacade = new UserFacade();
     }
     public List<ROMail> getInbox(int token, SortType sort){
         UserData data = this.userFacade.getUserDataByToken(token);
-        MailFolder inbox = data.getInbox();
+        MailFolder<ROMail> inbox = data.getInbox();
         return inbox.getMails(sort);
     }
     public List<ROMail> getTrash(int token, SortType sort){
         UserData data = this.userFacade.getUserDataByToken(token);
-        MailFolder trash = data.getTrash();
+        MailFolder<ROMail> trash = data.getTrash();
         return trash.getMails(sort);
     }
     public List<ROMail> getSent(int token, SortType sort){
         UserData data = this.userFacade.getUserDataByToken(token);
-        MailFolder sent = data.getSent();
+        MailFolder<ROMail> sent = data.getSent();
         return sent.getMails(sort);
     }
     public List<Mail> getDraft(int token, SortType sort){
         UserData data = this.userFacade.getUserDataByToken(token);
-        DraftFolder draft = data.getDraft();
+        MailFolder<Mail> draft = data.getDraft();
         return draft.getMails(sort);
     }
-    public List<MailFolder> getFolders(int token){
+    public List<MailFolder<ROMail>> getFolders(int token){
         UserData data = this.userFacade.getUserDataByToken(token);
         return data.getCustomFolders();
     }
@@ -49,5 +49,38 @@ public class MailStrategy {
             senderData.getSent().addMail(newEmail.submit());
             receiversData.get(i).getInbox().addMail(newEmail.submit());
         }
+    }
+
+    public void deleteEmail(int token, List<Integer> id) {
+        UserData senderData = this.userFacade.getUserDataByToken(token);
+        this.userFacade.deleteEmailById(senderData, id);
+    }
+
+    public void draftEmail(int token, String subject, String body, int priority) {
+        UserData senderData = this.userFacade.getUserDataByToken(token);
+        User sender = UserBase.getInstance().getLoggedUser(token);
+        Mail newEmail = new Mail(sender.getEmail(), "", subject, body, new Date(), priority);
+        senderData.getDraft().addMail(newEmail);
+    }
+
+    public void updateDraft(int id, int token, String subject, String description, int priority) {
+        UserData senderData = this.userFacade.getUserDataByToken(token);
+        Mail drafted = senderData.getDraft().getMail(id);
+        drafted.setSubject(subject);
+        drafted.setBody(description);
+        drafted.setPriority(priority);
+    }
+
+    public void submitDraft(int id, int token, List<String> receivers, String subject, String body, int priority) {
+        UserData senderData = this.userFacade.getUserDataByToken(token);
+        User sender = UserBase.getInstance().getLoggedUser(token);
+        List<UserData> receiversData = this.userFacade.getUserDataByEmail(receivers);
+        for(int i = 0; i < receiversData.size(); i++){
+            User receiverUser = UserBase.getInstance().getUser(receivers.get(i));
+            Mail newEmail = new Mail(sender.getEmail(), receiverUser.getEmail(), subject, body, new Date(), priority);
+            senderData.getSent().addMail(newEmail.submit());
+            receiversData.get(i).getInbox().addMail(newEmail.submit());
+        }
+        senderData.getDraft().removeMail(id);
     }
 }

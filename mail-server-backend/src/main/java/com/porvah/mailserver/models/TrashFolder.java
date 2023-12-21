@@ -9,19 +9,19 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.*;
 
-public class TrashFolder extends MailFolder{
-    private String name;
-    private List<ROMail> mails;
+public class TrashFolder extends MailFolder<ROMail>{
+    private final List<Date> addDates;
     public TrashFolder(String name){
         super(name);
+        this.addDates = new ArrayList<Date>();
     }
     private void removeOldMails(){
         Date currentDate=new Date();
         LocalDateTime localDateTime = LocalDateTime.ofInstant(currentDate.toInstant(), ZoneId.systemDefault());
-        for(ROMail mail : this.mails){
-            if(Duration.between(LocalDateTime.ofInstant(mail.getSentDate().toInstant(), ZoneId.systemDefault())
+        for(int i = 0; i < this.mails.size(); i++){
+            if(Duration.between(LocalDateTime.ofInstant(this.addDates.get(i).toInstant(), ZoneId.systemDefault())
                     , localDateTime).toDays() > 30){
-                this.removeMail(mail.getId());
+                this.removeMail(this.mails.get(i).getId());
             }
         }
     }
@@ -29,5 +29,21 @@ public class TrashFolder extends MailFolder{
     public List<ROMail> getMails(SortType sort) {
         this.removeOldMails();
         return super.getMails(sort);
+    }
+
+    @Override
+    public void addMail(ROMail mail) {
+        super.addMail(mail);
+        this.addDates.add(new Date());
+    }
+
+    @Override
+    public void removeMail(int id) {
+        super.removeMail(id);
+        for(ROMail mail : this.mails){
+            if(mail.getId() == id){
+                this.addDates.remove(this.mails.indexOf(mail));
+            }
+        }
     }
 }

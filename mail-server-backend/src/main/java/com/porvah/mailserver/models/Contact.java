@@ -7,8 +7,7 @@ public class Contact {
 
     private String name;
 
-    private String phoneNum = "";
-    private ArrayList<String> emails;
+    private final ArrayList<String> emails;
 
     public Contact(String name, String email){
         this.name = name;
@@ -17,17 +16,10 @@ public class Contact {
 
     }
 
-    public Contact(String name, String email, String phoneNum){
-        this(name, email);
-        this.phoneNum = phoneNum;
-    }
 
 
     public String getName() {
         return name;
-    }
-    public String getPhoneNum() {
-        return phoneNum;
     }
 
     public ArrayList<String> getEmail() {
@@ -43,9 +35,6 @@ public class Contact {
             this.emails.remove(emails);
     }
 
-    public void setPhoneNum(String phoneNum) {
-        this.phoneNum = phoneNum;
-    }
 
     public void updateName(String name) {
         this.name = name;
