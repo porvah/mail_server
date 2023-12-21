@@ -58,6 +58,13 @@ export default {
       await getInbox(0)
     })
 
+    store.watch(
+      (state, getters) => getters.inboxMails,
+      () => {
+        emails.value = store.getters.inboxMails
+      }
+    )
+
     return { emails, filterEmails, searchValue, filterValue, priorityValue, getInbox }
   }
 }

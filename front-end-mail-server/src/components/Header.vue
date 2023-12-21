@@ -17,10 +17,12 @@
 
 <script>
 import { useStore } from 'vuex'
+import { useRouter } from 'vue-router'
 
 export default {
   setup() {
     const store = useStore()
+    const router = useRouter()
     const user = store.getters.user
 
     const openProfileDialog = () => {

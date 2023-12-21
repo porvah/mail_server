@@ -58,6 +58,13 @@ export default {
       await getSent(0)
     })
 
+    store.watch(
+      (state, getters) => getters.sentMails,
+      () => {
+        emails.value = store.getters.sentMails
+      }
+    )
+
     return { emails, filterEmails, searchValue, filterValue, priorityValue, getSent }
   }
 }
