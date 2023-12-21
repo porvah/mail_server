@@ -3,7 +3,7 @@
     <h2>New Email</h2>
     <form @submit.prevent="sendEmail">
       <label>From:</label>
-      <input type="text" value="test@test.test" disabled />
+      <input type="text" :value="emailFrom" disabled />
 
       <div id="email-to">
         <label>To:</label>
@@ -66,6 +66,7 @@ export default {
   setup() {
     const store = useStore()
 
+    const emailFrom = store.getters.user.email
     const emailTo = ref('')
     const emailSubject = ref('')
     const emailDescription = ref('')
@@ -94,7 +95,7 @@ export default {
     const createEmail = () => {
       const email = new EmailModel()
       return email
-        .addSender(store.getters.user.email)
+        .addSender(emailFrom)
         .addReceiver(receivers.value)
         .addSubject(emailSubject.value)
         .addBody(emailDescription.value)
@@ -105,10 +106,16 @@ export default {
     const sendEmail = async () => {
       const emailAdapter = new EmailServiceAdapter(api.emailService)
       const email = createEmail()
-      await emailAdapter.sendEmail(email)
+      try {
+        await emailAdapter.sendEmail(email)
+      } catch (e) {
+        console.log(e)
+      }
+      closeCompose()
     }
 
     return {
+      emailFrom,
       emailTo,
       emailSubject,
       emailDescription,
