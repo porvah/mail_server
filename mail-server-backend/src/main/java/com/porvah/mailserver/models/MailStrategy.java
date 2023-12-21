@@ -7,7 +7,7 @@ import java.util.Date;
 import java.util.List;
 
 public class MailStrategy {
-    private UserFacade userFacade;
+    private final UserFacade userFacade;
     public MailStrategy(){
         this.userFacade = new UserFacade();
     }
@@ -54,5 +54,15 @@ public class MailStrategy {
     public void deleteEmail(int token, int id) {
         UserData senderData = this.userFacade.getUserDataByToken(token);
         this.userFacade.deleteEmailById(senderData, id);
+    }
+
+    public void draftEmail(int token, List<String> receivers, String subject, String body, int priority) {
+        UserData senderData = this.userFacade.getUserDataByToken(token);
+        User sender = UserBase.getInstance().getLoggedUser(token);
+        for (String receiver : receivers) {
+            User receiverUser = UserBase.getInstance().getUser(receiver);
+            Mail newEmail = new Mail(sender.getEmail(), receiverUser.getEmail(), subject, body, new Date(), priority);
+            senderData.getDraft().addMail(newEmail);
+        }
     }
 }
