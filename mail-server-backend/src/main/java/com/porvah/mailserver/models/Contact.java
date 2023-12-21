@@ -8,7 +8,7 @@ public class Contact {
     private String name;
 
     private String phoneNum = "";
-    private ArrayList<String> emails;
+    private final ArrayList<String> emails;
 
     public Contact(String name, String email){
         this.name = name;

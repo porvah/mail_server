@@ -1,7 +1,7 @@
 package com.porvah.mailserver.models;
 
+import com.porvah.mailserver.interfaces.ROMail;
 import com.porvah.mailserver.models.ContactCommands.ContactCommandInvoker;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -9,22 +9,22 @@ import java.util.Map;
 
 public class UserData {
 
-    private MailFolder inbox;
-    private MailFolder sent;
-    private TrashFolder trash;
-    private DraftFolder draft;
+    private final MailFolder<ROMail> inbox;
+    private final MailFolder<ROMail> sent;
+    private final TrashFolder trash;
+    private final MailFolder<Mail> draft;
 
-    private Map<String, MailFolder> customFolders;
+    private final Map<String, MailFolder<ROMail>> customFolders;
 
-    private Map<String, Contact> contacts; // name, contact
+    private final Map<String, Contact> contacts; // name, contact
 
     private final ContactCommandInvoker contactCommandInvoker;
 
     public UserData() {
-        this.inbox = new MailFolder("inbox");
-        this.sent = new MailFolder("sent");
+        this.inbox = new MailFolder<ROMail>("inbox");
+        this.sent = new MailFolder<ROMail>("sent");
         this.trash = new TrashFolder("trash");
-        this.draft = new DraftFolder("draft");
+        this.draft = new MailFolder<Mail>("draft");
 
         this.customFolders = new HashMap<>();
 
@@ -34,36 +34,36 @@ public class UserData {
     }
 
 
-    public MailFolder getInbox() {
+    public MailFolder<ROMail> getInbox() {
         return inbox;
     }
 
-    public MailFolder getSent() {
+    public MailFolder<ROMail> getSent() {
         return sent;
     }
 
-    public MailFolder getTrash() {
+    public MailFolder<ROMail> getTrash() {
         return trash;
     }
 
-    public DraftFolder getDraft() {
+    public MailFolder<Mail> getDraft() {
         return draft;
     }
 
-    public MailFolder getCustomFolder(String folderName){
+    public MailFolder<ROMail> getCustomFolder(String folderName){
         return customFolders.get(folderName);
     }
 
     public void addCustomFolder(String folderName){
-        customFolders.put(folderName, new MailFolder(folderName));
+        customFolders.put(folderName, new MailFolder<ROMail>(folderName));
     }
 
     public void removeCustomFolder(String folderName){
         customFolders.remove(folderName);
     }
 
-    public List<MailFolder> getCustomFolders(){
-        return new ArrayList<MailFolder>(this.customFolders.values());
+    public List<MailFolder<ROMail>> getCustomFolders(){
+        return new ArrayList<MailFolder<ROMail>>(this.customFolders.values());
     }
 
     public Map<String, Contact> getContacts() {

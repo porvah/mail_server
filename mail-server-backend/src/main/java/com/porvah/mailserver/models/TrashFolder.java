@@ -9,9 +9,8 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.*;
 
-public class TrashFolder extends MailFolder{
-    private String name;
-    private List<ROMail> mails;
+public class TrashFolder extends MailFolder<ROMail>{
+
     public TrashFolder(String name){
         super(name);
     }

@@ -64,7 +64,7 @@ public class MailController {
         return strategy.getDraft(token, SortType.values()[sort]);
     }
     @GetMapping("/folders/")
-    public List<MailFolder> getMailFolders(@RequestParam("token") int token){
+    public List<MailFolder<ROMail>> getMailFolders(@RequestParam("token") int token){
         return strategy.getFolders(token);
     }
     @GetMapping("/folderemails/")
@@ -84,6 +84,16 @@ public class MailController {
         }catch (Exception e){
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
         }
+    }
+    @DeleteMapping("/deleteemail")
+    public ResponseEntity<?> deleteEmail(@RequestParam("token") int token, @RequestParam("sort") int id){
+        try{
+            strategy.deleteEmail(token, id);
+            return ResponseEntity.ok().body("yes");
+        }catch (Exception e){
+            return ResponseEntity.ok().body("no");
+        }
+
     }
 
 
