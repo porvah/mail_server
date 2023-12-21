@@ -3,7 +3,8 @@ import api from '@/api'
 const state = {
   inboxMails: [],
   sentMails: [],
-  trashMails: []
+  trashMails: [],
+  draftMails: []
 }
 
 const mutations = {
@@ -15,6 +16,9 @@ const mutations = {
   },
   getTrash(state, mails) {
     state.trashMails = mails
+  },
+  getDraft(state, mails) {
+    state.draftMails = mails
   }
 }
 
@@ -33,13 +37,19 @@ const actions = {
     const mails = await api.folder.getTrash(token, sort)
 
     commit('getTrash', mails)
+  },
+  async getDraft({ commit }, { token, sort }) {
+    const mails = await api.folder.getDraft(token, sort)
+
+    commit('getDraft', mails)
   }
 }
 
 const getters = {
   inboxMails: (state) => state.inboxMails,
   sentMails: (state) => state.sentMails,
-  trashMails: (state) => state.trashMails
+  trashMails: (state) => state.trashMails,
+  draftMails: (state) => state.draftMails
 }
 
 export default {
