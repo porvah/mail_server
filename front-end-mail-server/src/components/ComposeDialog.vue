@@ -1,7 +1,7 @@
 <template>
   <dialog open>
     <h2>New Email</h2>
-    <form @submit.prevent>
+    <form @submit.prevent="sendEmail">
       <label>From:</label>
       <input type="text" value="test@test.test" disabled />
 
@@ -12,7 +12,7 @@
           Add
         </button>
       </div>
-      <input type="text" v-model="emailTo" required />
+      <input type="text" v-model="emailTo" />
 
       <div id="receivers">
         <div
@@ -58,6 +58,9 @@
 <script>
 import { computed, ref } from 'vue'
 import { useStore } from 'vuex'
+import EmailModel from '../models/EmailModel'
+import api from '@/api'
+import EmailServiceAdapter from '@/models/EmailServiceAdapter'
 
 export default {
   setup() {
@@ -88,6 +91,23 @@ export default {
       receivers.value = receivers.value.filter((r) => receiver != r)
     }
 
+    const createEmail = () => {
+      const email = new EmailModel()
+      return email
+        .addSender(store.getters.user.email)
+        .addReceiver(receivers.value)
+        .addSubject(emailSubject.value)
+        .addBody(emailDescription.value)
+        .addPriority(Number(priorityChose.value.slice(0, 1)))
+        .build()
+    }
+
+    const sendEmail = async () => {
+      const emailAdapter = new EmailServiceAdapter(api.emailService)
+      const email = createEmail()
+      await emailAdapter.sendEmail(email)
+    }
+
     return {
       emailTo,
       emailSubject,
@@ -97,7 +117,8 @@ export default {
       priorityChoices,
       closeCompose,
       addReceiver,
-      removeReceiver
+      removeReceiver,
+      sendEmail
     }
   }
 }

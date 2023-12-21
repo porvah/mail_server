@@ -1,4 +1,4 @@
-const { default: ApiService } = require('./ApiService')
+import ApiService from './ApiService'
 
 class EmailService {
   static instance
@@ -10,7 +10,7 @@ class EmailService {
     return EmailService.instance
   }
 
-  async sendEmail(token, receiver, subject, body, prioriy) {
+  async sendEmail(token, receiver, subject, body, priority) {
     const service = ApiService.getInstance()
 
     return await service.makeRequest('sendemail', 'POST', {
@@ -18,7 +18,7 @@ class EmailService {
       receiver,
       subject,
       body,
-      prioriy
+      priority
     })
   }
 }

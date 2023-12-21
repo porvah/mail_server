@@ -7,7 +7,11 @@ class EmailServiceAdapter {
 
   async sendEmail(email) {
     const token = store.getters.token
-    const { receiver, subject, body, priority } = email
+    const receiver = email.receiver
+    const subject = email.subject
+    const body = email.body
+    const priority = email.priority
+
     await this.emailService.sendEmail(token, receiver, subject, body, priority)
   }
 }
