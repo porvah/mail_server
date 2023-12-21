@@ -18,10 +18,14 @@ const mutations = {
 
 const actions = {
   async login({ commit }, { email, password }) {
-    const token = await api.auth.login(email, password)
-    const user = await api.auth.getUser(token)
+    try {
+      const token = await api.auth.login(email, password)
+      const user = await api.auth.getUser(token)
 
-    commit('login', { user, token })
+      commit('login', { user, token })
+    } catch (e) {
+      alert(e)
+    }
   },
   async signup({ commit }, { name, email, password }) {
     const token = await api.auth.signup(name, email, password)

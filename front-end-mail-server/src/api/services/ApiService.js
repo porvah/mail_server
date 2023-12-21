@@ -22,8 +22,12 @@ class ApiService {
     }
 
     const response = await fetch(url, options)
-    const resData = await response.json()
-    return resData
+    if (response.ok) {
+      const resData = await response.json()
+      return resData
+    } else {
+      throw 'Error: ' + (await response.text())
+    }
   }
 }
 

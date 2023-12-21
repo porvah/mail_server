@@ -39,7 +39,7 @@
         <option v-for="option in sortOptions" :value="option" :key="option">{{ option }}</option>
       </select>
 
-      <button class="sort-btn">
+      <button @click="$emit('onSort', sortIndex)" class="sort-btn">
         <span class="material-symbols-outlined"> sort </span>
         Sort
       </button>
@@ -52,7 +52,7 @@ import { ref, computed } from 'vue'
 
 export default {
   props: ['title', 'searchValue', 'filterValue', 'priorityValue'],
-  emits: ['update:searchValue', 'update:filterValue', 'update:priorityValue'],
+  emits: ['update:searchValue', 'update:filterValue', 'update:priorityValue', 'onSort'],
   setup() {
     const searchOptions = computed(() => ['Subject', 'Sender', 'Description', 'Tag'])
     const priorityOptions = computed(() => ['Any Priority', '1 (Low)', '2', '3', '4', '5 (High)'])
@@ -60,7 +60,20 @@ export default {
     const sortChose = ref('')
     const sortOptions = computed(() => ['Ascending', 'Descending', 'Priority'])
 
-    return { searchOptions, priorityOptions, sortChose, sortOptions }
+    const sortIndex = computed(() => {
+      switch (sortChose.value) {
+        case 'Ascending':
+          return 0
+        case 'Descending':
+          return 1
+        case 'Priority':
+          return 2
+        default:
+          return 0
+      }
+    })
+
+    return { searchOptions, priorityOptions, sortChose, sortOptions, sortIndex }
   }
 }
 </script>

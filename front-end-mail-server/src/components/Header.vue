@@ -5,8 +5,8 @@
       <p class="title">Mail Pulse</p>
     </div>
     <div class="middle">
-      <span class="material-symbols-outlined"> refresh </span>
-      <p id="user">Registered as ...</p>
+      <span @click="refresh" class="material-symbols-outlined"> refresh </span>
+      <p id="user">{{ user.name }}</p>
     </div>
     <div class="right">
       <span @click="openProfileDialog" class="material-symbols-outlined"> account_circle </span>
@@ -21,6 +21,7 @@ import { useStore } from 'vuex'
 export default {
   setup() {
     const store = useStore()
+    const user = store.getters.user
 
     const openProfileDialog = () => {
       store.commit('openProfileDialog')
@@ -30,7 +31,14 @@ export default {
       store.commit('openSettingsDialog')
     }
 
-    return { openProfileDialog, openSettingsDialog }
+    const refresh = async () => {
+      const token = store.getters.token
+      const sort = 0
+      await store.dispatch('getInbox', { token, sort })
+      await store.dispatch('getSent', { token, sort })
+    }
+
+    return { user, openProfileDialog, openSettingsDialog, refresh }
   }
 }
 </script>

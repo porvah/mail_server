@@ -1,5 +1,5 @@
 <template>
-  <div id="inbox">
+  <div id="sent">
     <SearchBar
       :searchValue="searchValue"
       @update:searchValue="(val) => (searchValue = val)"
@@ -7,7 +7,7 @@
       @update:filterValue="(val) => (filterValue = val)"
       :priorityValue="priorityValue"
       @update:priorityValue="(val) => (priorityValue = val)"
-      @onSort="getInbox"
+      @onSort="getSent"
       title="Search mail"
     />
     <ListEmails :emails="filterEmails" />
@@ -49,22 +49,22 @@ export default {
       )
     })
 
-    const getInbox = async (sort) => {
-      await store.dispatch('getInbox', { token: store.getters.token, sort: sort })
-      emails.value = store.getters.inboxMails
+    const getSent = async (sort) => {
+      await store.dispatch('getSent', { token: store.getters.token, sort: sort })
+      emails.value = store.getters.sentMails
     }
 
     onMounted(async () => {
-      await getInbox(0)
+      await getSent(0)
     })
 
-    return { emails, filterEmails, searchValue, filterValue, priorityValue, getInbox }
+    return { emails, filterEmails, searchValue, filterValue, priorityValue, getSent }
   }
 }
 </script>
 
 <style scoped>
-#inbox {
+#sent {
   flex: 0.8;
   overflow-x: hidden;
   height: 90vh;

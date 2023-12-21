@@ -8,9 +8,9 @@
 
     <h4 @click="goToEmail" class="subject">{{ subject }}:</h4>
 
-    <p @click="goToEmail" class="description">{{ description }}</p>
+    <p @click="goToEmail" class="description">{{ body }}</p>
 
-    <div class="date">{{ date }}</div>
+    <div class="date">{{ sentDate }}</div>
 
     <span class="material-symbols-outlined delete"> delete </span>
   </div>
@@ -36,9 +36,10 @@ export default {
 
     return {
       sender: props.email.sender,
+      receiver: props.email.receiver,
       subject: props.email.subject,
-      description: props.email.description,
-      date: props.email.date,
+      body: props.email.body,
+      sentDate: props.email.sentDate,
       goToEmail,
       addFolder
     }

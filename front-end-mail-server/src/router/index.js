@@ -7,6 +7,7 @@ import Contacts from '../views/Contacts.vue'
 import Folders from '../views/Folders.vue'
 import FolderDetails from '../views/FolderDetails.vue'
 import EmailDetails from '../views/EmailDetails.vue'
+import Sent from '../views/Sent.vue'
 import store from '../store'
 
 const router = createRouter({
@@ -49,8 +50,8 @@ const router = createRouter({
         },
         {
           path: 'sent',
-          // name: 'inbox',
-          component: Inbox,
+          name: 'sent',
+          component: Sent,
           meta: {
             requiredAuth: true
           }
