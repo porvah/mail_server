@@ -12,13 +12,14 @@
 
     <div class="date">{{ sentDate }}</div>
 
-    <span class="material-symbols-outlined delete"> delete </span>
+    <span @click="deleteEmail" class="material-symbols-outlined delete"> delete </span>
   </div>
 </template>
 
 <script>
 import { useStore } from 'vuex'
 import { useRouter } from 'vue-router'
+import api from '@/api'
 
 export default {
   props: ['email'],
@@ -34,6 +35,11 @@ export default {
       store.commit('openFolderDialog')
     }
 
+    const deleteEmail = async () => {
+      const emailService = api.emailService
+      await emailService.deleteEmail(store.getters.token, [props.email.id])
+    }
+
     return {
       sender: props.email.sender,
       receiver: props.email.receiver,
@@ -41,7 +47,8 @@ export default {
       body: props.email.body,
       sentDate: props.email.sentDate,
       goToEmail,
-      addFolder
+      addFolder,
+      deleteEmail
     }
   }
 }

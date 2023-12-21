@@ -21,6 +21,15 @@ class EmailService {
       priority
     })
   }
+
+  async deleteEmail(token, id) {
+    const service = ApiService.getInstance()
+
+    return await service.makeRequest('delete', 'DELETE', {
+      token,
+      id
+    })
+  }
 }
 
 export default EmailService
