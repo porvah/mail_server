@@ -53,6 +53,6 @@ public class MailStrategy {
 
     public void deleteEmail(int token, int id) {
         UserData senderData = this.userFacade.getUserDataByToken(token);
-
+        this.userFacade.deleteEmailById(senderData, id);
     }
 }

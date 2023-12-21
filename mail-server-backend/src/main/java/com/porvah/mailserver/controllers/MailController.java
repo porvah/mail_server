@@ -13,7 +13,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping()
-@CrossOrigin("http://localhost:8080")
+@CrossOrigin()
 public class MailController {
 
     final VerificationProxy verificationProxy = new VerificationProxy();
@@ -77,21 +77,21 @@ public class MailController {
             int token = (int) body.get("token");
             List<String> receiverEmails = (List<String>) body.get("receiver");
             String subject = (String) body.get("subject");
-            String discription = (String) body.get("body");
+            String description = (String) body.get("body");
             int priority = (int) body.get("priority");
-            strategy.sendEmail(token, receiverEmails, subject, discription, priority);
+            strategy.sendEmail(token, receiverEmails, subject, description, priority);
             return ResponseEntity.ok().body("Email Sent Successfully");
         }catch (Exception e){
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
         }
     }
-    @DeleteMapping("/deleteemail")
-    public ResponseEntity<?> deleteEmail(@RequestParam("token") int token, @RequestParam("sort") int id){
+    @DeleteMapping("/delete")
+    public ResponseEntity<?> deleteEmail(@RequestParam("token") int token, @RequestParam("id") int id){
         try{
             strategy.deleteEmail(token, id);
-            return ResponseEntity.ok().body("yes");
+            return ResponseEntity.ok().body("Email deleted successfully");
         }catch (Exception e){
-            return ResponseEntity.ok().body("no");
+            return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body("Unexpected error");
         }
 
     }

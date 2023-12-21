@@ -51,6 +51,14 @@ public class MailFolder<T extends ROMail> {
         }
         return result;
     }
+    public boolean contains(int id){
+        try{
+            this.getMail(id);
+            return true;
+        } catch (Exception e){
+            return false;
+        }
+    }
     public T getMail(int id){
         for(T mail : this.mails){
             if(mail.getId() == id){
