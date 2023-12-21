@@ -101,16 +101,42 @@ public class MailController {
     public ResponseEntity<?> draftEmail(@RequestBody Map<String, Object> body){
         try {
             int token = (int) body.get("token");
-            List<String> receiverEmails = (List<String>) body.get("receiver");
             String subject = (String) body.get("subject");
             String description = (String) body.get("body");
             int priority = (int) body.get("priority");
-            strategy.draftEmail(token, receiverEmails, subject, description, priority);
+            strategy.draftEmail(token, subject, description, priority);
             return ResponseEntity.ok().body("Email drafted successfully");
         }catch (Exception e){
             return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body("Unexpected error");
         }
     }
-
-
+    @PutMapping("updatedraft")
+    public ResponseEntity<?> updateDraft(@RequestBody Map<String, Object> body){
+        try {
+            int id = (int) body.get("id");
+            int token = (int) body.get("token");
+            String subject = (String) body.get("subject");
+            String description = (String) body.get("body");
+            int priority = (int) body.get("priority");
+            strategy.updateDraft(id, token, subject, description, priority);
+            return ResponseEntity.ok().body("Email updated successfully");
+        }catch (Exception e){
+            return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body("Unexpected error");
+        }
+    }
+    @PostMapping("submitdraft")
+    public ResponseEntity<?> submitDraft(@RequestBody Map<String, Object> body){
+        try {
+            int id = (int) body.get("id");
+            int token = (int) body.get("token");
+            String subject = (String) body.get("subject");
+            List<String> receiverEmails = (List<String>) body.get("receiver");
+            String description = (String) body.get("body");
+            int priority = (int) body.get("priority");
+            strategy.submitDraft(id, token, receiverEmails,subject, description, priority);
+            return ResponseEntity.ok().body("Drafted Email submitted successfully");
+        }catch (Exception e){
+            return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body("Unexpected error");
+        }
+    }
 }

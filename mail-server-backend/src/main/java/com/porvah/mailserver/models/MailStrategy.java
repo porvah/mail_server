@@ -56,13 +56,31 @@ public class MailStrategy {
         this.userFacade.deleteEmailById(senderData, id);
     }
 
-    public void draftEmail(int token, List<String> receivers, String subject, String body, int priority) {
+    public void draftEmail(int token, String subject, String body, int priority) {
         UserData senderData = this.userFacade.getUserDataByToken(token);
         User sender = UserBase.getInstance().getLoggedUser(token);
-        for (String receiver : receivers) {
-            User receiverUser = UserBase.getInstance().getUser(receiver);
+        Mail newEmail = new Mail(sender.getEmail(), "", subject, body, new Date(), priority);
+        senderData.getDraft().addMail(newEmail);
+    }
+
+    public void updateDraft(int id, int token, String subject, String description, int priority) {
+        UserData senderData = this.userFacade.getUserDataByToken(token);
+        Mail drafted = senderData.getDraft().getMail(id);
+        drafted.setSubject(subject);
+        drafted.setBody(description);
+        drafted.setPriority(priority);
+    }
+
+    public void submitDraft(int id, int token, List<String> receivers, String subject, String body, int priority) {
+        UserData senderData = this.userFacade.getUserDataByToken(token);
+        User sender = UserBase.getInstance().getLoggedUser(token);
+        List<UserData> receiversData = this.userFacade.getUserDataByEmail(receivers);
+        for(int i = 0; i < receiversData.size(); i++){
+            User receiverUser = UserBase.getInstance().getUser(receivers.get(i));
             Mail newEmail = new Mail(sender.getEmail(), receiverUser.getEmail(), subject, body, new Date(), priority);
-            senderData.getDraft().addMail(newEmail);
+            senderData.getSent().addMail(newEmail.submit());
+            receiversData.get(i).getInbox().addMail(newEmail.submit());
         }
+        senderData.getDraft().removeMail(id);
     }
 }
