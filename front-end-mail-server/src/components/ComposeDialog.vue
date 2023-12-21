@@ -1,7 +1,7 @@
 <template>
   <dialog open>
     <h2>New Email</h2>
-    <form @submit.prevent="sendEmail">
+    <form action="#" @submit.prevent="">
       <label>From:</label>
       <input type="text" :value="emailFrom" disabled />
 
@@ -46,7 +46,12 @@
           Cancel
         </button>
 
-        <button type="submit" id="send-btn">
+        <button type="submit" @click="draftEmail" id="draft-btn">
+          <span class="material-symbols-outlined"> edit_document </span>
+          Draft
+        </button>
+
+        <button type="submit" @click="sendEmail" id="send-btn">
           <span class="material-symbols-outlined"> send </span>
           Send
         </button>
@@ -114,6 +119,17 @@ export default {
       closeCompose()
     }
 
+    const draftEmail = async () => {
+      const emailAdapter = new EmailServiceAdapter(api.emailService)
+      const email = createEmail()
+      try {
+        await emailAdapter.draftEmail(email)
+      } catch (e) {
+        console.log(e)
+      }
+      closeCompose()
+    }
+
     return {
       emailFrom,
       emailTo,
@@ -125,7 +141,8 @@ export default {
       closeCompose,
       addReceiver,
       removeReceiver,
-      sendEmail
+      sendEmail,
+      draftEmail
     }
   }
 }
@@ -245,6 +262,11 @@ button {
 #send-btn {
   color: white;
   background: green;
+}
+
+#draft-btn {
+  color: white;
+  background-color: rgb(123, 78, 78);
 }
 
 #cancel-btn {

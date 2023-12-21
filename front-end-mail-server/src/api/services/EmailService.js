@@ -30,6 +30,17 @@ class EmailService {
       id
     })
   }
+
+  async draftEmail(token, subject, body, priority) {
+    const service = ApiService.getInstance()
+
+    return await service.makeRequest('draftemail', 'POST', {
+      token,
+      subject,
+      body,
+      priority
+    })
+  }
 }
 
 export default EmailService
