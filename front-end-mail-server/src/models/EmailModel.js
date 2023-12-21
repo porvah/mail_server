@@ -3,8 +3,8 @@ class EmailModel {
     this.email = {}
   }
 
-  addToken(token) {
-    this.email.token = token
+  addSender(sender) {
+    this.email.sender = sender
     return this
   }
 
