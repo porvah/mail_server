@@ -3,7 +3,7 @@
   <div v-for="email in emails" class="email-div" :key="email">
     <input type="checkbox" v-model="checkedEmails" :value="email" class="email-checkbox" />
 
-    <Email :email="email" class="email-item" :key="email.id" />
+    <Email :email="email" :page="page" class="email-item" :key="email.id" />
   </div>
 </template>
 
@@ -12,7 +12,7 @@ import { ref } from 'vue'
 import Email from '@/components/Email.vue'
 
 export default {
-  props: ['emails'],
+  props: ['emails', 'page'],
   components: { Email },
   setup() {
     const checkedEmails = ref([])

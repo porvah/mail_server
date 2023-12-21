@@ -10,7 +10,7 @@
       @onSort="getDraft"
       title="Search mail"
     />
-    <ListEmails :emails="filterEmails" />
+    <ListEmails :emails="filterEmails" page="draft-detail" />
   </div>
 </template>
 

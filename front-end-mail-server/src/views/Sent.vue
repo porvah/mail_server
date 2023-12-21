@@ -10,7 +10,7 @@
       @onSort="getSent"
       title="Search mail"
     />
-    <ListEmails :emails="filterEmails" />
+    <ListEmails :emails="filterEmails" page="sent-detail" />
   </div>
 </template>
 

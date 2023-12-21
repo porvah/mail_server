@@ -10,7 +10,7 @@
       @onSort="getInbox"
       title="Search mail"
     />
-    <ListEmails :emails="filterEmails" />
+    <ListEmails :emails="filterEmails" page="inbox-detail" />
   </div>
 </template>
 

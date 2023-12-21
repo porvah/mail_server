@@ -10,7 +10,7 @@
       @onSort="getTrash"
       title="Search mail"
     />
-    <ListEmails :emails="filterEmails" />
+    <ListEmails :emails="filterEmails" page="trash-detail" />
   </div>
 </template>
 

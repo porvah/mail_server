@@ -22,13 +22,13 @@ import { useRouter } from 'vue-router'
 import api from '@/api'
 
 export default {
-  props: ['email'],
+  props: ['email', 'page'],
   setup(props) {
     const store = useStore()
     const router = useRouter()
 
     const goToEmail = () => {
-      router.push({ name: 'email-details', params: { id: props.email.id } })
+      router.push({ name: props.page, params: { id: props.email.id } })
     }
 
     const addFolder = () => {

@@ -16,27 +16,43 @@
       <div id="date">{{ email.date }}</div>
     </div>
 
-    <p>{{ email.description }}</p>
+    <p>{{ email.body }}</p>
   </div>
 </template>
 
 <script>
+import { computed } from 'vue'
+import { useRoute } from 'vue-router'
+import { useStore } from 'vuex'
+
 export default {
   props: ['id'],
   setup(props) {
+    const store = useStore()
+    const route = useRoute()
+    const currentRouteName = computed(() => route.name)
     const emailId = props.id
 
-    const email = {
-      id: 0,
-      sender: 'mohamed@test.com',
-      receiver: 'ahmed@test.com',
-      subject: 'Testing email details',
-      description:
-        'Props attributes are written with a dash - to separate words (kebab-case) in the <template> tag, but kebab-case is not legal in JavaScript. So instead we need to write the attribute names as camelCase in JavaScript, and Vue understands this automatically!',
-      date: '12/13/2023 12:16'
-    }
+    const emailList = computed(() => {
+      switch (currentRouteName.value) {
+        case 'inbox-detail':
+          return store.getters.inboxMails
+        case 'sent-detail':
+          return store.getters.sentMails
+        case 'trash-detail':
+          return store.getters.trashMails
+        case 'draft-detail':
+          return store.getters.draftMails
+        default:
+          return store.getters.inboxMails
+      }
+    })
 
-    return { emailId, email }
+    const email = computed(() => {
+      return emailList.value.find((e) => e.id == emailId)
+    })
+
+    return { email }
   }
 }
 </script>
