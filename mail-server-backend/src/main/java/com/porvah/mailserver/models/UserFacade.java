@@ -23,33 +23,36 @@ public class UserFacade {
         return userList;
     }
 
-    public void deleteEmailById(UserData senderData, int id) {
+    public void deleteEmailById(UserData senderData, List<Integer> ids) {
         MailFolder<ROMail> inbox = senderData.getInbox();
         MailFolder<ROMail> trash = senderData.getTrash();
         MailFolder<ROMail> sent = senderData.getSent();
         MailFolder<Mail> draft = senderData.getDraft();
         List<MailFolder<ROMail>> folders = senderData.getCustomFolders();
-        if(inbox.contains(id)){
-            ROMail mail = inbox.getMail(id);
-            inbox.removeMail(id);
-            trash.addMail(mail);
-        }else if(trash.contains(id)){
-            trash.removeMail(id);
-        }else if(sent.contains(id)){
-            ROMail mail = sent.getMail(id);
-            sent.removeMail(id);
-            trash.addMail(mail);
-        }else if(draft.contains(id)){
-            draft.removeMail(id);
-        }else{
-            for(MailFolder<ROMail> folder : folders){
-                if(folder.contains(id)) {
-                    ROMail mail = folder.getMail(id);
-                    folder.removeMail(id);
-                    trash.addMail(mail);
-                    break;
+        for(Integer id : ids){
+            if(inbox.contains(id)){
+                ROMail mail = inbox.getMail(id);
+                inbox.removeMail(id);
+                trash.addMail(mail);
+            }else if(trash.contains(id)){
+                trash.removeMail(id);
+            }else if(sent.contains(id)){
+                ROMail mail = sent.getMail(id);
+                sent.removeMail(id);
+                trash.addMail(mail);
+            }else if(draft.contains(id)){
+                draft.removeMail(id);
+            }else{
+                for(MailFolder<ROMail> folder : folders){
+                    if(folder.contains(id)) {
+                        ROMail mail = folder.getMail(id);
+                        folder.removeMail(id);
+                        trash.addMail(mail);
+                        break;
+                    }
                 }
             }
         }
+
     }
 }

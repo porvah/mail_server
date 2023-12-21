@@ -86,8 +86,10 @@ public class MailController {
         }
     }
     @DeleteMapping("/delete")
-    public ResponseEntity<?> deleteEmail(@RequestParam("token") int token, @RequestParam("id") int id){
+    public ResponseEntity<?> deleteEmail(@RequestBody Map<String, Object> body){
         try{
+            int token = (int) body.get("token");
+            List<Integer> id = (List<Integer>) body.get("id");
             strategy.deleteEmail(token, id);
             return ResponseEntity.ok().body("Email deleted successfully");
         }catch (Exception e){
