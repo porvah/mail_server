@@ -36,4 +36,14 @@ public class TrashFolder extends MailFolder<ROMail>{
         super.addMail(mail);
         this.addDates.add(new Date());
     }
+
+    @Override
+    public void removeMail(int id) {
+        super.removeMail(id);
+        for(ROMail mail : this.mails){
+            if(mail.getId() == id){
+                this.addDates.remove(this.mails.indexOf(mail));
+            }
+        }
+    }
 }
