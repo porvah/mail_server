@@ -17,16 +17,6 @@ public class Mail implements ROMail{
     private Date sentDate;
     private int priority;
     private List<File> attachments;
-    private Mail(String sender, String receiver, String subject, String body, Date sentDate, int priority, int id){
-        this.sender = sender;
-        this.receiver = receiver;
-        this.subject = subject;
-        this.body = body;
-        this.sentDate = sentDate;
-//        this.attachments = attachments;
-        this.priority = priority;
-        this.id = id;
-    }
     public Mail(String sender, String receiver, String subject, String body, Date sentDate, int priority){
 //                List<File> attachments, int priority){
         this.sender = sender;
@@ -85,7 +75,7 @@ public class Mail implements ROMail{
 //        this.attachments = files;
 //    }
     public ROMail submit(){
-        ROMail submitted = new Mail(this.sender, this.receiver, this.subject, this.body, this.sentDate, this.priority, this.id);
+        ROMail submitted = this;
 //                this.attachments, this.priority);
         return submitted;
     }

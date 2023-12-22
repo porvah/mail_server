@@ -3,6 +3,7 @@ package com.porvah.mailserver.models;
 import com.porvah.mailserver.enums.SortType;
 import com.porvah.mailserver.interfaces.ROMail;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -31,13 +32,17 @@ public class MailStrategy {
         MailFolder<Mail> draft = data.getDraft();
         return draft.getMails(sort);
     }
-    public List<MailFolder<ROMail>> getFolders(int token){
-        UserData data = this.userFacade.getUserDataByToken(token);
-        return data.getCustomFolders();
+    public List<String> getFolders(int token){
+        UserData senderData = this.userFacade.getUserDataByToken(token);
+        List<String> folderNames = new ArrayList<String>();
+        for( MailFolder<ROMail> folder : senderData.getCustomFolders()){
+            folderNames.add(folder.getName());
+        }
+        return folderNames;
     }
-    public List<ROMail> getFolderEmails(int token, String name, int sort){
+    public List<ROMail> getFolderEmails(int token, String name, SortType sort){
         UserData data = this.userFacade.getUserDataByToken(token);
-        return data.getCustomFolder(name).getMails(SortType.values()[sort]);
+        return data.getCustomFolder(name).getMails(sort);
     }
     public void sendEmail(int token, List<String> receivers, String subject, String body, int priority){
         UserData senderData = this.userFacade.getUserDataByToken(token);
@@ -53,7 +58,7 @@ public class MailStrategy {
 
     public void deleteEmail(int token, List<Integer> id) {
         UserData senderData = this.userFacade.getUserDataByToken(token);
-        this.userFacade.deleteEmailById(senderData, id);
+        this.userFacade.moveEmailById(senderData, id, senderData.getTrash(), true);
     }
 
     public void draftEmail(int token, String subject, String body, int priority) {
@@ -82,5 +87,17 @@ public class MailStrategy {
             receiversData.get(i).getInbox().addMail(newEmail.submit());
         }
         senderData.getDraft().removeMail(id);
+    }
+
+
+    public void moveMails(int token, List<Integer> ids, String folderName) {
+        UserData senderData = this.userFacade.getUserDataByToken(token);
+        MailFolder<ROMail> folder = senderData.getCustomFolder(folderName);
+        this.userFacade.moveEmailById(senderData, ids, folder, false);
+    }
+
+    public void createFolder(int token, String folderName) {
+        UserData senderData = this.userFacade.getUserDataByToken(token);
+        senderData.addCustomFolder(folderName);
     }
 }

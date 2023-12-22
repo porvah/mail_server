@@ -9,13 +9,12 @@ public class VerificationProxy {
     public VerificationProxy() {
         this.userBase = UserBase.getInstance();
     }
-    public boolean signUpUser(String name, String email, String password) {
+    public void signUpUser(String name, String email, String password) {
         if(userBase.containsUser(email)){
-            return false;
+            throw new RuntimeException("User is already created");
         }
         User user = new User(email, password, name);
         userBase.addUser(user);
-        return true;
     }
     public int loginUser(String email, String password) {
         if(!userBase.containsUser(email)){
