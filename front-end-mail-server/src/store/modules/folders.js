@@ -4,7 +4,8 @@ const state = {
   inboxMails: [],
   sentMails: [],
   trashMails: [],
-  draftMails: []
+  draftMails: [],
+  foldersNames: []
 }
 
 const mutations = {
@@ -19,6 +20,9 @@ const mutations = {
   },
   getDraft(state, mails) {
     state.draftMails = mails
+  },
+  getFolders(state, folders) {
+    state.foldersNames = folders
   }
 }
 
@@ -42,6 +46,11 @@ const actions = {
     const mails = await api.folder.getDraft(token, sort)
 
     commit('getDraft', mails)
+  },
+  async getFolders({ commit }, { token }) {
+    const folders = await api.folder.getFolders(token)
+
+    commit('getFolders', folders)
   }
 }
 
@@ -49,7 +58,8 @@ const getters = {
   inboxMails: (state) => state.inboxMails,
   sentMails: (state) => state.sentMails,
   trashMails: (state) => state.trashMails,
-  draftMails: (state) => state.draftMails
+  draftMails: (state) => state.draftMails,
+  foldersNames: (state) => state.foldersNames
 }
 
 export default {

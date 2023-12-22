@@ -38,6 +38,8 @@ export default {
       const sort = 0
       await store.dispatch('getInbox', { token, sort })
       await store.dispatch('getSent', { token, sort })
+      await store.dispatch('getDraft', { token, sort })
+      await store.dispatch('getTrash', { token, sort })
     }
 
     return { user, openProfileDialog, openSettingsDialog, refresh }

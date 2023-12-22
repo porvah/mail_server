@@ -23,7 +23,7 @@ class AuthService {
 
   async getUser(token) {
     const service = ApiService.getInstance()
-    return await service.makeRequest('getuser/' + token, 'GET')
+    return await service.makeRequest(`getuser?id=${token}`, 'GET')
   }
 }
 
