@@ -6,15 +6,15 @@ import java.util.Map;
 
 public class ContactCommandInvoker {
 
-    final Map<String, Contact> contacts;
+    final Map<Integer, Contact> contacts;
 
-    public ContactCommandInvoker(Map<String, Contact> contacts) {
+    public ContactCommandInvoker(Map<Integer, Contact> contacts) {
         this.contacts = contacts;
     }
 
 
-    public void executeCommand(ContactCommandIF command) {
-        command.execute(this.contacts);
+    public int executeCommand(ContactCommandIF command) {
+        return command.execute(this.contacts);
     }
 
 }
