@@ -42,6 +42,14 @@ class FolderService {
       foldername
     })
   }
+
+  async getFolderEmails(token, sort, foldername) {
+    const service = ApiService.getInstance()
+    return await service.makeRequest(
+      `folderemails?token=${token}&foldername=${foldername}&sort=${sort}`,
+      'GET'
+    )
+  }
 }
 
 export default FolderService
