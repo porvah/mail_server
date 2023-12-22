@@ -2,8 +2,8 @@
   <div id="folders">
     <div id="add-folder">
       <span class="material-symbols-outlined"> folder </span>
-      <input type="text" placeholder="Add new folder" />
-      <button>+ Add folder</button>
+      <input type="text" v-model="folderInput" placeholder="Add new folder" />
+      <button @click="addFolder">+ Add folder</button>
     </div>
 
     <div v-for="item in folders" class="item" :key="item">
@@ -20,18 +20,49 @@
 </template>
 
 <script>
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
+import { useStore } from 'vuex'
+import api from '@/api'
 
 export default {
   setup() {
+    const store = useStore()
     const router = useRouter()
-    const folders = ref(['College', 'Programming', 'Sports', 'Others'])
+    const folders = ref([])
+    const folderInput = ref('')
 
     const goToFolder = (item) => {
       router.push({ name: 'folder-details', params: { name: item } })
     }
-    return { folders, goToFolder }
+
+    const getFolders = async () => {
+      await store.dispatch('getFolders', { token: store.getters.token })
+      folders.value = store.getters.foldersNames
+    }
+
+    const addFolder = async () => {
+      if (folderInput.value == null || folderInput.value.trim().length == 0) return
+
+      await api.folder.createFolder(store.getters.token, folderInput.value)
+
+      await getFolders()
+
+      folderInput.value = ''
+    }
+
+    onMounted(async () => {
+      await getFolders()
+    })
+
+    store.watch(
+      (state, getters) => getters.foldersNames,
+      () => {
+        folders.value = store.getters.foldersNames
+      }
+    )
+
+    return { folders, folderInput, goToFolder, addFolder }
   }
 }
 </script>

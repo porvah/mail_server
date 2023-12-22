@@ -34,6 +34,14 @@ class FolderService {
     const service = ApiService.getInstance()
     return await service.makeRequest(`folders?token=${token}`, 'GET')
   }
+
+  async createFolder(token, foldername) {
+    const service = ApiService.getInstance()
+    return await service.makeRequest('createfolder', 'POST', {
+      token,
+      foldername
+    })
+  }
 }
 
 export default FolderService
