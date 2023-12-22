@@ -3,12 +3,19 @@ package com.porvah.mailserver.controllers;
 import com.porvah.mailserver.enums.SortType;
 import com.porvah.mailserver.interfaces.ROMail;
 import com.porvah.mailserver.models.*;
+import com.porvah.mailserver.models.ContactCommands.AddContactCommand;
+import com.porvah.mailserver.models.ContactCommands.ContactCommandInvoker;
+import com.porvah.mailserver.models.ContactCommands.DeleteContactsCommand;
+import com.porvah.mailserver.models.ContactCommands.UpdateContactCommand;
 import org.apache.tomcat.util.http.parser.HttpParser;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.lang.reflect.Array;
 import java.lang.reflect.Proxy;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -19,6 +26,8 @@ public class MailController {
 
     final VerificationProxy verificationProxy = new VerificationProxy();
     final MailStrategy strategy = new MailStrategy();
+
+    final UserFacade userFacade = new UserFacade();
     @PostMapping("signup")
     public ResponseEntity<?> signUp(@RequestBody Map<String, Object> body){
         try {
@@ -195,6 +204,74 @@ public class MailController {
             String folderName = (String) body.get("foldername");
             strategy.moveMails(token, ids, folderName);
             return ResponseEntity.ok("{\"mgs\" : \"Mails were moved successfully\"}");
+        }catch (Exception e){
+            return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body("{\"mgs\" : \"Unexpected error\"}");
+        }
+    }
+
+    @GetMapping("contacts")
+    public ResponseEntity<?> getContacts(@RequestParam("token") int token, @RequestParam("token") int sort){
+        try{
+            UserData userData = this.userFacade.getUserDataByToken(token);
+            List<Contact> contacts = new ArrayList<>( userData.getContacts().values());
+            if(sort == 0) Collections.reverse(contacts);
+            return ResponseEntity.ok(contacts);
+        }catch (Exception e){
+            return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body("{\"mgs\" : \"Unexpected error\"}");
+        }
+    }
+
+    @PostMapping("createcontact")
+    public ResponseEntity<?> addContact(@RequestBody Map<String, Object> body){
+        try{
+            int token = (int) body.get("token");
+            String name = (String) body.get("name");
+            ArrayList<String> emails = (ArrayList<String>) body.get("emails");
+
+            AddContactCommand addContactCommand = new AddContactCommand(name, emails);
+            UserData userData = this.userFacade.getUserDataByToken(token);
+            int contactId = userData.getContactCommandInvoker().executeCommand(addContactCommand);
+
+            return ResponseEntity.ok("{\"mgs\" : \"Contact created successfully\"}");
+
+
+
+        }catch (Exception e){
+            return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body("{\"mgs\" : \"Unexpected error\"}");
+        }
+    }
+
+
+    @PutMapping("updatecontact")
+    public ResponseEntity<?> updateContact(@RequestBody Map<String, Object> body){
+        try{
+            int token = (int) body.get("token");
+            int contactId = (int) body.get("contactId");
+            String name = (String) body.get("name");
+            ArrayList<String> emails = (ArrayList<String>) body.get("emails");
+
+            UpdateContactCommand updateContactCommand = new UpdateContactCommand(contactId, name, emails);
+            UserData userData = this.userFacade.getUserDataByToken(token);
+            int updatedContactId = userData.getContactCommandInvoker().executeCommand(updateContactCommand);
+
+            return ResponseEntity.ok("{\"mgs\" : \"Contact with id " + updatedContactId + " updated successfully\"}");
+        }catch (Exception e){
+            return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body("{\"mgs\" : \"Unexpected error\"}");
+        }
+    }
+
+    @DeleteMapping("deletecontacts")
+    public ResponseEntity<?> deleteContacts(@RequestBody Map<String, Object> body){
+        try{
+            int token = (int) body.get("token");
+            ArrayList<Integer> contactIds = (ArrayList<Integer>) body.get("contactIds");
+
+            DeleteContactsCommand deleteContactsCommand = new DeleteContactsCommand(contactIds);
+            UserData userData = this.userFacade.getUserDataByToken(token);
+            userData.getContactCommandInvoker().executeCommand(deleteContactsCommand);
+
+
+            return ResponseEntity.ok("{\"mgs\" : \"Contacts deleted successfully\"}");
         }catch (Exception e){
             return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body("{\"mgs\" : \"Unexpected error\"}");
         }
