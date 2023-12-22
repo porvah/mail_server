@@ -7,6 +7,7 @@ import Contacts from '../views/Contacts.vue'
 import Folders from '../views/Folders.vue'
 import FolderDetails from '../views/FolderDetails.vue'
 import EmailDetails from '../views/EmailDetails.vue'
+import EmailDraft from '../views/EmailDraft.vue'
 import Sent from '../views/Sent.vue'
 import Trash from '../views/Trash.vue'
 import Draft from '../views/Draft.vue'
@@ -86,7 +87,7 @@ const router = createRouter({
         {
           path: 'draft/:id',
           name: 'draft-detail',
-          component: EmailDetails,
+          component: EmailDraft,
           props: true,
           meta: {
             requiredAuth: true

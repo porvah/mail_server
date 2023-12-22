@@ -1,3 +1,4 @@
+import ApiService from '@/api/services/ApiService'
 import store from '@/store'
 
 class EmailServiceAdapter {
@@ -22,6 +23,27 @@ class EmailServiceAdapter {
     const priority = email.priority
 
     await this.emailService.draftEmail(token, subject, body, priority)
+  }
+
+  async updateDraftEmail(email) {
+    const token = store.getters.token
+    const id = email.id
+    const subject = email.subject
+    const body = email.body
+    const priority = email.priority
+
+    await this.emailService.updateDraftEmail(token, id, subject, body, priority)
+  }
+
+  async submitDraftEmail(email) {
+    const token = store.getters.token
+    const id = email.id
+    const receiver = email.receiver
+    const subject = email.subject
+    const body = email.body
+    const priority = email.priority
+
+    await this.emailService.submitDraftEmail(token, id, receiver, subject, body, priority)
   }
 }
 

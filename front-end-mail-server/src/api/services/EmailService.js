@@ -41,6 +41,31 @@ class EmailService {
       priority
     })
   }
+
+  async updateDraftEmail(token, id, subject, body, priority) {
+    const service = ApiService.getInstance()
+
+    return await service.makeRequest('updatedraft', 'PUT', {
+      token,
+      id,
+      subject,
+      body,
+      priority
+    })
+  }
+
+  async submitDraftEmail(token, id, receiver, subject, body, priority) {
+    const service = ApiService.getInstance()
+
+    return await service.makeRequest('submitdraft', 'POST', {
+      token,
+      id,
+      receiver,
+      subject,
+      body,
+      priority
+    })
+  }
 }
 
 export default EmailService
