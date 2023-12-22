@@ -32,7 +32,7 @@ export default {
     }
 
     const addFolder = () => {
-      store.commit('openFolderDialog')
+      store.commit('openFolderDialog', props.email.id)
     }
 
     const deleteEmail = async () => {

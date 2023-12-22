@@ -4,7 +4,7 @@
 
     <div class="content">
       <label>Select folder:</label>
-      <select>
+      <select v-model="selectedFolder">
         <option value="" selected disabled hidden>Folder name</option>
         <option v-for="folder in folders" :value="folder" :key="folder">{{ folder }}</option>
       </select>
@@ -16,7 +16,7 @@
         Close
       </button>
 
-      <button @click="addFolder" id="save-btn">
+      <button @click="addEmailToFolder" id="save-btn">
         <span class="material-symbols-outlined"> add </span>
         Add
       </button>
@@ -25,22 +25,43 @@
 </template>
 
 <script>
-import { ref } from 'vue'
+import api from '@/api'
+import { ref, onMounted } from 'vue'
 import { useStore } from 'vuex'
 
 export default {
   setup() {
     const store = useStore()
 
-    const folders = ref(['College', 'Programming', 'Sports', 'Others'])
+    const selectedFolder = ref('')
+    const folders = ref([])
 
     const closeFolder = () => {
       store.commit('closeFolderDialog')
     }
 
-    const addFolder = () => {}
+    const getFolders = async () => {
+      await store.dispatch('getFolders', { token: store.getters.token })
+      folders.value = store.getters.foldersNames
+    }
 
-    return { folders, closeFolder, addFolder }
+    const addEmailToFolder = async () => {
+      if (selectedFolder.value.length == 0) return
+
+      await api.emailService.moveMail(
+        store.getters.token,
+        [store.getters.emailId],
+        selectedFolder.value
+      )
+
+      closeFolder()
+    }
+
+    onMounted(async () => {
+      await getFolders()
+    })
+
+    return { selectedFolder, folders, closeFolder, addEmailToFolder }
   }
 }
 </script>

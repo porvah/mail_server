@@ -2,7 +2,8 @@ const state = {
   isComposeDialogOpen: false,
   isSettingsDialogOpen: false,
   isProfileDialogOpen: false,
-  isFolderDialogOpen: false
+  isFolderDialogOpen: false,
+  emailId: -1
 }
 
 const mutations = {
@@ -33,11 +34,12 @@ const mutations = {
   closeProfileDialog(state) {
     state.isProfileDialogOpen = false
   },
-  openFolderDialog(state) {
+  openFolderDialog(state, emailId) {
     state.isComposeDialogOpen = false
     state.isSettingsDialogOpen = false
     state.isProfileDialogOpen = false
     state.isFolderDialogOpen = true
+    state.emailId = emailId
   },
   closeFolderDialog(state) {
     state.isFolderDialogOpen = false
@@ -48,7 +50,8 @@ const getters = {
   isComposeDialogOpen: (state) => state.isComposeDialogOpen,
   isSettingsDialogOpen: (state) => state.isSettingsDialogOpen,
   isProfileDialogOpen: (state) => state.isProfileDialogOpen,
-  isFolderDialogOpen: (state) => state.isFolderDialogOpen
+  isFolderDialogOpen: (state) => state.isFolderDialogOpen,
+  emailId: (state) => state.emailId
 }
 
 export default {

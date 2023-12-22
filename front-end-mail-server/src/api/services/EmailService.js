@@ -66,6 +66,16 @@ class EmailService {
       priority
     })
   }
+
+  async moveMail(token, id, foldername) {
+    const service = ApiService.getInstance()
+
+    return await service.makeRequest('movemails', 'PUT', {
+      token,
+      id,
+      foldername
+    })
+  }
 }
 
 export default EmailService
