@@ -23,7 +23,7 @@ public class UserFacade {
         return userList;
     }
 
-    public void deleteEmailById(UserData senderData, List<Integer> ids) {
+    public void moveEmailById(UserData senderData, List<Integer> ids, MailFolder<ROMail> toFolder, boolean trashing) {
         MailFolder<ROMail> inbox = senderData.getInbox();
         MailFolder<ROMail> trash = senderData.getTrash();
         MailFolder<ROMail> sent = senderData.getSent();
@@ -33,13 +33,17 @@ public class UserFacade {
             if(inbox.contains(id)){
                 ROMail mail = inbox.getMail(id);
                 inbox.removeMail(id);
-                trash.addMail(mail);
+                if(trashing) trash.addMail(mail);
+                else toFolder.addMail(mail);
             }else if(trash.contains(id)){
+                ROMail mail = trash.getMail(id);
                 trash.removeMail(id);
+                if(!trashing) toFolder.addMail(mail);
             }else if(sent.contains(id)){
                 ROMail mail = sent.getMail(id);
                 sent.removeMail(id);
-                trash.addMail(mail);
+                if(trashing) trash.addMail(mail);
+                else toFolder.addMail(mail);
             }else if(draft.contains(id)){
                 draft.removeMail(id);
             }else{
@@ -47,12 +51,11 @@ public class UserFacade {
                     if(folder.contains(id)) {
                         ROMail mail = folder.getMail(id);
                         folder.removeMail(id);
-                        trash.addMail(mail);
-                        break;
+                        if(trashing) trash.addMail(mail);
+                        else toFolder.addMail(mail);
                     }
                 }
             }
         }
-
     }
 }
