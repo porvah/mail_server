@@ -33,8 +33,9 @@ public class MailFolder<T extends ROMail> {
     }
     public List<T> getMails(SortType sort){
         List<T> result = new ArrayList<T>(this.mails);
-        if(sort == SortType.DESCEND) Collections.reverse(result);
+        if(sort == SortType.DESCEND) result.sort(Comparator.comparingInt(T::getId).reversed());
         else if(sort == SortType.PRIORITY) return this.QtoList(this.mailsWithsPriority);
+        else if (sort == SortType.ASCEND) result.sort(Comparator.comparingInt(T::getId));
         return result;
     }
     private List<T> QtoList(PriorityQueue<T> Q){

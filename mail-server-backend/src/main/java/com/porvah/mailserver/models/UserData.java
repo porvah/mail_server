@@ -2,10 +2,8 @@ package com.porvah.mailserver.models;
 
 import com.porvah.mailserver.interfaces.ROMail;
 import com.porvah.mailserver.models.ContactCommands.ContactCommandInvoker;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+
+import java.util.*;
 
 public class UserData {
 
@@ -16,7 +14,7 @@ public class UserData {
 
     private final Map<String, MailFolder<ROMail>> customFolders;
 
-    private final Map<String, Contact> contacts; // name, contact
+    private final Map<Integer, Contact> contacts; // contactId, contact
 
     private final ContactCommandInvoker contactCommandInvoker;
 
@@ -28,7 +26,7 @@ public class UserData {
 
         this.customFolders = new HashMap<>();
 
-        this.contacts = new HashMap<>();
+        this.contacts = new TreeMap<>();
 
         this.contactCommandInvoker = new ContactCommandInvoker(this.contacts);
     }
@@ -66,7 +64,10 @@ public class UserData {
         return new ArrayList<MailFolder<ROMail>>(this.customFolders.values());
     }
 
-    public Map<String, Contact> getContacts() {
+    public Map<Integer, Contact> getContacts() {
         return contacts;
+    }
+    public ContactCommandInvoker getContactCommandInvoker(){
+        return this.contactCommandInvoker;
     }
 }

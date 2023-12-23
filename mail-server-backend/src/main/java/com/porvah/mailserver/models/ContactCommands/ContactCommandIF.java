@@ -6,5 +6,5 @@ import java.util.ArrayList;
 import java.util.Map;
 
 public interface ContactCommandIF {
-    boolean execute(Map<String, Contact> contacts);
+    int execute(Map<Integer, Contact> contacts);
 }

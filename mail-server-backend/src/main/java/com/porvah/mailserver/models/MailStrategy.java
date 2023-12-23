@@ -92,7 +92,9 @@ public class MailStrategy {
 
     public void moveMails(int token, List<Integer> ids, String folderName) {
         UserData senderData = this.userFacade.getUserDataByToken(token);
-        MailFolder<ROMail> folder = senderData.getCustomFolder(folderName);
+        MailFolder<ROMail> folder;
+        if(folderName.equals("inbox")) folder = senderData.getInbox();
+        else folder = senderData.getCustomFolder(folderName);
         this.userFacade.moveEmailById(senderData, ids, folder, false);
     }
 

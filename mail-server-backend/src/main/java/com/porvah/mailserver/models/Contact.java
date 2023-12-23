@@ -1,47 +1,38 @@
 package com.porvah.mailserver.models;
 
 import java.util.ArrayList;
-import java.util.List;
 
-public class Contact {
+public class Contact{
 
+    private static int contactCounter = 0;
+
+    private final int contactId;
     private String name;
+    private ArrayList<String> emails;
 
-    private final ArrayList<String> emails;
-
-    public Contact(String name, String email){
+    public Contact(String name, ArrayList<String> emails) {
+        this.contactId = contactCounter++;
         this.name = name;
-        this.emails = new ArrayList<>();
-        this.emails.add(email); // To create a contact we need at least one emails.
-
+        this.emails = emails;
     }
 
 
+
+    public int getContactId() {
+        return contactId;
+    }
 
     public String getName() {
         return name;
     }
 
-    public ArrayList<String> getEmail() {
+    public ArrayList<String> getEmails() {
         return emails;
     }
 
-    public void addEmail(String emails){
-        this.emails.add(emails);
-    }
-
-    public void removeEmail(String emails){
-        if(this.emails.size() > 1)
-            this.emails.remove(emails);
-    }
-
-
-    public void updateName(String name) {
+    
+    public void update(String name, ArrayList<String> emails){
         this.name = name;
+        this.emails = emails;
     }
-
-
-
-
-
 }
