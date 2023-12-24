@@ -26,7 +26,7 @@ class ApiService {
       const resData = await response.json()
       return resData
     } else {
-      throw 'Error: ' + (await response.text())
+      throw await response.text()
     }
   }
 }

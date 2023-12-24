@@ -78,26 +78,34 @@ export default {
     const updateContact = async () => {
       if (!validName() || !validEmails()) return
 
-      await api.contactsService.updateContact(
-        store.getters.token,
-        props.contactId,
-        contactName.value,
-        contactEmails.value
-      )
+      try {
+        await api.contactsService.updateContact(
+          store.getters.token,
+          props.contactId,
+          contactName.value,
+          contactEmails.value
+        )
 
-      ctx.emit('closeContact')
+        ctx.emit('closeContact')
+      } catch (e) {
+        errorMsg.value = JSON.parse(e).mgs
+      }
     }
 
     const addNewContact = async () => {
       if (!validName() || !validEmails()) return
 
-      await api.contactsService.createContact(
-        store.getters.token,
-        contactName.value,
-        contactEmails.value
-      )
+      try {
+        await api.contactsService.createContact(
+          store.getters.token,
+          contactName.value,
+          contactEmails.value
+        )
 
-      ctx.emit('closeContact')
+        ctx.emit('closeContact')
+      } catch (e) {
+        errorMsg.value = JSON.parse(e).mgs
+      }
     }
 
     const submitContact = async () => {

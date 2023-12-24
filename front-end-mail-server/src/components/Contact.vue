@@ -23,7 +23,7 @@
     <AddContactDialog
       v-if="showContactDialog"
       @closeContact="closeContact"
-      :emails="person.emails"
+      :emails="JSON.parse(JSON.stringify(person.emails))"
       update="false"
       :contactId="person.contactId"
       :contactName="person.name"
