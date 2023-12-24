@@ -21,7 +21,7 @@
     <AddContactDialog
       v-if="showContactDialog"
       @closeContact="closeContact"
-      :emails="email.sender"
+      :emails="[email.sender]"
     />
   </div>
 </template>

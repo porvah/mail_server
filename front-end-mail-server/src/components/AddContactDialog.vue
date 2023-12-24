@@ -2,12 +2,32 @@
   <dialog open>
     <h2>Add Contact</h2>
     <form action="#" @submit.prevent="">
-      <label>name:</label>
+      <label>Name:</label>
       <input type="text" v-model="contactName" required />
 
-      <label>Contact email:</label>
-      <input type="text" :value="contactEmail" disabled />
+      <div id="contact-email">
+        <label>Contact emails:</label>
 
+        <button @click="addReceiver" id="add-receiver-btn" type="button">
+          <span class="material-symbols-outlined"> add </span>
+          Add
+        </button>
+      </div>
+      <input type="text" v-model="emailField" />
+
+      <div id="receivers">
+        <div
+          v-for="receiver in contactEmails"
+          @click="removeReceiver(receiver)"
+          class="receiver"
+          :key="receiver"
+        >
+          {{ receiver }}
+          <span class="material-symbols-outlined"> delete </span>
+        </div>
+      </div>
+
+      <div v-if="errorMsg" id="error">{{ errorMsg }}</div>
       <div id="btns">
         <button @click="$emit('closeContact')" id="cancel-btn" type="button">
           <span class="material-symbols-outlined"> cancel </span>
@@ -24,10 +44,9 @@
 </template>
 
 <script>
-import api from '@/api'
-import { computed, ref } from 'vue'
+import { ref } from 'vue'
 import { useStore } from 'vuex'
-// import api from '@/api'
+import api from '@/api'
 
 export default {
   props: ['emails'],
@@ -35,20 +54,52 @@ export default {
   setup(props, ctx) {
     const store = useStore()
     const contactName = ref('')
-    const contactEmail = ref(props.emails)
+    const emailField = ref('')
+    const errorMsg = ref('')
+
+    const contactEmails = ref(props.emails)
 
     const addContact = async () => {
-      if (contactName.value == null || contactName.value == '' || contactName.value.length === 0)
+      if (contactName.value == null || contactName.value == '' || contactName.value.length === 0) {
+        errorMsg.value = 'Contact name can NOT be empty!'
         return
+      }
+      if (contactEmails.value.length < 1) {
+        errorMsg.value = 'Contact emails can NOT be empty!'
+        return
+      }
 
-      await api.contactsService.createContact(store.getters.token, contactName.value, [
-        contactEmail.value
-      ])
+      await api.contactsService.createContact(
+        store.getters.token,
+        contactName.value,
+        contactEmails.value
+      )
 
       ctx.emit('closeContact')
     }
+    const addReceiver = () => {
+      if (emailField.value && emailField.value.length > 0) {
+        if (!contactEmails.value.includes(emailField.value)) {
+          contactEmails.value.push(emailField.value)
+        }
+        emailField.value = ''
+        errorMsg.value = ''
+      }
+    }
 
-    return { contactName, contactEmail, addContact }
+    const removeReceiver = (receiver) => {
+      contactEmails.value = contactEmails.value.filter((r) => receiver != r)
+    }
+
+    return {
+      contactName,
+      emailField,
+      contactEmails,
+      errorMsg,
+      addContact,
+      addReceiver,
+      removeReceiver
+    }
   }
 }
 </script>
@@ -99,6 +150,13 @@ input {
   background: white;
 }
 
+#error {
+  color: red;
+  padding: 10px;
+  text-align: center;
+  font-weight: bold;
+}
+
 #btns {
   display: flex;
   justify-content: space-around;
@@ -126,5 +184,36 @@ button {
   color: green;
   background: white;
   border: 1px solid green;
+}
+
+#contact-email {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 10px;
+}
+
+#contact-email button {
+  width: 25%;
+  color: white;
+  background-color: rgb(21, 141, 21);
+}
+#receivers {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: left;
+  align-items: center;
+}
+
+.receiver {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  color: white;
+  background-color: gray;
+  border-radius: 12px;
+  padding: 10px;
+  margin: 10px 5px;
 }
 </style>
