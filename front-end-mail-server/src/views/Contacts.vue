@@ -16,7 +16,7 @@ export default {
   components: { SearchBar, Contact },
   setup() {
     return {
-      person: { name: 'mohamed', email: 'mohamed@test.com' }
+      person: { contactId: 0, name: 'mohamed', emails: ['mohamed@test.com', 'test@test.com'] }
     }
   }
 }

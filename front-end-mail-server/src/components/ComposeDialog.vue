@@ -151,7 +151,7 @@ export default {
 <style scoped>
 dialog {
   position: absolute;
-  left: 45%;
+  left: 50%;
   top: 40%;
   margin-left: -25vh;
   margin-top: -25vh;
