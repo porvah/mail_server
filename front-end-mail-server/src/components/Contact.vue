@@ -14,17 +14,11 @@
       </ol>
     </details>
 
-    <div id="btns">
+    <div>
       <span class="material-symbols-outlined edit"> edit_square </span>
+
       <span class="material-symbols-outlined delete"> delete </span>
     </div>
-    <!-- <h3>@{{ person.name }}</h3>
-    |
-    <h4>
-      {{ person.email }}
-    </h4>
-    |
-    <span class="material-symbols-outlined delete"> delete </span> -->
   </div>
 </template>
 

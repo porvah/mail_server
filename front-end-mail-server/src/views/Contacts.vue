@@ -1,6 +1,7 @@
 <template>
   <div id="contacts">
-    <SearchBar title="Search contact" />
+    <h2>Contacts</h2>
+
     <Contact :person="person" />
     <Contact :person="person" />
     <Contact :person="person" />
@@ -30,5 +31,11 @@ export default {
 
   background-color: #eeeeeead;
   border-radius: 12px;
+}
+
+h2 {
+  padding: 10px;
+  margin-bottom: 16px;
+  border-bottom: 1px solid gray;
 }
 </style>
