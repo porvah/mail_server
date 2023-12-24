@@ -2,22 +2,41 @@
   <div id="contacts">
     <h2>Contacts</h2>
 
-    <Contact :person="person" />
-    <Contact :person="person" />
-    <Contact :person="person" />
-    <Contact :person="person" />
+    <Contact v-for="contact in contacts" :person="contact" :key="contact" />
   </div>
 </template>
 
 <script>
 import Contact from '@/components/Contact.vue'
 import SearchBar from '@/components/SearchBar.vue'
+import { ref, onMounted } from 'vue'
+import { useStore } from 'vuex'
 
 export default {
   components: { SearchBar, Contact },
   setup() {
+    const store = useStore()
+    const contacts = ref([])
+
+    const getContacts = async () => {
+      await store.dispatch('getAllContacts', { token: store.getters.token })
+      contacts.value = store.getters.allContacts
+    }
+
+    onMounted(async () => {
+      await getContacts()
+    })
+
+    store.watch(
+      (state, getters) => getters.allContacts,
+      () => {
+        contacts.value = store.getters.allContacts
+      }
+    )
+
     return {
-      person: { contactId: 0, name: 'mohamed', emails: ['mohamed@test.com', 'test@test.com'] }
+      person: { contactId: 0, name: 'mohamed', emails: ['mohamed@test.com', 'test@test.com'] },
+      contacts
     }
   }
 }
