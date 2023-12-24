@@ -4,7 +4,7 @@
 
     <div id="header">
       <div id="info">
-        <span class="material-symbols-outlined"> person </span>
+        <span @click="addContact" class="material-symbols-outlined"> person_add </span>
 
         <div id="sender-receiver">
           <h4 id="sender">{{ email.sender }}</h4>
@@ -17,21 +17,30 @@
     </div>
 
     <p>{{ email.body }}</p>
+
+    <AddContactDialog
+      v-if="showContactDialog"
+      @closeContact="closeContact"
+      :emails="email.sender"
+    />
   </div>
 </template>
 
 <script>
-import { computed } from 'vue'
+import { ref, computed } from 'vue'
 import { useRoute } from 'vue-router'
 import { useStore } from 'vuex'
+import AddContactDialog from '@/components/AddContactDialog.vue'
 
 export default {
   props: ['id'],
+  components: { AddContactDialog, AddContactDialog },
   setup(props) {
     const store = useStore()
     const route = useRoute()
     const currentRouteName = computed(() => route.name)
     const emailId = props.id
+    const showContactDialog = ref(false)
 
     const emailList = computed(() => {
       switch (currentRouteName.value) {
@@ -52,7 +61,15 @@ export default {
       return emailList.value.find((e) => e.id == emailId)
     })
 
-    return { email }
+    const addContact = () => {
+      showContactDialog.value = true
+    }
+
+    const closeContact = () => {
+      showContactDialog.value = false
+    }
+
+    return { email, showContactDialog, addContact, closeContact }
   }
 }
 </script>
@@ -93,6 +110,7 @@ export default {
   padding: 10px;
   margin-right: 10px;
   font-size: 30px;
+  cursor: pointer;
 }
 
 p {

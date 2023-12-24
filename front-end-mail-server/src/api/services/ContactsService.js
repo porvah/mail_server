@@ -17,7 +17,7 @@ class ContactsService {
 
   async createContact(token, name, emails) {
     const service = ApiService.getInstance()
-    return await service.makeRequest('createcontacts', 'POST', {
+    return await service.makeRequest('createcontact', 'POST', {
       token,
       name,
       emails
