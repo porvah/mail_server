@@ -15,16 +15,32 @@
     </details>
 
     <div>
-      <span class="material-symbols-outlined edit"> edit_square </span>
+      <span @click="editContact" class="material-symbols-outlined edit"> edit_square </span>
 
-      <span class="material-symbols-outlined delete"> delete </span>
+      <span @click="deleteContact" class="material-symbols-outlined delete"> delete </span>
     </div>
   </div>
 </template>
 
 <script>
+import api from '@/api'
+import { useStore } from 'vuex'
+
 export default {
-  props: ['person']
+  props: ['person'],
+  setup(props) {
+    const store = useStore()
+
+    const editContact = async () => {
+      // await api.contactsService.updateContact(store.getters.token, props.person.contactId, )
+    }
+
+    const deleteContact = async () => {
+      await api.contactsService.deleteContact(store.getters.token, [props.person.contactId])
+    }
+
+    return { editContact, deleteContact }
+  }
 }
 </script>
 
