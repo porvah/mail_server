@@ -35,7 +35,6 @@ export default {
     )
 
     return {
-      person: { contactId: 0, name: 'mohamed', emails: ['mohamed@test.com', 'test@test.com'] },
       contacts
     }
   }

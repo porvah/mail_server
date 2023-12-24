@@ -34,7 +34,7 @@
           Cancel
         </button>
 
-        <button type="submit" @click="addContact" id="add-btn">
+        <button type="submit" @click="submitContact" id="add-btn">
           <span class="material-symbols-outlined"> add </span>
           Add
         </button>
@@ -49,25 +49,47 @@ import { useStore } from 'vuex'
 import api from '@/api'
 
 export default {
-  props: ['emails'],
+  props: ['emails', 'update', 'contactId', 'contactName'],
   emits: ['closeContact'],
   setup(props, ctx) {
     const store = useStore()
-    const contactName = ref('')
+    const contactName = ref(props.contactName ? props.contactName : '')
     const emailField = ref('')
     const errorMsg = ref('')
 
     const contactEmails = ref(props.emails)
 
-    const addContact = async () => {
+    const validName = () => {
       if (contactName.value == null || contactName.value == '' || contactName.value.length === 0) {
         errorMsg.value = 'Contact name can NOT be empty!'
-        return
+        return false
       }
+      return true
+    }
+
+    const validEmails = () => {
       if (contactEmails.value.length < 1) {
         errorMsg.value = 'Contact emails can NOT be empty!'
-        return
+        return false
       }
+      return true
+    }
+
+    const updateContact = async () => {
+      if (!validName() || !validEmails()) return
+
+      await api.contactsService.updateContact(
+        store.getters.token,
+        props.contactId,
+        contactName.value,
+        contactEmails.value
+      )
+
+      ctx.emit('closeContact')
+    }
+
+    const addNewContact = async () => {
+      if (!validName() || !validEmails()) return
 
       await api.contactsService.createContact(
         store.getters.token,
@@ -77,6 +99,15 @@ export default {
 
       ctx.emit('closeContact')
     }
+
+    const submitContact = async () => {
+      if (props.update) {
+        await updateContact()
+      } else {
+        await addNewContact()
+      }
+    }
+
     const addReceiver = () => {
       if (emailField.value && emailField.value.length > 0) {
         if (!contactEmails.value.includes(emailField.value)) {
@@ -96,7 +127,7 @@ export default {
       emailField,
       contactEmails,
       errorMsg,
-      addContact,
+      submitContact,
       addReceiver,
       removeReceiver
     }

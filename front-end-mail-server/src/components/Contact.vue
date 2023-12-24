@@ -19,27 +19,44 @@
 
       <span @click="deleteContact" class="material-symbols-outlined delete"> delete </span>
     </div>
+
+    <AddContactDialog
+      v-if="showContactDialog"
+      @closeContact="closeContact"
+      :emails="person.emails"
+      update="false"
+      :contactId="person.contactId"
+      :contactName="person.name"
+    />
   </div>
 </template>
 
 <script>
-import api from '@/api'
+import { ref } from 'vue'
 import { useStore } from 'vuex'
+import AddContactDialog from './AddContactDialog.vue'
+import api from '@/api'
 
 export default {
   props: ['person'],
+  components: { AddContactDialog },
   setup(props) {
     const store = useStore()
+    const showContactDialog = ref(false)
+
+    const closeContact = () => {
+      showContactDialog.value = false
+    }
 
     const editContact = async () => {
-      // await api.contactsService.updateContact(store.getters.token, props.person.contactId, )
+      showContactDialog.value = true
     }
 
     const deleteContact = async () => {
       await api.contactsService.deleteContact(store.getters.token, [props.person.contactId])
     }
 
-    return { editContact, deleteContact }
+    return { showContactDialog, closeContact, editContact, deleteContact }
   }
 }
 </script>
