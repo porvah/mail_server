@@ -32,37 +32,32 @@ export default {
       {
         title: 'Inbox',
         icon: 'inbox',
-        count: 20
+        count: store.getters.inboxMails.length
       },
       {
         title: 'Sent',
         icon: 'send',
-        count: 12
+        count: store.getters.sentMails.length
       },
       {
         title: 'Contacts',
         icon: 'contacts',
-        count: 3
+        count: store.getters.allContacts.length
       },
       {
         title: 'Draft',
         icon: 'draft',
-        count: 2
-      },
-      {
-        title: 'Starred',
-        icon: 'star',
-        count: 4
+        count: store.getters.draftMails.length
       },
       {
         title: 'Folders',
         icon: 'folder_open',
-        count: 0
+        count: store.getters.foldersNames.length
       },
       {
         title: 'Trash',
         icon: 'delete',
-        count: 1
+        count: store.getters.trashMails.length
       }
     ])
 

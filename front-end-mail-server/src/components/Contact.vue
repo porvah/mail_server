@@ -54,6 +54,7 @@ export default {
 
     const deleteContact = async () => {
       await api.contactsService.deleteContact(store.getters.token, [props.person.contactId])
+      await store.dispatch('getAllContacts', { token: store.getters.token })
     }
 
     return { showContactDialog, closeContact, editContact, deleteContact }

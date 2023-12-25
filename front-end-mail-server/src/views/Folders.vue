@@ -11,10 +11,8 @@
       <h2 @click="goToFolder(item)">
         {{ item }}
       </h2>
-      <div id="btns">
-        <span class="material-symbols-outlined edit"> edit </span>
-        <span class="material-symbols-outlined delete"> delete </span>
-      </div>
+
+      <span @click="deleteFolder" class="material-symbols-outlined delete"> delete </span>
     </div>
   </div>
 </template>
@@ -51,6 +49,8 @@ export default {
       folderInput.value = ''
     }
 
+    const deleteFolder = async () => {}
+
     onMounted(async () => {
       await getFolders()
     })
@@ -62,7 +62,7 @@ export default {
       }
     )
 
-    return { folders, folderInput, goToFolder, addFolder }
+    return { folders, folderInput, goToFolder, addFolder, deleteFolder }
   }
 }
 </script>
@@ -131,13 +131,6 @@ h2 {
   padding: 5px;
   margin-left: 10px;
   border-radius: 8px;
-}
-
-.edit {
-  background-color: white;
-  color: gray;
-  padding: 5px;
-  margin-left: 10px;
-  border-radius: 8px;
+  cursor: pointer;
 }
 </style>

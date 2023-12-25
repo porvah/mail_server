@@ -22,7 +22,7 @@ import ProfileDialog from './ProfileDialog.vue'
 import SettingsDialog from './SettingsDialog.vue'
 import FolderDialog from './FolderDialog.vue'
 import SideBar from './SideBar.vue'
-import { computed } from 'vue'
+import { computed, onMounted } from 'vue'
 
 export default {
   components: { SideBar, Inbox, ComposeDialog, SettingsDialog, ProfileDialog, FolderDialog },
@@ -32,6 +32,10 @@ export default {
     const isProfileDialogOpen = computed(() => store.getters.isProfileDialogOpen)
     const isSettingsDialogOpen = computed(() => store.getters.isSettingsDialogOpen)
     const isFolderDialogOpen = computed(() => store.getters.isFolderDialogOpen)
+
+    onMounted(async () => {
+      await store.dispatch('updateAllFolders', { token: store.getters.token, sort: 0 })
+    })
 
     return {
       isComposeDialogOpen,

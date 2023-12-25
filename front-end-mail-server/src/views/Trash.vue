@@ -39,14 +39,18 @@ export default {
         case 'Description':
           return email.body
         default:
-          return email.body
+          return email.subject
       }
     }
 
     const filterEmails = computed(() => {
-      return emails.value.filter((e) =>
-        filterCategory(e).toLowerCase().includes(searchValue.value.toLowerCase())
-      )
+      return emails.value.filter((e) => {
+        return (
+          (priorityValue.value.substring(0, 1) === 'A' ||
+            priorityValue.value.substring(0, 1) == `${e.priority}`) &&
+          filterCategory(e).toLowerCase().includes(searchValue.value.toLowerCase())
+        )
+      })
     })
 
     const getTrash = async (sort) => {
