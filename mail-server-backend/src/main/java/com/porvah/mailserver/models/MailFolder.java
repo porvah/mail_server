@@ -3,6 +3,9 @@ package com.porvah.mailserver.models;
 import com.porvah.mailserver.enums.RequiredPage;
 import com.porvah.mailserver.enums.SortType;
 import com.porvah.mailserver.interfaces.ROMail;
+import com.porvah.mailserver.models.sortStrategy.AscendingSort;
+import com.porvah.mailserver.models.sortStrategy.DescendingSort;
+import com.porvah.mailserver.models.sortStrategy.SortStrategy;
 
 import java.util.*;
 
@@ -39,11 +42,17 @@ public class MailFolder<T extends ROMail> {
         }
         this.mailsWithsPriority = removeFromQ(this.mailsWithsPriority, id);
     }
-    protected List<T> getMails(SortType sort){
+    protected List<T> getMails(SortType sort) {
         List<T> result = new ArrayList<T>(this.mails);
-        if(sort == SortType.DESCEND) result.sort(Comparator.comparingInt(T::getId).reversed());
-        else if(sort == SortType.PRIORITY) return this.QtoList(this.mailsWithsPriority);
-        else if (sort == SortType.ASCEND) result.sort(Comparator.comparingInt(T::getId));
+        if (sort == SortType.DESCEND) {
+            SortStrategy<T> strategy = new DescendingSort<>();
+            return strategy.sort(result);
+        } else if (sort == SortType.PRIORITY){
+            return this.QtoList(this.mailsWithsPriority);
+        }else if (sort == SortType.ASCEND){
+            SortStrategy<T> strategy = new AscendingSort<>();
+            return strategy.sort(result);
+        }
         return result;
     }
     private List<T> QtoList(PriorityQueue<T> Q){
