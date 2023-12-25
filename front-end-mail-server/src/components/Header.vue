@@ -2,14 +2,19 @@
   <div id="header">
     <div class="left">
       <span class="material-symbols-outlined logo"> mail </span>
+
       <p class="title">Mail Pulse</p>
     </div>
+
     <div class="middle">
       <span @click="refresh" class="material-symbols-outlined"> refresh </span>
+
       <p id="user">{{ user.name }}</p>
     </div>
+
     <div class="right">
       <span @click="openProfileDialog" class="material-symbols-outlined"> account_circle </span>
+
       <span @click="openSettingsDialog" class="material-symbols-outlined"> settings </span>
     </div>
   </div>

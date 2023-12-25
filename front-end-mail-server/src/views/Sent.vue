@@ -54,7 +54,7 @@ export default {
         case 'Description':
           return email.body
         default:
-          return email.body
+          return email.subject
       }
     }
 

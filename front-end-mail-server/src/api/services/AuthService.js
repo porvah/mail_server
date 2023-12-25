@@ -21,6 +21,11 @@ class AuthService {
     return await this.login(email, password)
   }
 
+  async logout(token) {
+    const service = ApiService.getInstance()
+    return await service.makeRequest(`logout?token=${token}`, 'DELETE')
+  }
+
   async getUser(token) {
     const service = ApiService.getInstance()
     return await service.makeRequest(`getuser?id=${token}`, 'GET')
