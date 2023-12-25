@@ -1,30 +1,43 @@
 <template>
   <div id="inbox">
-    <SearchBar
-      :searchValue="searchValue"
-      @update:searchValue="(val) => (searchValue = val)"
-      :filterValue="filterValue"
-      @update:filterValue="(val) => (filterValue = val)"
-      :priorityValue="priorityValue"
-      @update:priorityValue="(val) => (priorityValue = val)"
-      @onSort="getInbox"
-      title="Search mail"
+    <div id="header">
+      <SearchBar
+        :searchValue="searchValue"
+        @update:searchValue="(val) => (searchValue = val)"
+        :filterValue="filterValue"
+        @update:filterValue="(val) => (filterValue = val)"
+        :priorityValue="priorityValue"
+        @update:priorityValue="(val) => (priorityValue = val)"
+        @onSort="getInbox"
+        title="Search mail"
+      />
+
+      <span @click="deleteEmails" class="material-symbols-outlined delete"> delete </span>
+    </div>
+
+    <ListEmails
+      :emails="filterEmails"
+      :checkedEmails="selectedEmails"
+      @selectEmail="handleSelectEmail"
+      page="inbox-detail"
+      :key="selectedEmails"
     />
-    <ListEmails :emails="filterEmails" page="inbox-detail" />
   </div>
 </template>
 
 <script>
 import { onMounted, computed, ref } from 'vue'
+import { useStore } from 'vuex'
 import ListEmails from '@/components/ListEmails.vue'
 import SearchBar from '@/components/SearchBar.vue'
-import { useStore } from 'vuex'
+import api from '@/api'
 
 export default {
   components: { SearchBar, ListEmails },
   setup() {
     const store = useStore()
     const emails = ref([])
+    const selectedEmails = ref([])
 
     const searchValue = ref('')
     const filterValue = ref('')
@@ -54,6 +67,20 @@ export default {
       emails.value = store.getters.inboxMails
     }
 
+    const handleSelectEmail = (eamilId) => {
+      if (selectedEmails.value.includes(eamilId)) {
+        selectedEmails.value = selectedEmails.value.filter((id) => id != eamilId)
+      } else {
+        selectedEmails.value.push(eamilId)
+      }
+    }
+
+    const deleteEmails = async () => {
+      const emailService = api.emailService
+      await emailService.deleteEmail(store.getters.token, selectedEmails.value)
+      await store.dispatch('updateAllFolders', { token: store.getters.token, sort: 0 })
+    }
+
     onMounted(async () => {
       await getInbox(0)
     })
@@ -65,7 +92,17 @@ export default {
       }
     )
 
-    return { emails, filterEmails, searchValue, filterValue, priorityValue, getInbox }
+    return {
+      emails,
+      selectedEmails,
+      filterEmails,
+      searchValue,
+      filterValue,
+      priorityValue,
+      getInbox,
+      handleSelectEmail,
+      deleteEmails
+    }
   }
 }
 </script>
@@ -78,5 +115,20 @@ export default {
 
   background-color: #eeeeeead;
   border-radius: 12px;
+}
+
+#header {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.delete {
+  background-color: red;
+  color: white;
+  padding: 12px 5px;
+  margin: 10px;
+  border-radius: 8px;
+  cursor: pointer;
 }
 </style>

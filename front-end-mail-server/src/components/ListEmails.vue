@@ -1,7 +1,13 @@
 <template>
   <div id="list-emails"></div>
   <div v-for="email in emails" class="email-div" :key="email">
-    <input type="checkbox" v-model="checkedEmails" :value="email" class="email-checkbox" />
+    <input
+      type="checkbox"
+      v-model="selectedEmails"
+      @change="$emit('selectEmail', email.id)"
+      :value="email.id"
+      class="email-checkbox"
+    />
 
     <Email :email="email" :page="page" class="email-item" :key="email.id" />
   </div>
@@ -12,12 +18,15 @@ import { ref } from 'vue'
 import Email from '@/components/Email.vue'
 
 export default {
-  props: ['emails', 'page'],
+  props: ['emails', 'page', 'checkedEmails'],
   components: { Email },
-  setup() {
-    const checkedEmails = ref([])
+  emits: ['selectEmail'],
+  setup(props) {
+    const selectedEmails = ref(props.checkedEmails)
 
-    return { checkedEmails }
+    return {
+      selectedEmails
+    }
   }
 }
 </script>
