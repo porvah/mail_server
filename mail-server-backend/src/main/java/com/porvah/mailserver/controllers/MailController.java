@@ -54,10 +54,9 @@ public class MailController {
         }
     }
     @DeleteMapping("logout")
-    public ResponseEntity<?> logOut(@RequestBody Map<String, Object> body){
+    public ResponseEntity<?> logOut(@RequestParam("token") int token){
         try {
-            int id = (int) body.get("id");
-            verificationProxy.logoutUser(id);
+            verificationProxy.logoutUser(token);
             return ResponseEntity.ok("{\"msg\" : \"Logout is successful\"}");
         }catch (Exception e){
             return ResponseEntity.status(HttpStatus.ALREADY_REPORTED)
