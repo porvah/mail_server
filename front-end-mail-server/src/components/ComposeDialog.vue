@@ -40,6 +40,8 @@
         </div>
       </div>
 
+      <div v-if="errorMsg" id="error">{{ errorMsg }}</div>
+
       <div id="btns">
         <button @click="closeCompose" id="cancel-btn" type="button">
           <span class="material-symbols-outlined"> cancel </span>
@@ -77,7 +79,9 @@ export default {
     const emailDescription = ref('')
     const priorityChose = ref('1 (Low)')
     const receivers = ref([])
+    const errorMsg = ref('')
 
+    const emailAdapter = new EmailServiceAdapter(api.emailService)
     const priorityChoices = computed(() => ['1 (Low)', '2', '3', '4', '5 (High)'])
 
     const closeCompose = () => {
@@ -109,25 +113,43 @@ export default {
     }
 
     const sendEmail = async () => {
-      const emailAdapter = new EmailServiceAdapter(api.emailService)
+      if (!validateInput(false)) return
+
       const email = createEmail()
       try {
         await emailAdapter.sendEmail(email)
+        closeCompose()
       } catch (e) {
-        console.log(e)
+        errorMsg.value = JSON.parse(e).msg
       }
-      closeCompose()
     }
 
     const draftEmail = async () => {
-      const emailAdapter = new EmailServiceAdapter(api.emailService)
+      if (!validateInput(true)) return
+
       const email = createEmail()
       try {
         await emailAdapter.draftEmail(email)
+        closeCompose()
       } catch (e) {
-        console.log(e)
+        errorMsg.value = JSON.parse(e).msg
       }
-      closeCompose()
+    }
+
+    const validateInput = (emptyReceivers) => {
+      if (emailSubject.value.length < 1) {
+        errorMsg.value = 'Email subject can NOT be empty!'
+        return false
+      }
+      if (emailDescription.value.length < 1) {
+        errorMsg.value = 'Email description can NOT be empty!'
+        return false
+      }
+      if (!emptyReceivers && receivers.value.length < 1) {
+        errorMsg.value = 'Receivers field can NOT be empty!'
+        return false
+      }
+      return true
     }
 
     return {
@@ -138,6 +160,7 @@ export default {
       receivers,
       priorityChose,
       priorityChoices,
+      errorMsg,
       closeCompose,
       addReceiver,
       removeReceiver,
@@ -244,6 +267,13 @@ textarea {
 
 .element input {
   cursor: pointer;
+}
+
+#error {
+  color: red;
+  padding: 10px;
+  text-align: center;
+  font-weight: bold;
 }
 
 button {

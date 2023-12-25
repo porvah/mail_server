@@ -28,6 +28,7 @@
       </div>
 
       <div v-if="errorMsg" id="error">{{ errorMsg }}</div>
+
       <div id="btns">
         <button @click="$emit('closeContact')" id="cancel-btn" type="button">
           <span class="material-symbols-outlined"> cancel </span>
@@ -76,8 +77,6 @@ export default {
     }
 
     const updateContact = async () => {
-      if (!validName() || !validEmails()) return
-
       try {
         await api.contactsService.updateContact(
           store.getters.token,
@@ -93,8 +92,6 @@ export default {
     }
 
     const addNewContact = async () => {
-      if (!validName() || !validEmails()) return
-
       try {
         await api.contactsService.createContact(
           store.getters.token,
@@ -109,6 +106,8 @@ export default {
     }
 
     const submitContact = async () => {
+      if (!validName() || !validEmails()) return
+
       if (props.update) {
         await updateContact()
       } else {

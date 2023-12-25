@@ -10,6 +10,8 @@
     <label>Password:</label>
     <input v-model="password" type="password" name="password" required />
 
+    <div v-if="errorMsg" id="error">{{ errorMsg }}</div>
+
     <button type="submit">Login</button>
 
     <p>Don't have an account? <span @click="goToSignUp">Sign up</span></p>
@@ -28,17 +30,22 @@ export default {
 
     const email = ref('')
     const password = ref('')
+    const errorMsg = ref('')
 
     const login = async () => {
-      await store.dispatch('login', { email: email.value, password: password.value })
-      router.push('/home/inbox')
+      try {
+        await store.dispatch('login', { email: email.value, password: password.value })
+        router.push('/home/inbox')
+      } catch (e) {
+        errorMsg.value = JSON.parse(e).msg
+      }
     }
 
     const goToSignUp = () => {
       router.push('/signup')
     }
 
-    return { login, goToSignUp, email, password }
+    return { login, goToSignUp, email, password, errorMsg }
   }
 }
 </script>
@@ -114,5 +121,12 @@ span {
   color: green;
   cursor: pointer;
   background: white;
+}
+
+#error {
+  color: red;
+  padding: 10px;
+  text-align: center;
+  font-weight: bold;
 }
 </style>

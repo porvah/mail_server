@@ -40,6 +40,8 @@
         </div>
       </div>
 
+      <div v-if="errorMsg" id="error">{{ errorMsg }}</div>
+
       <div id="btns">
         <button type="submit" @click="updateDraftEmail" id="draft-btn">
           <span class="material-symbols-outlined"> edit_document </span>
@@ -77,7 +79,9 @@ export default {
     const emailDescription = ref(email.body)
     const priorityChose = ref(email.priority)
     const receivers = ref([])
+    const errorMsg = ref('')
 
+    const emailAdapter = new EmailServiceAdapter(api.emailService)
     const priorityChoices = computed(() => ['1', '2', '3', '4', '5'])
 
     const addReceiver = () => {
@@ -101,25 +105,44 @@ export default {
     }
 
     const submitDraftEmail = async () => {
-      const emailAdapter = new EmailServiceAdapter(api.emailService)
+      if (!validateInput(false)) return
+
       updateEmail()
+
       try {
         await emailAdapter.submitDraftEmail(email)
+        router.push('/home/draft')
       } catch (e) {
-        console.log(e)
+        errorMsg.value = JSON.parse(e).msg
       }
-      router.push('/home/draft')
     }
 
     const updateDraftEmail = async () => {
-      const emailAdapter = new EmailServiceAdapter(api.emailService)
+      if (!validateInput(true)) return
       updateEmail()
+
       try {
         await emailAdapter.updateDraftEmail(email)
+        router.push('/home/draft')
       } catch (e) {
-        console.log(e)
+        errorMsg.value = JSON.parse(e).msg
       }
-      router.push('/home/draft')
+    }
+
+    const validateInput = (emptyReceivers) => {
+      if (emailSubject.value.length < 1) {
+        errorMsg.value = 'Email subject can NOT be empty!'
+        return false
+      }
+      if (emailDescription.value.length < 1) {
+        errorMsg.value = 'Email description can NOT be empty!'
+        return false
+      }
+      if (!emptyReceivers && receivers.value.length < 1) {
+        errorMsg.value = 'Receivers field can NOT be empty!'
+        return false
+      }
+      return true
     }
 
     return {
@@ -130,6 +153,7 @@ export default {
       receivers,
       priorityChose,
       priorityChoices,
+      errorMsg,
       addReceiver,
       removeReceiver,
       submitDraftEmail,
@@ -194,6 +218,13 @@ textarea {
   width: 25%;
   color: white;
   background-color: rgb(21, 141, 21);
+}
+
+#error {
+  color: red;
+  padding: 10px;
+  text-align: center;
+  font-weight: bold;
 }
 
 #btns {
