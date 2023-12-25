@@ -124,4 +124,9 @@ public class MailMediator {
         UserData senderData = this.userFacade.getUserDataByToken(token);
         senderData.addCustomFolder(folderName);
     }
+
+    public void deleteFolder(int token, String folderName) {
+        UserData senderData = this.userFacade.getUserDataByToken(token);
+        senderData.getCustomFolder(folderName);
+    }
 }

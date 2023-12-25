@@ -139,6 +139,17 @@ public class MailController {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body("{\"msg\" : \"Unauthorized token error\"}");
         }
     }
+    @DeleteMapping("deletefolder")
+    public ResponseEntity<?> deleteFolder(@RequestBody Map<String, Object> body){
+        try {
+            int token = (int) body.get("token");
+            String folderName = (String) body.get("foldername");
+            mediator.deleteFolder(token, folderName);
+            return ResponseEntity.ok("{\"msg\" : \"Folder is deleted successfully\"}");
+        }catch (Exception e){
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("{\"msg\" : \"Unauthorized token error\"}");
+        }
+    }
     @PostMapping("sendemail")
     public ResponseEntity<?> sendEmail(@RequestBody Map<String, Object> body){
         try {
