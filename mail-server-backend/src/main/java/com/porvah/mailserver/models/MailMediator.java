@@ -114,7 +114,8 @@ public class MailMediator {
     public void moveMails(int token, List<Integer> ids, String folderName) {
         UserData senderData = this.userFacade.getUserDataByToken(token);
         MailFolder<ROMail> folder;
-        if(folderName.equals("inbox")) folder = senderData.getInbox();
+        if(folderName.equals("sent")) folder = senderData.getSent();
+        else if(folderName.equals("inbox")) folder = senderData.getInbox();
         else folder = senderData.getCustomFolder(folderName);
         this.userFacade.moveEmailById(senderData, ids, folder, false);
     }
