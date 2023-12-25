@@ -5,7 +5,8 @@ const state = {
   sentMails: [],
   trashMails: [],
   draftMails: [],
-  foldersNames: []
+  foldersNames: [],
+  allContacts: []
 }
 
 const mutations = {
@@ -23,6 +24,9 @@ const mutations = {
   },
   getFolders(state, folders) {
     state.foldersNames = folders
+  },
+  getAllContacts(state, allContacts) {
+    state.allContacts = allContacts
   }
 }
 
@@ -51,6 +55,20 @@ const actions = {
     const folders = await api.folder.getFolders(token)
 
     commit('getFolders', folders)
+  },
+  async getAllContacts({ commit }, { token }) {
+    const currContacts = await api.contactsService.getContacts(token)
+
+    commit('getAllContacts', currContacts)
+  },
+  async updateAllFolders({ commit, dispatch }, { token }) {
+    const sort = 0
+    await dispatch('getInbox', { token, sort })
+    await dispatch('getSent', { token, sort })
+    await dispatch('getTrash', { token, sort })
+    await dispatch('getDraft', { token, sort })
+    await dispatch('getFolders', { token })
+    await dispatch('getAllContacts', { token })
   }
 }
 
@@ -59,7 +77,8 @@ const getters = {
   sentMails: (state) => state.sentMails,
   trashMails: (state) => state.trashMails,
   draftMails: (state) => state.draftMails,
-  foldersNames: (state) => state.foldersNames
+  foldersNames: (state) => state.foldersNames,
+  allContacts: (state) => state.allContacts
 }
 
 export default {
