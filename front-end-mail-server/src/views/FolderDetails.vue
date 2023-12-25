@@ -5,18 +5,30 @@
       {{ folderName }}
     </h1>
 
-    <SearchBar
-      :searchValue="searchValue"
-      @update:searchValue="(val) => (searchValue = val)"
-      :filterValue="filterValue"
-      @update:filterValue="(val) => (filterValue = val)"
-      :priorityValue="priorityValue"
-      @update:priorityValue="(val) => (priorityValue = val)"
-      @onSort="getFolderEmails"
-      title="Search mail"
-    />
+    <div id="header">
+      <SearchBar
+        :searchValue="searchValue"
+        @update:searchValue="(val) => (searchValue = val)"
+        :filterValue="filterValue"
+        @update:filterValue="(val) => (filterValue = val)"
+        :priorityValue="priorityValue"
+        @update:priorityValue="(val) => (priorityValue = val)"
+        @onSort="getFolderEmails"
+        title="Search mail"
+      />
 
-    <ListEmails :emails="filterEmails" page="sent-detail" />
+      <span @click="addFolder" class="material-symbols-outlined folder"> create_new_folder </span>
+
+      <span @click="deleteEmails" class="material-symbols-outlined delete"> delete </span>
+    </div>
+
+    <ListEmails
+      :emails="filterEmails"
+      :checkedEmails="selectedEmails"
+      @selectEmail="handleSelectEmail"
+      page="sent-detail"
+      :key="selectedEmails"
+    />
   </div>
 </template>
 
@@ -35,6 +47,7 @@ export default {
     const store = useStore()
     const folderName = props.name
     const emails = ref([])
+    const selectedEmails = ref([])
 
     const searchValue = ref('')
     const filterValue = ref('')
@@ -63,6 +76,25 @@ export default {
       emails.value = await api.folder.getFolderEmails(store.getters.token, sort, folderName)
     }
 
+    const handleSelectEmail = (eamilId) => {
+      if (selectedEmails.value.includes(eamilId)) {
+        selectedEmails.value = selectedEmails.value.filter((id) => id != eamilId)
+      } else {
+        selectedEmails.value.push(eamilId)
+      }
+    }
+
+    const addFolder = async () => {
+      store.commit('openFolderDialog', selectedEmails.value)
+      await getFolderEmails(0)
+    }
+
+    const deleteEmails = async () => {
+      const emailService = api.emailService
+      await emailService.deleteEmail(store.getters.token, selectedEmails.value)
+      await getFolderEmails(0)
+    }
+
     onMounted(async () => {
       await getFolderEmails(0)
     })
@@ -70,11 +102,15 @@ export default {
     return {
       folderName,
       emails,
+      selectedEmails,
       filterEmails,
       searchValue,
       filterValue,
       priorityValue,
-      getFolderEmails
+      getFolderEmails,
+      handleSelectEmail,
+      addFolder,
+      deleteEmails
     }
   }
 }
@@ -93,5 +129,29 @@ export default {
 h1 {
   border-bottom: 1px solid gray;
   padding: 10px;
+}
+
+#header {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.folder {
+  background-color: green;
+  color: white;
+  padding: 12px 5px;
+  margin-left: 10px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.delete {
+  background-color: red;
+  color: white;
+  padding: 12px 5px;
+  margin: 10px;
+  border-radius: 8px;
+  cursor: pointer;
 }
 </style>

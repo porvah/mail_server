@@ -76,6 +76,7 @@ export default {
         selectedEmails.value.push(eamilId)
       }
     }
+
     const addFolder = () => {
       store.commit('openFolderDialog', selectedEmails.value)
     }
