@@ -53,7 +53,7 @@ public class MailController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("{\"msg\" : \"Failed to login.\"}");
         }
     }
-    @PostMapping("logout")
+    @DeleteMapping("logout")
     public ResponseEntity<?> logOut(@RequestBody Map<String, Object> body){
         try {
             int id = (int) body.get("id");
