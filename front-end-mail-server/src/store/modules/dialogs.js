@@ -3,7 +3,7 @@ const state = {
   isSettingsDialogOpen: false,
   isProfileDialogOpen: false,
   isFolderDialogOpen: false,
-  emailId: -1
+  emailId: []
 }
 
 const mutations = {

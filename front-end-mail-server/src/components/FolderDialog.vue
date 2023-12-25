@@ -50,9 +50,11 @@ export default {
 
       await api.emailService.moveMail(
         store.getters.token,
-        [store.getters.emailId],
+        store.getters.emailId,
         selectedFolder.value
       )
+
+      await store.dispatch('updateAllFolders', { token: store.getters.token, sort: 0 })
 
       closeFolder()
     }

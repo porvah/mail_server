@@ -12,6 +12,8 @@
         title="Search mail"
       />
 
+      <span @click="addFolder" class="material-symbols-outlined folder"> create_new_folder </span>
+
       <span @click="deleteEmails" class="material-symbols-outlined delete"> delete </span>
     </div>
 
@@ -74,6 +76,9 @@ export default {
         selectedEmails.value.push(eamilId)
       }
     }
+    const addFolder = () => {
+      store.commit('openFolderDialog', selectedEmails.value)
+    }
 
     const deleteEmails = async () => {
       const emailService = api.emailService
@@ -101,6 +106,7 @@ export default {
       priorityValue,
       getInbox,
       handleSelectEmail,
+      addFolder,
       deleteEmails
     }
   }
@@ -121,6 +127,15 @@ export default {
   display: flex;
   justify-content: center;
   align-items: center;
+}
+
+.folder {
+  background-color: green;
+  color: white;
+  padding: 12px 5px;
+  margin-left: 10px;
+  border-radius: 8px;
+  cursor: pointer;
 }
 
 .delete {
