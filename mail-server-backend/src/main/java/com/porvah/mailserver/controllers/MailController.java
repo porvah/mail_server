@@ -1,5 +1,6 @@
 package com.porvah.mailserver.controllers;
 
+import com.porvah.mailserver.enums.RequiredPage;
 import com.porvah.mailserver.enums.SortType;
 import com.porvah.mailserver.interfaces.ROMail;
 import com.porvah.mailserver.models.*;
@@ -25,7 +26,7 @@ import java.util.Map;
 public class MailController {
 
     final VerificationProxy verificationProxy = new VerificationProxy();
-    final MailStrategy strategy = new MailStrategy();
+    final MailMediator mediator = new MailMediator();
 
     final UserFacade userFacade = new UserFacade();
     @PostMapping("signup")
@@ -35,9 +36,10 @@ public class MailController {
             String password = (String) body.get("password");
             String name = (String) body.get("name");
             verificationProxy.signUpUser(name, email, password);
-            return ResponseEntity.ok("{\"mgs\" : \"Account created successfully\"}");
+            return ResponseEntity.ok("{\"msg\" : \"Account created successfully\"}");
         }catch (Exception e){
-            return ResponseEntity.status(HttpStatus.ALREADY_REPORTED).body("{\"mgs\" : \"Account is already created\"}");
+            return ResponseEntity.status(HttpStatus.ALREADY_REPORTED)
+                    .body("{\"msg\" : \"Account is already created\"}");
         }
     }
     @PostMapping("login")
@@ -48,7 +50,7 @@ public class MailController {
             int userId = verificationProxy.loginUser(email, password);
             return ResponseEntity.ok(userId);
         } catch (RuntimeException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("{\"mgs\" : \"Failed to login.\"}");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("{\"msg\" : \"Failed to login.\"}");
         }
     }
     @PostMapping("logout")
@@ -56,9 +58,10 @@ public class MailController {
         try {
             int id = (int) body.get("id");
             verificationProxy.logoutUser(id);
-            return ResponseEntity.ok("{\"mgs\" : \"Logout is successful\"}");
+            return ResponseEntity.ok("{\"msg\" : \"Logout is successful\"}");
         }catch (Exception e){
-            return ResponseEntity.status(HttpStatus.ALREADY_REPORTED).body("{\"mgs\" : \"Account is already logged out\"}");
+            return ResponseEntity.status(HttpStatus.ALREADY_REPORTED)
+                    .body("{\"msg\" : \"Account is already logged out\"}");
         }
     }
     @GetMapping("getuser")
@@ -66,55 +69,63 @@ public class MailController {
         try {
             return ResponseEntity.ok(UserBase.getInstance().getLoggedUser(id));
         }catch (Exception e){
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("{\"mgs\" : \"User is not logged in\"}");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("{\"msg\" : \"User is not logged in\"}");
         }
     }
     @GetMapping("inbox")
-    public ResponseEntity<?> getInbox(@RequestParam("token") int token, @RequestParam("sort") int sort){
+    public ResponseEntity<?> getInbox(@RequestParam("token") int token, @RequestParam("sort") int sort,
+                                      @RequestParam("required") int req){
         try {
-            return ResponseEntity.ok(strategy.getInbox(token, SortType.values()[sort]));
+            return ResponseEntity.ok(mediator.getInbox(token, SortType.values()[sort], RequiredPage.values()[req]));
+
         }catch (Exception e){
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{\"mgs\" : \"Token not authorized\"}");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{\"msg\" : \"Token not authorized\"}");
         }
     }
     @GetMapping("trash")
-    public ResponseEntity<?> getTrash(@RequestParam("token") int token, @RequestParam("sort") int sort){
+    public ResponseEntity<?> getTrash(@RequestParam("token") int token, @RequestParam("sort") int sort,
+                                      @RequestParam("required") int req){
         try {
-            return ResponseEntity.ok(strategy.getTrash(token, SortType.values()[sort]));
+            return ResponseEntity.ok(mediator.getTrash(token, SortType.values()[sort], RequiredPage.values()[req]));
         }catch (Exception e){
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{\"mgs\" : \"Token not authorized\"}");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{\"msg\" : \"Token not authorized\"}");
         }
     }
     @GetMapping("sent")
-    public ResponseEntity<?> getSent(@RequestParam("token") int token, @RequestParam("sort") int sort){
+    public ResponseEntity<?> getSent(@RequestParam("token") int token, @RequestParam("sort") int sort,
+                                     @RequestParam("required") int req){
         try {
-            return ResponseEntity.ok(strategy.getSent(token, SortType.values()[sort]));
+            return ResponseEntity.ok(mediator.getSent(token, SortType.values()[sort], RequiredPage.values()[req]));
         }catch (Exception e){
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{\"mgs\" : \"Token not authorized\"}");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{\"msg\" : \"Token not authorized\"}");
         }
     }
     @GetMapping("draft")
-    public ResponseEntity<?> getDraft(@RequestParam("token") int token, @RequestParam("sort") int sort){
+    public ResponseEntity<?> getDraft(@RequestParam("token") int token, @RequestParam("sort") int sort,
+                                      @RequestParam("required") int req){
         try {
-            return ResponseEntity.ok(strategy.getDraft(token, SortType.values()[sort]));
+            return ResponseEntity.ok(mediator.getDraft(token, SortType.values()[sort], RequiredPage.values()[req]));
         }catch (Exception e){
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{\"mgs\" : \"Token not authorized\"}");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{\"msg\" : \"Token not authorized\"}");
         }
     }
     @GetMapping("folders")
     public ResponseEntity<?> getMailFolders(@RequestParam("token") int token){
         try {
-            return ResponseEntity.ok(strategy.getFolders(token));
+            return ResponseEntity.ok(mediator.getFolders(token));
         }catch (Exception e){
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{\"mgs\" : \"Token not authorized\"}");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{\"msg\" : \"Token not authorized\"}");
         }
     }
     @GetMapping("folderemails")
-    public ResponseEntity<?> getFolderEmails(@RequestParam("token") int token, @RequestParam("foldername") String foldername, @RequestParam("sort") int sort){
+    public ResponseEntity<?> getFolderEmails(@RequestParam("token") int token,
+                                             @RequestParam("foldername") String foldername,
+                                             @RequestParam("sort") int sort, @RequestParam("required") int req){
         try {
-            return ResponseEntity.ok(strategy.getFolderEmails(token, foldername, SortType.values()[sort]));
+            return ResponseEntity.ok(mediator.getFolderEmails(token, foldername, SortType.values()[sort],
+                    RequiredPage.values()[req]));
         }catch (Exception e){
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{\"mgs\" : \"Token not authorized\"}");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{\"msg\" : \"Token not authorized\"}");
         }
     }
     @PostMapping("createfolder")
@@ -122,10 +133,10 @@ public class MailController {
         try {
             int token = (int) body.get("token");
             String folderName = (String) body.get("foldername");
-            strategy.createFolder(token, folderName);
-            return ResponseEntity.ok("{\"mgs\" : \"Folder is created successfully\"}");
+            mediator.createFolder(token, folderName);
+            return ResponseEntity.ok("{\"msg\" : \"Folder is created successfully\"}");
         }catch (Exception e){
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("{\"mgs\" : \"Unauthorized token error\"}");
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("{\"msg\" : \"Unauthorized token error\"}");
         }
     }
     @PostMapping("sendemail")
@@ -136,10 +147,10 @@ public class MailController {
             String subject = (String) body.get("subject");
             String description = (String) body.get("body");
             int priority = (int) body.get("priority");
-            strategy.sendEmail(token, receiverEmails, subject, description, priority);
-            return ResponseEntity.ok().body("{\"mgs\" : \"Email Sent Successfully\"}");
+            mediator.sendEmail(token, receiverEmails, subject, description, priority);
+            return ResponseEntity.ok().body("{\"msg\" : \"Email Sent Successfully\"}");
         }catch (Exception e){
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("{\"mgs\" : \"User not found\"}");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("{\"msg\" : \"User not found\"}");
         }
     }
     @DeleteMapping("delete")
@@ -147,12 +158,11 @@ public class MailController {
         try{
             int token = (int) body.get("token");
             List<Integer> id = (List<Integer>) body.get("id");
-            strategy.deleteEmail(token, id);
-            return ResponseEntity.ok().body("{\"mgs\" : \"Email deleted successfully\"}");
+            mediator.deleteEmail(token, id);
+            return ResponseEntity.ok().body("{\"msg\" : \"Email deleted successfully\"}");
         }catch (Exception e){
-            return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body("{\"mgs\" : \"Unexpected error\"}");
+            return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body("{\"msg\" : \"Unexpected error\"}");
         }
-
     }
     @PostMapping("draftemail")
     public ResponseEntity<?> draftEmail(@RequestBody Map<String, Object> body){
@@ -161,10 +171,10 @@ public class MailController {
             String subject = (String) body.get("subject");
             String description = (String) body.get("body");
             int priority = (int) body.get("priority");
-            strategy.draftEmail(token, subject, description, priority);
-            return ResponseEntity.ok().body("{\"mgs\" : \"Email drafted successfully\"}");
+            mediator.draftEmail(token, subject, description, priority);
+            return ResponseEntity.ok().body("{\"msg\" : \"Email drafted successfully\"}");
         }catch (Exception e){
-            return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body("{\"mgs\" : \"Unexpected error\"}");
+            return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body("{\"msg\" : \"Unexpected error\"}");
         }
     }
     @PutMapping("updatedraft")
@@ -175,10 +185,10 @@ public class MailController {
             String subject = (String) body.get("subject");
             String description = (String) body.get("body");
             int priority = (int) body.get("priority");
-            strategy.updateDraft(id, token, subject, description, priority);
-            return ResponseEntity.ok().body("{\"mgs\" : \"Email updated successfully\"}");
+            mediator.updateDraft(id, token, subject, description, priority);
+            return ResponseEntity.ok().body("{\"msg\" : \"Email updated successfully\"}");
         }catch (Exception e){
-            return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body("{\"mgs\" : \"Unexpected error\"}");
+            return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body("{\"msg\" : \"Unexpected error\"}");
         }
     }
     @PostMapping("submitdraft")
@@ -190,10 +200,10 @@ public class MailController {
             List<String> receiverEmails = (List<String>) body.get("receiver");
             String description = (String) body.get("body");
             int priority = (int) body.get("priority");
-            strategy.submitDraft(id, token, receiverEmails,subject, description, priority);
-            return ResponseEntity.ok().body("{\"mgs\" : \"Drafted Email submitted successfully\"}");
+            mediator.submitDraft(id, token, receiverEmails,subject, description, priority);
+            return ResponseEntity.ok().body("{\"msg\" : \"Drafted Email submitted successfully\"}");
         }catch (Exception e){
-            return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body("{\"mgs\" : \"Unexpected error\"}");
+            return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body("{\"msg\" : \"Unexpected error\"}");
         }
     }
     @PutMapping("movemails")
@@ -202,13 +212,12 @@ public class MailController {
             List<Integer> ids = (List<Integer>) body.get("id");
             int token = (int) body.get("token");
             String folderName = (String) body.get("foldername");
-            strategy.moveMails(token, ids, folderName);
-            return ResponseEntity.ok("{\"mgs\" : \"Mails were moved successfully\"}");
+            mediator.moveMails(token, ids, folderName);
+            return ResponseEntity.ok("{\"msg\" : \"Mails were moved successfully\"}");
         }catch (Exception e){
-            return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body("{\"mgs\" : \"Unexpected error\"}");
+            return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body("{\"msg\" : \"Unexpected error\"}");
         }
     }
-
     @GetMapping("contacts")
     public ResponseEntity<?> getContacts(@RequestParam("token") int token, @RequestParam("token") int sort){
         try{
@@ -217,7 +226,7 @@ public class MailController {
             if(sort == 0) Collections.reverse(contacts);
             return ResponseEntity.ok(contacts);
         }catch (Exception e){
-            return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body("{\"mgs\" : \"Unexpected error\"}");
+            return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body("{\"msg\" : \"Unexpected error\"}");
         }
     }
 
@@ -227,21 +236,14 @@ public class MailController {
             int token = (int) body.get("token");
             String name = (String) body.get("name");
             ArrayList<String> emails = (ArrayList<String>) body.get("emails");
-
             AddContactCommand addContactCommand = new AddContactCommand(name, emails);
             UserData userData = this.userFacade.getUserDataByToken(token);
             int contactId = userData.getContactCommandInvoker().executeCommand(addContactCommand);
-
-            return ResponseEntity.ok("{\"mgs\" : \"Contact created successfully\"}");
-
-
-
+            return ResponseEntity.ok("{\"msg\" : \"Contact created successfully\"}");
         }catch (Exception e){
-            return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body("{\"mgs\" : \"Unexpected error\"}");
+            return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body("{\"msg\" : \"Unexpected error\"}");
         }
     }
-
-
     @PutMapping("updatecontact")
     public ResponseEntity<?> updateContact(@RequestBody Map<String, Object> body){
         try{
@@ -249,32 +251,26 @@ public class MailController {
             int contactId = (int) body.get("contactId");
             String name = (String) body.get("name");
             ArrayList<String> emails = (ArrayList<String>) body.get("emails");
-
             UpdateContactCommand updateContactCommand = new UpdateContactCommand(contactId, name, emails);
             UserData userData = this.userFacade.getUserDataByToken(token);
             int updatedContactId = userData.getContactCommandInvoker().executeCommand(updateContactCommand);
-
-            return ResponseEntity.ok("{\"mgs\" : \"Contact with id " + updatedContactId + " updated successfully\"}");
+            return ResponseEntity.ok("{\"msg\" : \"Contact with id "
+                    + updatedContactId + " updated successfully\"}");
         }catch (Exception e){
-            return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body("{\"mgs\" : \"Unexpected error\"}");
+            return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body("{\"msg\" : \"Unexpected error\"}");
         }
     }
-
     @DeleteMapping("deletecontacts")
     public ResponseEntity<?> deleteContacts(@RequestBody Map<String, Object> body){
         try{
             int token = (int) body.get("token");
             ArrayList<Integer> contactIds = (ArrayList<Integer>) body.get("contactIds");
-
             DeleteContactsCommand deleteContactsCommand = new DeleteContactsCommand(contactIds);
             UserData userData = this.userFacade.getUserDataByToken(token);
             userData.getContactCommandInvoker().executeCommand(deleteContactsCommand);
-
-
-            return ResponseEntity.ok("{\"mgs\" : \"Contacts deleted successfully\"}");
+            return ResponseEntity.ok("{\"msg\" : \"Contacts deleted successfully\"}");
         }catch (Exception e){
-            return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body("{\"mgs\" : \"Unexpected error\"}");
+            return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body("{\"msg\" : \"Unexpected error\"}");
         }
     }
-
 }
