@@ -38,6 +38,7 @@ export default {
     const deleteEmail = async () => {
       const emailService = api.emailService
       await emailService.deleteEmail(store.getters.token, [props.email.id])
+      await store.dispatch('updateAllFolders', { token: store.getters.token, sort: 0 })
     }
 
     return {
