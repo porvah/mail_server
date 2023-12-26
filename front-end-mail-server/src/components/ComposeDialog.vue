@@ -87,8 +87,10 @@
             </div>
           </div>
         </div>
-        <div v-if="errorMsg" id="error">{{ errorMsg }}</div>
       </div>
+
+      <div v-if="errorMsg" id="error">{{ errorMsg }}</div>
+
       <div id="btns">
         <button @click="closeCompose" id="cancel-btn" type="button">
           <span class="material-symbols-outlined"> cancel </span>
@@ -159,6 +161,7 @@ export default {
         .addSubject(emailSubject.value)
         .addBody(emailDescription.value)
         .addPriority(Number(priorityChose.value.slice(0, 1)))
+        .addAttachments(files.value)
         .build()
     }
 

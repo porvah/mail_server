@@ -10,5 +10,11 @@ class AttachmentService {
     return AttachmentService.instance
   }
 
-  async sendAttachment(token) {}
+  async getAttachments(token, id) {
+    const service = ApiService.getInstance()
+
+    return await service.makeRequest(`getattachment?token=${token}&id=${id}`, 'GET')
+  }
 }
+
+export default AttachmentService

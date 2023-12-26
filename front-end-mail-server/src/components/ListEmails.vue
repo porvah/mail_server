@@ -1,6 +1,6 @@
 <template>
   <div id="list-emails"></div>
-  <div v-for="email in emails" class="email-div" :key="email">
+  <div v-for="email in emails" class="email-div" :key="email.id">
     <input
       type="checkbox"
       v-model="selectedEmails"

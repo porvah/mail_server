@@ -10,15 +10,24 @@ class ApiService {
     return ApiService.instance
   }
 
-  async makeRequest(endpoint, method = 'GET', data = null) {
+  async makeRequest(endpoint, method = 'GET', data = null, json = true, headers = null) {
     const url = `${this.baseUrl}/${endpoint}`
+
+    let body = null
+    if (data && json) {
+      body = JSON.stringify(data)
+    } else if (data) {
+      body = data
+    }
 
     const options = {
       method,
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: data ? JSON.stringify(data) : null
+      headers: headers
+        ? headers
+        : {
+            'Content-Type': 'application/json'
+          },
+      body: body
     }
 
     const response = await fetch(url, options)

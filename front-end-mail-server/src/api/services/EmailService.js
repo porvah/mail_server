@@ -10,16 +10,9 @@ class EmailService {
     return EmailService.instance
   }
 
-  async sendEmail(token, receiver, subject, body, priority) {
+  async sendEmail(formdata) {
     const service = ApiService.getInstance()
-
-    return await service.makeRequest('sendemail', 'POST', {
-      token,
-      receiver,
-      subject,
-      body,
-      priority
-    })
+    return await service.makeRequest('sendemail', 'POST', formdata, false, {})
   }
 
   async deleteEmail(token, id) {

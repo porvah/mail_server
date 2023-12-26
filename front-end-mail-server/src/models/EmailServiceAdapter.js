@@ -1,4 +1,3 @@
-import ApiService from '@/api/services/ApiService'
 import store from '@/store'
 
 class EmailServiceAdapter {
@@ -12,8 +11,23 @@ class EmailServiceAdapter {
     const subject = email.subject
     const body = email.body
     const priority = email.priority
+    const files = email.files
 
-    await this.emailService.sendEmail(token, receiver, subject, body, priority)
+    var formdata = new FormData()
+    formdata.append('token', `${token}`)
+    formdata.append('body', `${body}`)
+    formdata.append('priority', `${priority}`)
+    formdata.append('subject', `${subject}`)
+
+    for (let i = 0; i < receiver.length; ++i) {
+      formdata.append('receiver', `${receiver[i]}`)
+    }
+
+    for (let i = 0; i < files.length; ++i) {
+      formdata.append('files', files[i])
+    }
+
+    await this.emailService.sendEmail(formdata)
   }
 
   async draftEmail(email) {

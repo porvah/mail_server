@@ -6,7 +6,7 @@
       </summary>
 
       <ol class="emails">
-        <div v-for="email in person.emails" id="email" :key="email">
+        <div v-for="email in person.emails" id="email" :key="email.id">
           <li>
             {{ email }}
           </li>

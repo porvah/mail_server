@@ -18,6 +18,10 @@
 
     <p>{{ email.body }}</p>
 
+    <div v-for="file in attachments" :key="file.fileName">
+      <button @click="getFileDownloadUrl(file)">{{ file.fileName }}</button>
+    </div>
+
     <AddContactDialog
       v-if="showContactDialog"
       @closeContact="closeContact"
@@ -27,10 +31,11 @@
 </template>
 
 <script>
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
 import { useStore } from 'vuex'
 import AddContactDialog from '@/components/AddContactDialog.vue'
+import api from '@/api'
 
 export default {
   props: ['id'],
@@ -41,6 +46,7 @@ export default {
     const currentRouteName = computed(() => route.name)
     const emailId = props.id
     const showContactDialog = ref(false)
+    const attachments = ref([])
 
     const emailList = computed(() => {
       switch (currentRouteName.value) {
@@ -63,6 +69,36 @@ export default {
       return emailList.value.find((e) => e.id == emailId)
     })
 
+    const getAttachments = async () => {
+      const response = await api.attachmentService.getAttachments(store.getters.token, emailId)
+      let files = []
+      for (let i = 0; i < response.length; ++i) {
+        files[i] = { bytes: response[i].bytes, fileName: response[i].name }
+      }
+
+      attachments.value = files
+    }
+
+    const getFileDownloadUrl = (file) => {
+      const unitArray = new Uint8Array(
+        atob(file.bytes)
+          .split('')
+          .map((c) => c.charCodeAt(0))
+      )
+      const blob = new Blob([unitArray], { type: file.fileName })
+
+      const downlaodLink = document.createElement('a')
+      downlaodLink.href = window.URL.createObjectURL(blob)
+
+      downlaodLink.download = file.fileName
+
+      document.body.appendChild(downlaodLink)
+
+      downlaodLink.click()
+
+      document.body.removeChild(downlaodLink)
+    }
+
     const addContact = () => {
       showContactDialog.value = true
     }
@@ -71,7 +107,11 @@ export default {
       showContactDialog.value = false
     }
 
-    return { email, showContactDialog, addContact, closeContact }
+    onMounted(async () => {
+      await getAttachments()
+    })
+
+    return { email, attachments, showContactDialog, addContact, closeContact, getFileDownloadUrl }
   }
 }
 </script>

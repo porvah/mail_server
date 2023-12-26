@@ -1,15 +1,21 @@
 <template>
   <div id="trash">
-    <SearchBar
-      :searchValue="searchValue"
-      @update:searchValue="(val) => (searchValue = val)"
-      :filterValue="filterValue"
-      @update:filterValue="(val) => (filterValue = val)"
-      :priorityValue="priorityValue"
-      @update:priorityValue="(val) => (priorityValue = val)"
-      @onSort="getTrash"
-      title="Search mail"
-    />
+    <div id="header">
+      <SearchBar
+        :searchValue="searchValue"
+        @update:searchValue="(val) => (searchValue = val)"
+        :filterValue="filterValue"
+        @update:filterValue="(val) => (filterValue = val)"
+        :priorityValue="priorityValue"
+        @update:priorityValue="(val) => (priorityValue = val)"
+        @onSort="getTrash"
+        title="Search mail"
+      />
+
+      <span @click="addFolder" class="material-symbols-outlined folder"> create_new_folder </span>
+
+      <span @click="deleteEmails" class="material-symbols-outlined delete"> delete </span>
+    </div>
 
     <div id="page">
       <button @click="getPreviousPage">
@@ -27,21 +33,29 @@
       </button>
     </div>
 
-    <ListEmails :emails="filterEmails" page="trash-detail" />
+    <ListEmails
+      :emails="filterEmails"
+      page="trash-detail"
+      :checkedEmails="selectedEmails"
+      @selectEmail="handleSelectEmail"
+      :key="selectedEmails"
+    />
   </div>
 </template>
 
 <script>
 import { onMounted, computed, ref } from 'vue'
+import { useStore } from 'vuex'
 import ListEmails from '@/components/ListEmails.vue'
 import SearchBar from '@/components/SearchBar.vue'
-import { useStore } from 'vuex'
+import api from '@/api'
 
 export default {
   components: { SearchBar, ListEmails },
   setup() {
     const store = useStore()
     const emails = ref([])
+    const selectedEmails = ref([])
     const current = ref(0)
     const total = ref(0)
 
@@ -73,12 +87,30 @@ export default {
       })
     })
 
+    const handleSelectEmail = (eamilId) => {
+      if (selectedEmails.value.includes(eamilId)) {
+        selectedEmails.value = selectedEmails.value.filter((id) => id != eamilId)
+      } else {
+        selectedEmails.value.push(eamilId)
+      }
+    }
+
     const getTrash = async (sort, page) => {
       await store.dispatch('getTrash', { token: store.getters.token, sort: sort, page })
       emails.value = store.getters.trashMails
       current.value = store.getters.curTrash
       total.value = store.getters.totalTrash
       sortValue.value = sort
+    }
+
+    const addFolder = () => {
+      store.commit('openFolderDialog', selectedEmails.value)
+    }
+
+    const deleteEmails = async () => {
+      const emailService = api.emailService
+      await emailService.deleteEmail(store.getters.token, selectedEmails.value)
+      await store.dispatch('updateAllFolders', { token: store.getters.token, sort: 0 })
     }
 
     const getNextPage = async () => {
@@ -117,13 +149,16 @@ export default {
       filterEmails,
       current,
       total,
-
+      selectedEmails,
       searchValue,
       filterValue,
       priorityValue,
       getTrash,
       getNextPage,
-      getPreviousPage
+      addFolder,
+      deleteEmails,
+      getPreviousPage,
+      handleSelectEmail
     }
   }
 }
@@ -137,6 +172,30 @@ export default {
 
   background-color: #eeeeeead;
   border-radius: 12px;
+}
+
+#header {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.folder {
+  background-color: green;
+  color: white;
+  padding: 12px 5px;
+  margin-left: 10px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.delete {
+  background-color: red;
+  color: white;
+  padding: 12px 5px;
+  margin: 10px;
+  border-radius: 8px;
+  cursor: pointer;
 }
 
 #page {

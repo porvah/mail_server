@@ -28,6 +28,11 @@ class EmailModel {
     return this
   }
 
+  addAttachments(files) {
+    this.email.files = files
+    return this
+  }
+
   build() {
     return this.email
   }
