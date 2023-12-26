@@ -23,15 +23,18 @@
 </template>
 
 <script>
+import { useRouter } from 'vue-router'
 import { useStore } from 'vuex'
 
 export default {
   setup() {
     const store = useStore()
+    const router = useRouter()
 
     const logoutUser = async () => {
       await store.dispatch('logout', { token: store.getters.token })
-      // closeSettings()
+      closeSettings()
+      router.push({ name: 'login' })
     }
 
     const closeSettings = () => {

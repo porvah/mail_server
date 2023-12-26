@@ -10,24 +10,24 @@ class FolderService {
     return FolderService.instane
   }
 
-  async getInbox(token, sort) {
+  async getInbox(token, sort, page) {
     const service = ApiService.getInstance()
-    return await service.makeRequest(`inbox?token=${token}&sort=${sort}`, 'GET')
+    return await service.makeRequest(`inbox?token=${token}&sort=${sort}&required=${page}`, 'GET')
   }
 
-  async getSent(token, sort) {
+  async getSent(token, sort, page) {
     const service = ApiService.getInstance()
-    return await service.makeRequest(`sent?token=${token}&sort=${sort}`, 'GET')
+    return await service.makeRequest(`sent?token=${token}&sort=${sort}&required=${page}`, 'GET')
   }
 
-  async getTrash(token, sort) {
+  async getTrash(token, sort, page) {
     const service = ApiService.getInstance()
-    return await service.makeRequest(`trash?token=${token}&sort=${sort}`, 'GET')
+    return await service.makeRequest(`trash?token=${token}&sort=${sort}&required=${page}`, 'GET')
   }
 
-  async getDraft(token, sort) {
+  async getDraft(token, sort, page) {
     const service = ApiService.getInstance()
-    return await service.makeRequest(`draft?token=${token}&sort=${sort}`, 'GET')
+    return await service.makeRequest(`draft?token=${token}&sort=${sort}&required=${page}`, 'GET')
   }
 
   async getFolders(token) {
@@ -43,10 +43,10 @@ class FolderService {
     })
   }
 
-  async getFolderEmails(token, sort, foldername) {
+  async getFolderEmails(token, sort, foldername, page) {
     const service = ApiService.getInstance()
     return await service.makeRequest(
-      `folderemails?token=${token}&foldername=${foldername}&sort=${sort}`,
+      `folderemails?token=${token}&foldername=${foldername}&sort=${sort}&requried=${page}`,
       'GET'
     )
   }

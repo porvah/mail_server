@@ -17,6 +17,22 @@
       <span @click="deleteEmails" class="material-symbols-outlined delete"> delete </span>
     </div>
 
+    <div id="page">
+      <button @click="getPreviousPage">
+        <span class="material-symbols-outlined"> arrow_back_ios </span>
+
+        Previous
+      </button>
+
+      <div id="page-info">{{ current }} / {{ total }}</div>
+
+      <button @click="getNextPage">
+        <span class="material-symbols-outlined"> arrow_forward_ios </span>
+
+        Next
+      </button>
+    </div>
+
     <ListEmails
       :emails="filterEmails"
       :checkedEmails="selectedEmails"
@@ -40,10 +56,13 @@ export default {
     const store = useStore()
     const emails = ref([])
     const selectedEmails = ref([])
+    const current = ref(0)
+    const total = ref(0)
 
     const searchValue = ref('')
     const filterValue = ref('')
     const priorityValue = ref('Any Priority')
+    const sortValue = ref(0)
 
     const filterCategory = (email) => {
       switch (filterValue.value) {
@@ -68,9 +87,12 @@ export default {
       })
     })
 
-    const getSent = async (sort) => {
-      await store.dispatch('getSent', { token: store.getters.token, sort: sort })
+    const getSent = async (sort, page) => {
+      await store.dispatch('getSent', { token: store.getters.token, sort: sort, page })
       emails.value = store.getters.sentMails
+      current.value = store.getters.curSent
+      total.value = store.getters.totalSent
+      sortValue.value = sort
     }
 
     const handleSelectEmail = (eamilId) => {
@@ -91,8 +113,16 @@ export default {
       await store.dispatch('updateAllFolders', { token: store.getters.token, sort: 0 })
     }
 
+    const getNextPage = async () => {
+      await getSent(sortValue.value, 1)
+    }
+
+    const getPreviousPage = async () => {
+      await getSent(sortValue.value, 2)
+    }
+
     onMounted(async () => {
-      await getSent(0)
+      await getSent(0, 0)
     })
 
     store.watch(
@@ -101,18 +131,34 @@ export default {
         emails.value = store.getters.sentMails
       }
     )
+    store.watch(
+      (state, getters) => getters.curSent,
+      () => {
+        current.value = store.getters.curSent
+      }
+    )
+    store.watch(
+      (state, getters) => getters.totalSent,
+      () => {
+        total.value = store.getters.totalSent
+      }
+    )
 
     return {
       emails,
       selectedEmails,
       filterEmails,
+      current,
+      total,
       searchValue,
       filterValue,
       priorityValue,
       getSent,
       handleSelectEmail,
       addFolder,
-      deleteEmails
+      deleteEmails,
+      getNextPage,
+      getPreviousPage
     }
   }
 }
@@ -150,5 +196,33 @@ export default {
   margin: 10px;
   border-radius: 8px;
   cursor: pointer;
+}
+
+#page {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+#page button {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  padding: 6px;
+  margin: 0 6px;
+  color: white;
+  background-color: green;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+}
+
+#page-info {
+  padding: 6px;
+  border-radius: 12px;
+  color: white;
+  background-color: gray;
+  font-weight: bold;
+  font-size: 16px;
 }
 </style>

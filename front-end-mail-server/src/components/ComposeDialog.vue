@@ -118,7 +118,7 @@ export default {
       const email = createEmail()
       try {
         await emailAdapter.sendEmail(email)
-        await store.dispatch('getSent', { token: store.getters.token, sort: 0 })
+        await store.dispatch('getSent', { token: store.getters.token, sort: 0, page: 0 })
         closeCompose()
       } catch (e) {
         errorMsg.value = JSON.parse(e).msg
@@ -131,7 +131,7 @@ export default {
       const email = createEmail()
       try {
         await emailAdapter.draftEmail(email)
-        await store.dispatch('getDraft', { token: store.getters.token, sort: 0 })
+        await store.dispatch('getDraft', { token: store.getters.token, sort: 0, page: 0 })
         closeCompose()
       } catch (e) {
         errorMsg.value = JSON.parse(e).msg
