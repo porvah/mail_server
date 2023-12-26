@@ -1,10 +1,5 @@
 <template>
-  <div id="folder-details">
-    <h1>
-      <span class="material-symbols-outlined"> folder </span>
-      {{ folderName }}
-    </h1>
-
+  <div id="draft">
     <div id="header">
       <SearchBar
         :searchValue="searchValue"
@@ -13,11 +8,9 @@
         @update:filterValue="(val) => (filterValue = val)"
         :priorityValue="priorityValue"
         @update:priorityValue="(val) => (priorityValue = val)"
-        @onSort="getFolderEmails"
+        @onSort="getDraft"
         title="Search mail"
       />
-
-      <span @click="addFolder" class="material-symbols-outlined folder"> create_new_folder </span>
 
       <span @click="deleteEmails" class="material-symbols-outlined delete"> delete </span>
     </div>
@@ -26,26 +19,23 @@
       :emails="filterEmails"
       :checkedEmails="selectedEmails"
       @selectEmail="handleSelectEmail"
-      page="sent-detail"
+      page="draft-detail"
       :key="selectedEmails"
     />
   </div>
 </template>
 
 <script>
-import { ref, computed, onMounted } from 'vue'
+import { onMounted, computed, ref } from 'vue'
 import { useStore } from 'vuex'
-import Email from '@/components/Email.vue'
-import SearchBar from '@/components/SearchBar.vue'
 import ListEmails from '@/components/ListEmails.vue'
+import SearchBar from '@/components/SearchBar.vue'
 import api from '@/api'
 
 export default {
-  components: { Email, SearchBar, ListEmails },
-  props: ['name'],
-  setup(props) {
+  components: { SearchBar, ListEmails },
+  setup() {
     const store = useStore()
-    const folderName = props.name
     const emails = ref([])
     const selectedEmails = ref([])
 
@@ -76,8 +66,9 @@ export default {
       })
     })
 
-    const getFolderEmails = async (sort) => {
-      emails.value = await api.folder.getFolderEmails(store.getters.token, sort, folderName)
+    const getDraft = async (sort) => {
+      await store.dispatch('getDraft', { token: store.getters.token, sort: sort })
+      emails.value = store.getters.draftMails
     }
 
     const handleSelectEmail = (eamilId) => {
@@ -88,32 +79,32 @@ export default {
       }
     }
 
-    const addFolder = async () => {
-      store.commit('openFolderDialog', selectedEmails.value)
-      await getFolderEmails(0)
-    }
-
     const deleteEmails = async () => {
       const emailService = api.emailService
       await emailService.deleteEmail(store.getters.token, selectedEmails.value)
-      await getFolderEmails(0)
+      await store.dispatch('updateAllFolders', { token: store.getters.token, sort: 0 })
     }
 
     onMounted(async () => {
-      await getFolderEmails(0)
+      await getDraft(0)
     })
 
+    store.watch(
+      (state, getters) => getters.draftMails,
+      () => {
+        emails.value = store.getters.draftMails
+      }
+    )
+
     return {
-      folderName,
       emails,
       selectedEmails,
       filterEmails,
       searchValue,
       filterValue,
       priorityValue,
-      getFolderEmails,
+      getDraft,
       handleSelectEmail,
-      addFolder,
       deleteEmails
     }
   }
@@ -121,18 +112,13 @@ export default {
 </script>
 
 <style scoped>
-#folder-details {
+#draft {
   flex: 0.8;
   overflow-x: hidden;
   height: 90vh;
 
   background-color: #eeeeeead;
   border-radius: 12px;
-}
-
-h1 {
-  border-bottom: 1px solid gray;
-  padding: 10px;
 }
 
 #header {

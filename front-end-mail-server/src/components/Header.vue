@@ -2,14 +2,19 @@
   <div id="header">
     <div class="left">
       <span class="material-symbols-outlined logo"> mail </span>
+
       <p class="title">Mail Pulse</p>
     </div>
+
     <div class="middle">
-      <span class="material-symbols-outlined"> refresh </span>
-      <p id="user">Registered as ...</p>
+      <span @click="refresh" class="material-symbols-outlined"> refresh </span>
+
+      <p id="user">{{ user.name }}</p>
     </div>
+
     <div class="right">
       <span @click="openProfileDialog" class="material-symbols-outlined"> account_circle </span>
+
       <span @click="openSettingsDialog" class="material-symbols-outlined"> settings </span>
     </div>
   </div>
@@ -17,10 +22,13 @@
 
 <script>
 import { useStore } from 'vuex'
+import { useRouter } from 'vue-router'
 
 export default {
   setup() {
     const store = useStore()
+    const router = useRouter()
+    const user = store.getters.user
 
     const openProfileDialog = () => {
       store.commit('openProfileDialog')
@@ -30,7 +38,13 @@ export default {
       store.commit('openSettingsDialog')
     }
 
-    return { openProfileDialog, openSettingsDialog }
+    const refresh = async () => {
+      const token = store.getters.token
+      const sort = 0
+      await store.dispatch('updateAllFolders', { token, sort })
+    }
+
+    return { user, openProfileDialog, openSettingsDialog, refresh }
   }
 }
 </script>

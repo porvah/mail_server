@@ -1,52 +1,119 @@
 <template>
   <div id="inbox">
-    <SearchBar title="Search mail" />
-    <ListEmails :emails="filterEmails" />
+    <div id="header">
+      <SearchBar
+        :searchValue="searchValue"
+        @update:searchValue="(val) => (searchValue = val)"
+        :filterValue="filterValue"
+        @update:filterValue="(val) => (filterValue = val)"
+        :priorityValue="priorityValue"
+        @update:priorityValue="(val) => (priorityValue = val)"
+        @onSort="getInbox"
+        title="Search mail"
+      />
+
+      <span @click="addFolder" class="material-symbols-outlined folder"> create_new_folder </span>
+
+      <span @click="deleteEmails" class="material-symbols-outlined delete"> delete </span>
+    </div>
+
+    <ListEmails
+      :emails="filterEmails"
+      :checkedEmails="selectedEmails"
+      @selectEmail="handleSelectEmail"
+      page="inbox-detail"
+      :key="selectedEmails"
+    />
   </div>
 </template>
 
 <script>
-import { computed, ref } from 'vue'
+import { onMounted, computed, ref } from 'vue'
+import { useStore } from 'vuex'
 import ListEmails from '@/components/ListEmails.vue'
 import SearchBar from '@/components/SearchBar.vue'
+import api from '@/api'
 
 export default {
   components: { SearchBar, ListEmails },
   setup() {
+    const store = useStore()
+    const emails = ref([])
+    const selectedEmails = ref([])
+
     const searchValue = ref('')
-    const emails = ref([
-      {
-        id: 0,
-        sender: 'Ahmed',
-        receiver: 'mohamed@test.com',
-        subject: 'College',
-        description: 'Testing some subjects',
-        date: '12/13/2023 12:16'
-      },
-      {
-        id: 1,
-        sender: 'mohamed',
-        receiver: 'ahmed@test.com',
-        subject: 'Programming',
-        description:
-          'Props attributes are written with a dash - to separate words (kebab-case) in the <template> tag, but kebab-case is not legal in JavaScript. So instead we need to write the attribute names as camelCase in JavaScript, and Vue understands this automatically!',
-        date: '12/13/2023 12:16'
-      },
-      {
-        id: 2,
-        sender: 'Ali',
-        receiver: 'ahmed@test.com',
-        subject: 'Important',
-        description: "We didn't finish anything and the deadline is coming for us!!!",
-        date: '12/13/2023 12:16'
+    const filterValue = ref('')
+    const priorityValue = ref('Any Priority')
+
+    const filterCategory = (email) => {
+      switch (filterValue.value) {
+        case 'Sender':
+          return email.sender
+        case 'Subject':
+          return email.subject
+        case 'Description':
+          return email.body
+        default:
+          return email.subject
       }
-    ])
+    }
 
     const filterEmails = computed(() => {
-      return emails.value.filter((e) => e.description.includes(searchValue.value))
+      return emails.value.filter((e) => {
+        return (
+          (priorityValue.value.substring(0, 1) === 'A' ||
+            priorityValue.value.substring(0, 1) == `${e.priority}`) &&
+          filterCategory(e).toLowerCase().includes(searchValue.value.toLowerCase())
+        )
+      })
     })
 
-    return { emails, filterEmails, searchValue }
+    const getInbox = async (sort) => {
+      await store.dispatch('getInbox', { token: store.getters.token, sort: sort })
+      emails.value = store.getters.inboxMails
+    }
+
+    const handleSelectEmail = (eamilId) => {
+      if (selectedEmails.value.includes(eamilId)) {
+        selectedEmails.value = selectedEmails.value.filter((id) => id != eamilId)
+      } else {
+        selectedEmails.value.push(eamilId)
+      }
+    }
+
+    const addFolder = () => {
+      store.commit('openFolderDialog', selectedEmails.value)
+    }
+
+    const deleteEmails = async () => {
+      const emailService = api.emailService
+      await emailService.deleteEmail(store.getters.token, selectedEmails.value)
+      await store.dispatch('updateAllFolders', { token: store.getters.token, sort: 0 })
+    }
+
+    onMounted(async () => {
+      await getInbox(0)
+    })
+
+    store.watch(
+      (state, getters) => getters.inboxMails,
+      () => {
+        emails.value = store.getters.inboxMails
+      }
+    )
+
+    return {
+      emails,
+      selectedEmails,
+      filterEmails,
+      searchValue,
+      filterValue,
+      priorityValue,
+      getInbox,
+      handleSelectEmail,
+      addFolder,
+      deleteEmails
+    }
   }
 }
 </script>
@@ -59,5 +126,29 @@ export default {
 
   background-color: #eeeeeead;
   border-radius: 12px;
+}
+
+#header {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.folder {
+  background-color: green;
+  color: white;
+  padding: 12px 5px;
+  margin-left: 10px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.delete {
+  background-color: red;
+  color: white;
+  padding: 12px 5px;
+  margin: 10px;
+  border-radius: 8px;
+  cursor: pointer;
 }
 </style>
