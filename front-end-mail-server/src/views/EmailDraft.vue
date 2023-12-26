@@ -1,6 +1,6 @@
 <template>
-  <dialog open>
-    <h2>New Email</h2>
+  <div id="email-draft">
+    <h2>Draft Email</h2>
     <form action="#" @submit.prevent="">
       <label>From:</label>
       <input type="text" :value="emailFrom" disabled />
@@ -43,50 +43,46 @@
       <div v-if="errorMsg" id="error">{{ errorMsg }}</div>
 
       <div id="btns">
-        <button @click="closeCompose" id="cancel-btn" type="button">
-          <span class="material-symbols-outlined"> cancel </span>
-          Cancel
-        </button>
-
-        <button type="submit" @click="draftEmail" id="draft-btn">
+        <button type="submit" @click="updateDraftEmail" id="draft-btn">
           <span class="material-symbols-outlined"> edit_document </span>
           Draft
         </button>
 
-        <button type="submit" @click="sendEmail" id="send-btn">
+        <button type="submit" @click="submitDraftEmail" id="send-btn">
           <span class="material-symbols-outlined"> send </span>
           Send
         </button>
       </div>
     </form>
-  </dialog>
+  </div>
 </template>
 
 <script>
 import { computed, ref } from 'vue'
+import { useRouter } from 'vue-router'
 import { useStore } from 'vuex'
-import EmailModel from '../models/EmailModel'
-import api from '@/api'
 import EmailServiceAdapter from '@/models/EmailServiceAdapter'
+import EmailModel from '@/models/EmailModel'
+import api from '@/api'
 
 export default {
-  setup() {
+  props: ['id'],
+  setup(props) {
     const store = useStore()
+    const router = useRouter()
+    const emailId = props.id
+    const email = store.getters.draftMails.find((e) => e.id == emailId)
 
-    const emailFrom = store.getters.user.email
-    const emailTo = ref('')
-    const emailSubject = ref('')
-    const emailDescription = ref('')
-    const priorityChose = ref('1 (Low)')
+    const emailFrom = email.sender
+    const emailTo = ref(email.receiver)
+    const emailSubject = ref(email.subject)
+    const emailDescription = ref(email.body)
+    const priorityChose = ref(email.priority)
     const receivers = ref([])
     const errorMsg = ref('')
 
     const emailAdapter = new EmailServiceAdapter(api.emailService)
-    const priorityChoices = computed(() => ['1 (Low)', '2', '3', '4', '5 (High)'])
-
-    const closeCompose = () => {
-      store.commit('closeComposeDialog')
-    }
+    const priorityChoices = computed(() => ['1', '2', '3', '4', '5'])
 
     const addReceiver = () => {
       if (emailTo.value && emailTo.value.length > 0) {
@@ -101,38 +97,33 @@ export default {
       receivers.value = receivers.value.filter((r) => receiver != r)
     }
 
-    const createEmail = () => {
-      const email = new EmailModel()
-      return email
-        .addSender(emailFrom)
-        .addReceiver(receivers.value)
-        .addSubject(emailSubject.value)
-        .addBody(emailDescription.value)
-        .addPriority(Number(priorityChose.value.slice(0, 1)))
-        .build()
+    const updateEmail = () => {
+      email.receiver = receivers.value
+      email.subject = emailSubject.value
+      email.body = emailDescription.value
+      email.priority = Number(priorityChose.value)
     }
 
-    const sendEmail = async () => {
+    const submitDraftEmail = async () => {
       if (!validateInput(false)) return
 
-      const email = createEmail()
+      updateEmail()
+
       try {
-        await emailAdapter.sendEmail(email)
-        await store.dispatch('getSent', { token: store.getters.token, sort: 0 })
-        closeCompose()
+        await emailAdapter.submitDraftEmail(email)
+        router.push('/home/draft')
       } catch (e) {
         errorMsg.value = JSON.parse(e).msg
       }
     }
 
-    const draftEmail = async () => {
+    const updateDraftEmail = async () => {
       if (!validateInput(true)) return
+      updateEmail()
 
-      const email = createEmail()
       try {
-        await emailAdapter.draftEmail(email)
-        await store.dispatch('getDraft', { token: store.getters.token, sort: 0 })
-        closeCompose()
+        await emailAdapter.updateDraftEmail(email)
+        router.push('/home/draft')
       } catch (e) {
         errorMsg.value = JSON.parse(e).msg
       }
@@ -163,34 +154,29 @@ export default {
       priorityChose,
       priorityChoices,
       errorMsg,
-      closeCompose,
       addReceiver,
       removeReceiver,
-      sendEmail,
-      draftEmail
+      submitDraftEmail,
+      updateDraftEmail
     }
   }
 }
 </script>
 
 <style scoped>
-dialog {
-  position: absolute;
-  left: 50%;
-  top: 40%;
-  margin-left: -25vh;
-  margin-top: -25vh;
-  width: 400px;
-  padding: 20px;
-  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
-  border: 1px solid gray;
+#email-draft {
+  flex: 0.8;
+  overflow-x: hidden;
+  height: 90vh;
+
+  background-color: #eeeeeead;
   border-radius: 12px;
 }
 
 h2 {
   border-bottom: 1px solid gray;
-  margin-bottom: 6px;
-  padding-bottom: 4px;
+  margin: 6px;
+  padding: 6px;
 }
 
 form {
@@ -201,21 +187,22 @@ form {
 label {
   color: #555;
   display: inline-block;
-  margin: 10px 0;
-  font-size: 14px;
+  margin: 10px;
+  font-size: 16px;
   letter-spacing: 1px;
   font-weight: bold;
-  background: white;
 }
 
 input,
 textarea {
   display: block;
-  padding: 6px;
-  width: 100%;
+  padding: 10px;
+  margin: 0 10px;
+  width: 98%;
   box-sizing: border-box;
   border: none;
   border-bottom: 1px solid #ddd;
+  border-radius: 10px;
   color: #555;
   background: white;
 }
@@ -233,6 +220,13 @@ textarea {
   background-color: rgb(21, 141, 21);
 }
 
+#error {
+  color: red;
+  padding: 10px;
+  text-align: center;
+  font-weight: bold;
+}
+
 #btns {
   display: flex;
   justify-content: space-around;
@@ -240,7 +234,7 @@ textarea {
 
 #priority {
   display: flex;
-  justify-content: space-between;
+  justify-content: space-around;
   padding: 10px 0;
   align-items: center;
 }
@@ -269,13 +263,8 @@ textarea {
 
 .element input {
   cursor: pointer;
-}
-
-#error {
-  color: red;
-  padding: 10px;
-  text-align: center;
-  font-weight: bold;
+  width: 20px;
+  height: 20px;
 }
 
 button {
@@ -288,6 +277,7 @@ button {
   border: none;
   border-radius: 12px;
   font-weight: bold;
+  font-size: 16px;
   cursor: pointer;
 }
 
@@ -299,11 +289,5 @@ button {
 #draft-btn {
   color: white;
   background-color: rgb(123, 78, 78);
-}
-
-#cancel-btn {
-  color: green;
-  background: white;
-  border: 1px solid green;
 }
 </style>
