@@ -172,10 +172,10 @@ public class MailController {
                                        @RequestParam("files") List<MultipartFile> files) {
         try {
             mediator.sendAttachment(token, id, files);
-            return ResponseEntity.ok().body("{\"mgs\" : \"Attachments Sent Successfully\"}");
+            return ResponseEntity.ok().body("{\"msg\" : \"Attachments Sent Successfully\"}");
         } catch (Exception e) {
             System.out.println(e.getMessage());
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("{\"mgs\" : \"User not found\"}");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("{\"msg\" : \"User not found\"}");
         }
     }
 
@@ -186,7 +186,7 @@ public class MailController {
             return ResponseEntity.ok(attachment);
         } catch (Exception e) {
             System.out.println(e.getMessage());
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("{\"mgs\" : \"User not found\"}");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("{\"msg\" : \"User not found\"}");
         }
     }
     @DeleteMapping("delete")
