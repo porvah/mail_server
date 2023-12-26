@@ -12,7 +12,7 @@ class ContactsService {
 
   async getContacts(token) {
     const service = ApiService.getInstance()
-    return await service.makeRequest(`contacts?token=${token}`, 'GET')
+    return await service.makeRequest(`contacts?token=${token}&sort=0`, 'GET')
   }
 
   async createContact(token, name, emails) {

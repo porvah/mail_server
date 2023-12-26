@@ -2,7 +2,9 @@
   <div id="email">
     <!-- <span class="material-symbols-outlined"> star </span> -->
 
-    <span @click="addFolder" class="material-symbols-outlined"> create_new_folder </span>
+    <span v-if="page != 'sent-detail'" @click="addFolder" class="material-symbols-outlined">
+      create_new_folder
+    </span>
 
     <h3 @click="goToEmail" class="sender">@{{ sender }}</h3>
 

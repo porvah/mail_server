@@ -43,6 +43,7 @@ export default {
     const getFolders = async () => {
       await store.dispatch('getFolders', { token: store.getters.token })
       folders.value = store.getters.foldersNames
+      folders.value.unshift('inbox')
     }
 
     const addEmailToFolder = async () => {

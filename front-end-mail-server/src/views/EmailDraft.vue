@@ -62,7 +62,6 @@ import { computed, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useStore } from 'vuex'
 import EmailServiceAdapter from '@/models/EmailServiceAdapter'
-import EmailModel from '@/models/EmailModel'
 import api from '@/api'
 
 export default {
@@ -86,6 +85,11 @@ export default {
 
     const addReceiver = () => {
       if (emailTo.value && emailTo.value.length > 0) {
+        const newEmail = emailTo.value.split('@')
+        if (newEmail.length != 2 || newEmail[0] === '' || newEmail[1] === '') {
+          errorMsg.value = 'Invalid email.'
+          return
+        }
         if (!receivers.value.includes(emailTo.value)) {
           receivers.value.push(emailTo.value)
         }

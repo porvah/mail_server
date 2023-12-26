@@ -9,6 +9,12 @@
 
           <div id="email-to">
             <label>To:</label>
+            <select id="my-contact" multiple v-model="receivers">
+              <option v-for="contact in allContacts" :key="contact">
+                {{ contact }}
+              </option>
+            </select>
+
             <button @click="addReceiver" id="add-receiver-btn" type="button">
               <span class="material-symbols-outlined"> add </span>
               Add
@@ -132,6 +138,8 @@ export default {
     const isDragging = ref(false)
     const files = ref([])
     const file = ref(null)
+    const allContacts = ref([])
+    const selectedContacts = ref([])
 
     const emailAdapter = new EmailServiceAdapter(api.emailService)
     const priorityChoices = computed(() => ['1 (Low)', '2', '3', '4', '5 (High)'])
@@ -142,6 +150,11 @@ export default {
 
     const addReceiver = () => {
       if (emailTo.value && emailTo.value.length > 0) {
+        const newEmail = emailTo.value.split('@')
+        if (newEmail.length != 2 || newEmail[0] === '' || newEmail[1] === '') {
+          errorMsg.value = 'Invalid email.'
+          return
+        }
         if (!receivers.value.includes(emailTo.value)) {
           receivers.value.push(emailTo.value)
         }
@@ -151,6 +164,7 @@ export default {
 
     const removeReceiver = (receiver) => {
       receivers.value = receivers.value.filter((r) => receiver != r)
+      selectedContacts.value = selectedContacts.value.filter((r) => receiver != r)
     }
 
     const createEmail = () => {
@@ -245,6 +259,20 @@ export default {
       isDragging.value = false
     }
 
+    const getAllContacts = () => {
+      const folders = store.getters.allContacts
+      const contactsSet = new Set()
+
+      for (let i = 0; i < folders.length; ++i) {
+        for (let j = 0; j < folders[i].emails.length; ++j) {
+          contactsSet.add(folders[i].emails[j])
+        }
+      }
+      allContacts.value = Array.from(contactsSet)
+    }
+
+    getAllContacts()
+
     return {
       emailFrom,
       emailTo,
@@ -257,6 +285,8 @@ export default {
       isDragging,
       files,
       file,
+      allContacts,
+      selectedContacts,
       closeCompose,
       addReceiver,
       removeReceiver,
@@ -268,7 +298,8 @@ export default {
       remove,
       dragover,
       dragleave,
-      drop
+      drop,
+      getAllContacts
     }
   }
 }
@@ -457,5 +488,20 @@ button {
   border-radius: 5px;
   border: 1px solid #a2a2a2;
   background-color: #a2a2a2;
+}
+
+#my-contact {
+  border: none;
+  background-color: gray;
+  color: white;
+  padding: 10px;
+  border-radius: 6px;
+}
+
+#my-contact option {
+  background-color: white;
+  color: black;
+  padding: 3px;
+  border-radius: 6px;
 }
 </style>

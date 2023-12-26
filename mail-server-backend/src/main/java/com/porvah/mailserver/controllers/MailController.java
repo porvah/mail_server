@@ -11,10 +11,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+
+import java.util.*;
 
 @RestController
 @RequestMapping()
@@ -147,15 +145,18 @@ public class MailController {
     }
     @PostMapping("sendemail")
     public ResponseEntity<?> sendEmail(@RequestParam("token") int token,
-                                       @RequestParam("files") List<MultipartFile> files,
+                                       @RequestParam("files") Optional<List<MultipartFile>> files,
                                        @RequestParam("receiver") List<String> receiverEmails,
                                        @RequestParam("subject") String subject,
                                        @RequestParam("body") String description,
                                        @RequestParam("priority") int priority
                                        ){
         try {
-
-            mediator.sendEmail(token, receiverEmails, subject, description, priority, files);
+            List<MultipartFile> newList = new ArrayList<>();
+            if (files.isPresent()) {
+                newList = files.get();
+            }
+            mediator.sendEmail(token, receiverEmails, subject, description, priority, newList);
             return ResponseEntity.ok().body("{\"msg\" : \"Email Sent Successfully\"}");
         }catch (Exception e){
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("{\"msg\" : \"User not found\"}");
@@ -239,7 +240,7 @@ public class MailController {
         }
     }
     @GetMapping("contacts")
-    public ResponseEntity<?> getContacts(@RequestParam("token") int token, @RequestParam("token") int sort){
+    public ResponseEntity<?> getContacts(@RequestParam("token") int token, @RequestParam("sort") int sort){
         try{
             UserData userData = this.userFacade.getUserDataByToken(token);
             List<Contact> contacts = new ArrayList<>( userData.getContacts().values());
