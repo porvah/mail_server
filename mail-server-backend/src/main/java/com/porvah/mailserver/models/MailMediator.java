@@ -1,48 +1,69 @@
 package com.porvah.mailserver.models;
 
+import com.porvah.mailserver.enums.RequiredPage;
 import com.porvah.mailserver.enums.SortType;
 import com.porvah.mailserver.interfaces.ROMail;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
-public class MailStrategy {
+public class MailMediator {
     private final UserFacade userFacade;
-    public MailStrategy(){
+    public MailMediator(){
         this.userFacade = new UserFacade();
     }
-    public List<ROMail> getInbox(int token, SortType sort){
+    public Map<String, Object> getInbox(int token, SortType sort, RequiredPage req){
         UserData data = this.userFacade.getUserDataByToken(token);
         MailFolder<ROMail> inbox = data.getInbox();
-        return inbox.getMails(sort);
+        Map<String, Object> responseObject = new HashMap<>();
+        responseObject.put("list", inbox.getPage(req, sort));
+        responseObject.put("current", inbox.iterator.getCurrentPage());
+        responseObject.put("total", inbox.iterator.getTotalPages());
+        return responseObject;
     }
-    public List<ROMail> getTrash(int token, SortType sort){
+    public Map<String, Object> getTrash(int token, SortType sort, RequiredPage req){
         UserData data = this.userFacade.getUserDataByToken(token);
-        MailFolder<ROMail> trash = data.getTrash();
-        return trash.getMails(sort);
+        MailFolder<ROMail> folder = data.getTrash();
+        Map<String, Object> responseObject = new HashMap<>();
+        responseObject.put("list", folder.getPage(req, sort));
+        responseObject.put("current", folder.iterator.getCurrentPage());
+        responseObject.put("total", folder.iterator.getTotalPages());
+        return responseObject;
     }
-    public List<ROMail> getSent(int token, SortType sort){
+    public Map<String, Object> getSent(int token, SortType sort, RequiredPage req){
         UserData data = this.userFacade.getUserDataByToken(token);
-        MailFolder<ROMail> sent = data.getSent();
-        return sent.getMails(sort);
+        MailFolder<ROMail> folder = data.getSent();
+        Map<String, Object> responseObject = new HashMap<>();
+        responseObject.put("list", folder.getPage(req, sort));
+        responseObject.put("current", folder.iterator.getCurrentPage());
+        responseObject.put("total", folder.iterator.getTotalPages());
+        return responseObject;
     }
-    public List<Mail> getDraft(int token, SortType sort){
+    public Map<String, Object> getDraft(int token, SortType sort, RequiredPage req){
         UserData data = this.userFacade.getUserDataByToken(token);
-        MailFolder<Mail> draft = data.getDraft();
-        return draft.getMails(sort);
+        MailFolder<Mail> folder = data.getDraft();
+        Map<String, Object> responseObject = new HashMap<>();
+        responseObject.put("list", folder.getPage(req, sort));
+        responseObject.put("current", folder.iterator.getCurrentPage());
+        responseObject.put("total", folder.iterator.getTotalPages());
+        return responseObject;
     }
     public List<String> getFolders(int token){
         UserData senderData = this.userFacade.getUserDataByToken(token);
-        List<String> folderNames = new ArrayList<String>();
+        List<String> folderNames = new ArrayList<>();
         for( MailFolder<ROMail> folder : senderData.getCustomFolders()){
             folderNames.add(folder.getName());
         }
         return folderNames;
     }
-    public List<ROMail> getFolderEmails(int token, String name, SortType sort){
+    public Map<String, Object> getFolderEmails(int token, String name, SortType sort, RequiredPage req){
         UserData data = this.userFacade.getUserDataByToken(token);
-        return data.getCustomFolder(name).getMails(sort);
+        MailFolder<ROMail> folder = data.getCustomFolder(name);
+        Map<String, Object> responseObject = new HashMap<>();
+        responseObject.put("list", folder.getPage(req, sort));
+        responseObject.put("current", folder.iterator.getCurrentPage());
+        responseObject.put("total", folder.iterator.getTotalPages());
+        return responseObject;
+
     }
     public void sendEmail(int token, List<String> receivers, String subject, String body, int priority){
         UserData senderData = this.userFacade.getUserDataByToken(token);
@@ -93,7 +114,8 @@ public class MailStrategy {
     public void moveMails(int token, List<Integer> ids, String folderName) {
         UserData senderData = this.userFacade.getUserDataByToken(token);
         MailFolder<ROMail> folder;
-        if(folderName.equals("inbox")) folder = senderData.getInbox();
+        if(folderName.equals("sent")) folder = senderData.getSent();
+        else if(folderName.equals("inbox")) folder = senderData.getInbox();
         else folder = senderData.getCustomFolder(folderName);
         this.userFacade.moveEmailById(senderData, ids, folder, false);
     }
@@ -101,5 +123,10 @@ public class MailStrategy {
     public void createFolder(int token, String folderName) {
         UserData senderData = this.userFacade.getUserDataByToken(token);
         senderData.addCustomFolder(folderName);
+    }
+
+    public void deleteFolder(int token, String folderName) {
+        UserData senderData = this.userFacade.getUserDataByToken(token);
+        senderData.getCustomFolder(folderName);
     }
 }

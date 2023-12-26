@@ -1,7 +1,11 @@
 package com.porvah.mailserver.models;
 
+import com.porvah.mailserver.enums.RequiredPage;
 import com.porvah.mailserver.enums.SortType;
 import com.porvah.mailserver.interfaces.ROMail;
+import com.porvah.mailserver.models.sortStrategy.AscendingSort;
+import com.porvah.mailserver.models.sortStrategy.DescendingSort;
+import com.porvah.mailserver.models.sortStrategy.SortStrategy;
 
 import java.util.*;
 
@@ -9,11 +13,18 @@ public class MailFolder<T extends ROMail> {
     private final String name;
     protected final List<T> mails;
     private PriorityQueue<T> mailsWithsPriority;
+    public final FolderIterator<T> iterator;
 
     public MailFolder(String name){
         this.name = name;
         this.mails = new ArrayList<T>();
         this.mailsWithsPriority = new PriorityQueue<T>((Comparator.comparingInt(T::getPriority)).reversed());
+        this.iterator = new FolderIterator<T>(this, 10);
+    }
+    public List<T> getPage(RequiredPage req, SortType sort){
+        if(req == RequiredPage.NEXT) return this.iterator.getNext(sort);
+        else if(req == RequiredPage.PREV) return this.iterator.getPrev((sort));
+        else return this.iterator.reset(sort);
     }
     String getName(){
         return this.name;
@@ -31,11 +42,17 @@ public class MailFolder<T extends ROMail> {
         }
         this.mailsWithsPriority = removeFromQ(this.mailsWithsPriority, id);
     }
-    public List<T> getMails(SortType sort){
+    protected List<T> getMails(SortType sort) {
         List<T> result = new ArrayList<T>(this.mails);
-        if(sort == SortType.DESCEND) result.sort(Comparator.comparingInt(T::getId).reversed());
-        else if(sort == SortType.PRIORITY) return this.QtoList(this.mailsWithsPriority);
-        else if (sort == SortType.ASCEND) result.sort(Comparator.comparingInt(T::getId));
+        if (sort == SortType.DESCEND) {
+            SortStrategy<T> strategy = new DescendingSort<>();
+            return strategy.sort(result);
+        } else if (sort == SortType.PRIORITY){
+            return this.QtoList(this.mailsWithsPriority);
+        }else if (sort == SortType.ASCEND){
+            SortStrategy<T> strategy = new AscendingSort<>();
+            return strategy.sort(result);
+        }
         return result;
     }
     private List<T> QtoList(PriorityQueue<T> Q){
