@@ -18,8 +18,14 @@
 
     <p>{{ email.body }}</p>
 
-    <div v-for="file in attachments" :key="file.fileName">
-      <button @click="getFileDownloadUrl(file)">{{ file.fileName }}</button>
+    <div id="attach-wrap">
+      <div v-for="file in attachments" class="attachments" :key="file.fileName">
+        <button @click="getFileDownloadUrl(file)">
+          <span class="material-symbols-outlined"> download </span>
+
+          {{ file.fileName }}
+        </button>
+      </div>
     </div>
 
     <AddContactDialog
@@ -166,5 +172,28 @@ p {
 
 #date {
   color: #666;
+}
+
+#attach-wrap {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.attachments button {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px;
+  margin: 10px;
+  color: white;
+  background-color: green;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+}
+
+.attachments button span {
+  padding-right: 8px;
 }
 </style>
