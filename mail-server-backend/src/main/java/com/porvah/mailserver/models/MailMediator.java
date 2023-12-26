@@ -3,6 +3,7 @@ package com.porvah.mailserver.models;
 import com.porvah.mailserver.enums.RequiredPage;
 import com.porvah.mailserver.enums.SortType;
 import com.porvah.mailserver.interfaces.ROMail;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.*;
 
@@ -128,5 +129,19 @@ public class MailMediator {
     public void deleteFolder(int token, String folderName) {
         UserData senderData = this.userFacade.getUserDataByToken(token);
         senderData.getCustomFolder(folderName);
+    }
+
+    public void sendAttachment(int token, int id, List<MultipartFile> files) {
+        if(!UserBase.getInstance().containsLoggedUser(token))
+            throw new RuntimeException("User is not logged in");
+        AttachmentRepo attachmentRepo = AttachmentRepo.getInstance();
+        attachmentRepo.addAttachment(new Attachment(files), id);
+    }
+
+    public Attachment getAttachment(int token, int id) {
+        if(!UserBase.getInstance().containsLoggedUser(token))
+            throw new RuntimeException("User is not logged in");
+        AttachmentRepo attachmentRepo = AttachmentRepo.getInstance();
+        return attachmentRepo.getAttachment(id);
     }
 }

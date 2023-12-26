@@ -171,9 +171,7 @@ public class MailController {
     public ResponseEntity<?> sendEmail(@RequestParam("token") int token, @RequestParam("id") int id,
                                        @RequestParam("files") List<MultipartFile> files) {
         try {
-
-            AttachmentRepo attachmentRepo = AttachmentRepo.getInstance();
-            attachmentRepo.addAttachment(new Attachment(files), id);
+            mediator.sendAttachment(token, id, files);
             return ResponseEntity.ok().body("{\"mgs\" : \"Attachments Sent Successfully\"}");
         } catch (Exception e) {
             System.out.println(e.getMessage());
@@ -184,8 +182,7 @@ public class MailController {
     @GetMapping("getattachment")
     public ResponseEntity<?> getAttachment(@RequestParam("token") int token, @RequestParam("id") int id) {
         try {
-            AttachmentRepo attachmentRepo = AttachmentRepo.getInstance();
-            Attachment attachment = attachmentRepo.getAttachment(id);
+            Attachment attachment = mediator.getAttachment(token, id);
             return ResponseEntity.ok(attachment);
         } catch (Exception e) {
             System.out.println(e.getMessage());
