@@ -46,9 +46,17 @@ class FolderService {
   async getFolderEmails(token, sort, foldername, page) {
     const service = ApiService.getInstance()
     return await service.makeRequest(
-      `folderemails?token=${token}&foldername=${foldername}&sort=${sort}&requried=${page}`,
+      `folderemails?token=${token}&foldername=${foldername}&sort=${sort}&required=${page}`,
       'GET'
     )
+  }
+
+  async deleteFolder(token, foldername) {
+    const service = ApiService.getInstance()
+    return await service.makeRequest('deletefolder', 'DELETE', {
+      token,
+      foldername
+    })
   }
 }
 
