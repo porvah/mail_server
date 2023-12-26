@@ -39,7 +39,7 @@
         <option v-for="option in sortOptions" :value="option" :key="option">{{ option }}</option>
       </select>
 
-      <button @click="$emit('onSort', sortIndex)" class="sort-btn">
+      <button @click="$emit('onSort', sortIndex, 0)" class="sort-btn">
         <span class="material-symbols-outlined"> sort </span>
         Sort
       </button>

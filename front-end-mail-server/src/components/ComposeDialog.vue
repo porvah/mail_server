@@ -1,47 +1,94 @@
 <template>
   <dialog open>
-    <h2>New Email</h2>
     <form action="#" @submit.prevent="">
-      <label>From:</label>
-      <input type="text" :value="emailFrom" disabled />
+      <div id="all">
+        <div id="left">
+          <h2>New Email</h2>
+          <label>From:</label>
+          <input type="text" :value="emailFrom" disabled />
 
-      <div id="email-to">
-        <label>To:</label>
-        <button @click="addReceiver" id="add-receiver-btn" type="button">
-          <span class="material-symbols-outlined"> add </span>
-          Add
-        </button>
-      </div>
-      <input type="text" v-model="emailTo" />
+          <div id="email-to">
+            <label>To:</label>
+            <button @click="addReceiver" id="add-receiver-btn" type="button">
+              <span class="material-symbols-outlined"> add </span>
+              Add
+            </button>
+          </div>
+          <input type="text" v-model="emailTo" />
 
-      <div id="receivers">
-        <div
-          v-for="receiver in receivers"
-          @click="removeReceiver(receiver)"
-          class="receiver"
-          :key="receiver"
-        >
-          {{ receiver }}
-          <span class="material-symbols-outlined"> delete </span>
+          <div id="receivers">
+            <div
+              v-for="receiver in receivers"
+              @click="removeReceiver(receiver)"
+              class="receiver"
+              :key="receiver"
+            >
+              {{ receiver }}
+              <span class="material-symbols-outlined"> delete </span>
+            </div>
+          </div>
+
+          <label>Subject:</label>
+          <input type="text" v-model="emailSubject" required />
+
+          <label>Description:</label>
+          <textarea v-model="emailDescription" required />
+
+          <label>Priority:</label>
+          <div id="priority">
+            <div v-for="p in priorityChoices" class="element" :key="p">
+              <input type="radio" v-model="priorityChose" name="priority" :value="p" />
+              <label>{{ p }}</label>
+            </div>
+          </div>
         </div>
-      </div>
+        <div id="right">
+          <label> Attachments </label>
 
-      <label>Subject:</label>
-      <input type="text" v-model="emailSubject" required />
+          <div class="dropzone-container" @dragover="dragover" @dragleave="dragleave" @drop="drop">
+            <input
+              type="file"
+              multiple
+              name="file"
+              id="fileInput"
+              class="hidden-input"
+              @change="onChange"
+              ref="file"
+              accept=".pdf,.jpg,.jpeg,.png"
+            />
 
-      <label>Description:</label>
-      <textarea v-model="emailDescription" required />
+            <label for="fileInput" class="file-label">
+              <div v-if="isDragging">Release to drop files here.</div>
 
-      <label>Priority:</label>
-      <div id="priority">
-        <div v-for="p in priorityChoices" class="element" :key="p">
-          <input type="radio" v-model="priorityChose" name="priority" :value="p" />
-          <label>{{ p }}</label>
+              <div v-else>Drop files here or <u>click here</u> to upload.</div>
+            </label>
+
+            <div class="preview-container mt-4" v-if="files.length">
+              <div v-for="file in files" :key="file.name" class="preview-card">
+                <div>
+                  <img class="preview-img" :src="generateThumbnail(file)" />
+
+                  <p :title="file.name">
+                    {{ makeName(file.name) }}
+                  </p>
+                </div>
+
+                <div>
+                  <button
+                    class="ml-2"
+                    type="button"
+                    @click="remove(files.indexOf(file))"
+                    title="Remove file"
+                  >
+                    <b>&times;</b>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
+        <div v-if="errorMsg" id="error">{{ errorMsg }}</div>
       </div>
-
-      <div v-if="errorMsg" id="error">{{ errorMsg }}</div>
-
       <div id="btns">
         <button @click="closeCompose" id="cancel-btn" type="button">
           <span class="material-symbols-outlined"> cancel </span>
@@ -80,6 +127,9 @@ export default {
     const priorityChose = ref('1 (Low)')
     const receivers = ref([])
     const errorMsg = ref('')
+    const isDragging = ref(false)
+    const files = ref([])
+    const file = ref(null)
 
     const emailAdapter = new EmailServiceAdapter(api.emailService)
     const priorityChoices = computed(() => ['1 (Low)', '2', '3', '4', '5 (High)'])
@@ -118,7 +168,7 @@ export default {
       const email = createEmail()
       try {
         await emailAdapter.sendEmail(email)
-        await store.dispatch('getSent', { token: store.getters.token, sort: 0 })
+        await store.dispatch('getSent', { token: store.getters.token, sort: 0, page: 0 })
         closeCompose()
       } catch (e) {
         errorMsg.value = JSON.parse(e).msg
@@ -131,7 +181,7 @@ export default {
       const email = createEmail()
       try {
         await emailAdapter.draftEmail(email)
-        await store.dispatch('getDraft', { token: store.getters.token, sort: 0 })
+        await store.dispatch('getDraft', { token: store.getters.token, sort: 0, page: 0 })
         closeCompose()
       } catch (e) {
         errorMsg.value = JSON.parse(e).msg
@@ -154,6 +204,44 @@ export default {
       return true
     }
 
+    const onChange = () => {
+      files.value = [...file.value.files]
+    }
+
+    const generateThumbnail = (f) => {
+      let fileSrc = URL.createObjectURL(f)
+      setTimeout(() => {
+        URL.revokeObjectURL(fileSrc)
+      }, 1000)
+      return fileSrc
+    }
+
+    const makeName = (name) => {
+      return (
+        name.split('.')[0].substring(0, 3) + '...' + name.split('.')[name.split('.').length - 1]
+      )
+    }
+
+    const remove = (i) => {
+      files.value.splice(i, 1)
+    }
+
+    const dragover = (e) => {
+      e.preventDefault()
+      isDragging.value = true
+    }
+
+    const dragleave = () => {
+      isDragging.value = false
+    }
+
+    const drop = (e) => {
+      e.preventDefault()
+      file.value.files = e.dataTransfer.files
+      onChange()
+      isDragging.value = false
+    }
+
     return {
       emailFrom,
       emailTo,
@@ -163,11 +251,21 @@ export default {
       priorityChose,
       priorityChoices,
       errorMsg,
+      isDragging,
+      files,
+      file,
       closeCompose,
       addReceiver,
       removeReceiver,
       sendEmail,
-      draftEmail
+      draftEmail,
+      onChange,
+      generateThumbnail,
+      makeName,
+      remove,
+      dragover,
+      dragleave,
+      drop
     }
   }
 }
@@ -176,15 +274,24 @@ export default {
 <style scoped>
 dialog {
   position: absolute;
-  left: 50%;
-  top: 40%;
+  left: 35%;
+  top: 30%;
   margin-left: -25vh;
   margin-top: -25vh;
-  width: 400px;
+  width: 800px;
   padding: 20px;
   box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
   border: 1px solid gray;
   border-radius: 12px;
+}
+
+#all {
+  display: flex;
+}
+
+#left {
+  width: 700px;
+  padding-right: 12px;
 }
 
 h2 {
@@ -305,5 +412,47 @@ button {
   color: green;
   background: white;
   border: 1px solid green;
+}
+.main {
+  display: flex;
+  flex-grow: 1;
+  align-items: center;
+  height: 100vh;
+  justify-content: center;
+  text-align: center;
+}
+.dropzone-container {
+  padding: 4rem;
+  background: #f7fafc;
+  border: 1px solid #e2e8f0;
+}
+.hidden-input {
+  opacity: 0;
+  overflow: hidden;
+  position: absolute;
+  width: 1px;
+  height: 1px;
+}
+.file-label {
+  font-size: 20px;
+  display: block;
+  cursor: pointer;
+}
+.preview-container {
+  display: flex;
+  margin-top: 2rem;
+}
+.preview-card {
+  display: flex;
+  border: 1px solid #a2a2a2;
+  padding: 5px;
+  margin-left: 5px;
+}
+.preview-img {
+  width: 50px;
+  height: 50px;
+  border-radius: 5px;
+  border: 1px solid #a2a2a2;
+  background-color: #a2a2a2;
 }
 </style>

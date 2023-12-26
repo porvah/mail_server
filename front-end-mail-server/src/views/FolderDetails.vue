@@ -22,6 +22,22 @@
       <span @click="deleteEmails" class="material-symbols-outlined delete"> delete </span>
     </div>
 
+    <div id="page">
+      <button @click="getPreviousPage">
+        <span class="material-symbols-outlined"> arrow_back_ios </span>
+
+        Previous
+      </button>
+
+      <div id="page-info">{{ current }} / {{ total }}</div>
+
+      <button @click="getNextPage">
+        <span class="material-symbols-outlined"> arrow_forward_ios </span>
+
+        Next
+      </button>
+    </div>
+
     <ListEmails
       :emails="filterEmails"
       :checkedEmails="selectedEmails"
@@ -48,10 +64,13 @@ export default {
     const folderName = props.name
     const emails = ref([])
     const selectedEmails = ref([])
+    const current = ref(0)
+    const total = ref(0)
 
     const searchValue = ref('')
     const filterValue = ref('')
     const priorityValue = ref('Any Priority')
+    const sortValue = ref(0)
 
     const filterCategory = (email) => {
       switch (filterValue.value) {
@@ -76,8 +95,12 @@ export default {
       })
     })
 
-    const getFolderEmails = async (sort) => {
-      emails.value = await api.folder.getFolderEmails(store.getters.token, sort, folderName)
+    const getFolderEmails = async (sort, page) => {
+      const response = await api.folder.getFolderEmails(store.getters.token, sort, folderName, page)
+      emails.value = response.list
+      current.value = response.current
+      total.value = response.total
+      sortValue.value = sort
     }
 
     const handleSelectEmail = (eamilId) => {
@@ -90,23 +113,33 @@ export default {
 
     const addFolder = async () => {
       store.commit('openFolderDialog', selectedEmails.value)
-      await getFolderEmails(0)
+      await getFolderEmails(0, 0)
     }
 
     const deleteEmails = async () => {
       const emailService = api.emailService
       await emailService.deleteEmail(store.getters.token, selectedEmails.value)
-      await getFolderEmails(0)
+      await getFolderEmails(0, 0)
+    }
+
+    const getNextPage = async () => {
+      await getInbox(sortValue.value, 1)
+    }
+
+    const getPreviousPage = async () => {
+      await getInbox(sortValue.value, 2)
     }
 
     onMounted(async () => {
-      await getFolderEmails(0)
+      await getFolderEmails(0, 0)
     })
 
     return {
       folderName,
       emails,
       selectedEmails,
+      current,
+      total,
       filterEmails,
       searchValue,
       filterValue,
@@ -114,7 +147,9 @@ export default {
       getFolderEmails,
       handleSelectEmail,
       addFolder,
-      deleteEmails
+      deleteEmails,
+      getNextPage,
+      getPreviousPage
     }
   }
 }
@@ -157,5 +192,33 @@ h1 {
   margin: 10px;
   border-radius: 8px;
   cursor: pointer;
+}
+
+#page {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+#page button {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  padding: 6px;
+  margin: 0 6px;
+  color: white;
+  background-color: green;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+}
+
+#page-info {
+  padding: 6px;
+  border-radius: 12px;
+  color: white;
+  background-color: gray;
+  font-weight: bold;
+  font-size: 16px;
 }
 </style>
