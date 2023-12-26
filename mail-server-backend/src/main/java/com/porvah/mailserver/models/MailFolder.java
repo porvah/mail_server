@@ -19,7 +19,7 @@ public class MailFolder<T extends ROMail> {
         this.name = name;
         this.mails = new ArrayList<T>();
         this.mailsWithsPriority = new PriorityQueue<T>((Comparator.comparingInt(T::getPriority)).reversed());
-        this.iterator = new FolderIterator<T>(this, 10);
+        this.iterator = new FolderIterator<T>(this, 2);
     }
     public List<T> getPage(RequiredPage req, SortType sort){
         if(req == RequiredPage.NEXT) return this.iterator.getNext(sort);

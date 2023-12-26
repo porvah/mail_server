@@ -52,6 +52,8 @@ export default {
           return store.getters.trashMails
         case 'draft-detail':
           return store.getters.draftMails
+        case 'folder-mail-details':
+          return store.getters.folderMails
         default:
           return store.getters.inboxMails
       }

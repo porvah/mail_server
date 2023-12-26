@@ -7,6 +7,7 @@ const state = {
   draftMails: [],
   foldersNames: [],
   allContacts: [],
+  folderMails: [],
   curInbox: 0,
   totalInbox: 0,
   curDraft: 0,
@@ -14,7 +15,10 @@ const state = {
   curSent: 0,
   totalSent: 0,
   curTrash: 0,
-  totalTrash: 0
+  totalTrash: 0,
+  curFolderMails: 0,
+  totalFolderMails: 0,
+  curFolderName: ''
 }
 
 const mutations = {
@@ -37,6 +41,12 @@ const mutations = {
     state.draftMails = mails
     state.curDraft = current
     state.totalDraft = total
+  },
+  getFolderMails(state, { mails, current, total, curFolderName }) {
+    state.folderMails = mails
+    state.curFolderMails = current
+    state.totalFolderMails = total
+    state.curFolderName = curFolderName
   },
   getFolders(state, folders) {
     state.foldersNames = folders
@@ -79,6 +89,14 @@ const actions = {
 
     commit('getDraft', { mails, current, total })
   },
+  async getFolderMails({ commit }, { token, sort, curFolderName, page }) {
+    const response = await api.folder.getFolderEmails(token, sort, curFolderName, page)
+    const mails = response.list
+    const current = response.current
+    const total = response.total
+
+    commit('getFolderMails', { mails, current, total, curFolderName })
+  },
   async getFolders({ commit }, { token }) {
     const folders = await api.folder.getFolders(token)
 
@@ -89,7 +107,7 @@ const actions = {
 
     commit('getAllContacts', currContacts)
   },
-  async updateAllFolders({ commit, dispatch }, { token }) {
+  async updateAllFolders({ commit, getters, dispatch }, { token }) {
     const sort = 0
     const page = 0
     await dispatch('getInbox', { token, sort, page })
@@ -98,6 +116,9 @@ const actions = {
     await dispatch('getDraft', { token, sort, page })
     await dispatch('getFolders', { token, page })
     await dispatch('getAllContacts', { token, page })
+    if (getters.curFolderName.length > 0) {
+      await dispatch('getFolderMails', { token, sort, curFolderName: getters.curFolderName, page })
+    }
   }
 }
 
@@ -106,6 +127,7 @@ const getters = {
   sentMails: (state) => state.sentMails,
   trashMails: (state) => state.trashMails,
   draftMails: (state) => state.draftMails,
+  folderMails: (state) => state.folderMails,
   foldersNames: (state) => state.foldersNames,
   allContacts: (state) => state.allContacts,
   curInbox: (state) => state.curInbox,
@@ -115,7 +137,10 @@ const getters = {
   totalInbox: (state) => state.totalInbox,
   totalDraft: (state) => state.totalDraft,
   totalSent: (state) => state.totalSent,
-  totalTrash: (state) => state.totalTrash
+  totalTrash: (state) => state.totalTrash,
+  curFolderMails: (state) => state.curFolderMails,
+  totalFolderMails: (state) => state.totalFolderMails,
+  curFolderName: (state) => state.curFolderName
 }
 
 export default {
