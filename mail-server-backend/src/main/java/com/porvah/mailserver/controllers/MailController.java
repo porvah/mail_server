@@ -161,7 +161,6 @@ public class MailController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("{\"msg\" : \"User not found\"}");
         }
     }
-
     @GetMapping("getattachment")
     public ResponseEntity<?> getAttachment(@RequestParam("token") int token, @RequestParam("id") int id) {
         //System.out.println(token);
@@ -186,42 +185,42 @@ public class MailController {
         }
     }
     @PostMapping("draftemail")
-    public ResponseEntity<?> draftEmail(@RequestBody Map<String, Object> body){
+    public ResponseEntity<?> draftEmail(@RequestParam("token") int token,
+                                        @RequestParam("files") List<MultipartFile> files,
+                                        @RequestParam("subject") String subject,
+                                        @RequestParam("body") String description,
+                                        @RequestParam("priority") int priority){
         try {
-            int token = (int) body.get("token");
-            String subject = (String) body.get("subject");
-            String description = (String) body.get("body");
-            int priority = (int) body.get("priority");
-            mediator.draftEmail(token, subject, description, priority);
+            mediator.draftEmail(token, subject, description, priority, files);
             return ResponseEntity.ok().body("{\"msg\" : \"Email drafted successfully\"}");
         }catch (Exception e){
             return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body("{\"msg\" : \"Unexpected error\"}");
         }
     }
     @PutMapping("updatedraft")
-    public ResponseEntity<?> updateDraft(@RequestBody Map<String, Object> body){
+    public ResponseEntity<?> updateDraft(@RequestParam("id") int id,
+                                         @RequestParam("token") int token,
+                                         @RequestParam("files") List<MultipartFile> files,
+                                         @RequestParam("subject") String subject,
+                                         @RequestParam("body") String description,
+                                         @RequestParam("priority") int priority){
         try {
-            int id = (int) body.get("id");
-            int token = (int) body.get("token");
-            String subject = (String) body.get("subject");
-            String description = (String) body.get("body");
-            int priority = (int) body.get("priority");
-            mediator.updateDraft(id, token, subject, description, priority);
+            mediator.updateDraft(id, token, subject, description, priority, files);
             return ResponseEntity.ok().body("{\"msg\" : \"Email updated successfully\"}");
         }catch (Exception e){
             return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body("{\"msg\" : \"Unexpected error\"}");
         }
     }
     @PostMapping("submitdraft")
-    public ResponseEntity<?> submitDraft(@RequestBody Map<String, Object> body){
+    public ResponseEntity<?> submitDraft(@RequestParam("id") int id,
+                                         @RequestParam("token") int token,
+                                         @RequestParam("receiver") List<String> receiverEmails,
+                                         @RequestParam("files") List<MultipartFile> files,
+                                         @RequestParam("subject") String subject,
+                                         @RequestParam("body") String description,
+                                         @RequestParam("priority") int priority){
         try {
-            int id = (int) body.get("id");
-            int token = (int) body.get("token");
-            String subject = (String) body.get("subject");
-            List<String> receiverEmails = (List<String>) body.get("receiver");
-            String description = (String) body.get("body");
-            int priority = (int) body.get("priority");
-            mediator.submitDraft(id, token, receiverEmails,subject, description, priority);
+            mediator.submitDraft(id, token, receiverEmails,subject, description, priority, files);
             return ResponseEntity.ok().body("{\"msg\" : \"Drafted Email submitted successfully\"}");
         }catch (Exception e){
             return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body("{\"msg\" : \"Unexpected error\"}");

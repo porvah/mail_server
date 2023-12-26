@@ -5,6 +5,7 @@ import com.porvah.mailserver.enums.SortType;
 import com.porvah.mailserver.interfaces.ROMail;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.swing.table.AbstractTableModel;
 import java.io.IOException;
 import java.util.*;
 
@@ -67,40 +68,13 @@ public class MailMediator {
         return responseObject;
 
     }
-
-
     public void deleteEmail(int token, List<Integer> id) {
         UserData senderData = this.userFacade.getUserDataByToken(token);
         this.userFacade.moveEmailById(senderData, id, senderData.getTrash(), true);
     }
 
-    public void draftEmail(int token, String subject, String body, int priority) {
-        UserData senderData = this.userFacade.getUserDataByToken(token);
-        User sender = UserBase.getInstance().getLoggedUser(token);
-        Mail newEmail = new Mail(sender.getEmail(), "", subject, body, new Date(), priority);
-        senderData.getDraft().addMail(newEmail);
-    }
 
-    public void updateDraft(int id, int token, String subject, String description, int priority) {
-        UserData senderData = this.userFacade.getUserDataByToken(token);
-        Mail drafted = senderData.getDraft().getMail(id);
-        drafted.setSubject(subject);
-        drafted.setBody(description);
-        drafted.setPriority(priority);
-    }
 
-    public void submitDraft(int id, int token, List<String> receivers, String subject, String body, int priority) {
-        UserData senderData = this.userFacade.getUserDataByToken(token);
-        User sender = UserBase.getInstance().getLoggedUser(token);
-        List<UserData> receiversData = this.userFacade.getUserDataByEmail(receivers);
-        for(int i = 0; i < receiversData.size(); i++){
-            User receiverUser = UserBase.getInstance().getUser(receivers.get(i));
-            Mail newEmail = new Mail(sender.getEmail(), receiverUser.getEmail(), subject, body, new Date(), priority);
-            senderData.getSent().addMail(newEmail.submit());
-            receiversData.get(i).getInbox().addMail(newEmail.submit());
-        }
-        senderData.getDraft().removeMail(id);
-    }
 
 
     public void moveMails(int token, List<Integer> ids, String folderName) {
@@ -121,7 +95,73 @@ public class MailMediator {
         UserData senderData = this.userFacade.getUserDataByToken(token);
         senderData.removeCustomFolder(folderName);
     }
+    public void submitDraft(int id, int token, List<String> receivers, String subject, String body, int priority,
+                            List<MultipartFile> files) throws IOException {
+        UserData senderData = this.userFacade.getUserDataByToken(token);
+        User sender = UserBase.getInstance().getLoggedUser(token);
+        List<UserData> receiversData = this.userFacade.getUserDataByEmail(receivers);
+        AttachmentRepo attachmentRepo = AttachmentRepo.getInstance();
+        List<Map<String, Object>> filesList = new ArrayList<>();
+        for(MultipartFile file:files){
+            String name = file.getOriginalFilename();
+            String type = file.getContentType();
+            byte[] bytes = file.getBytes();
+            Map<String, Object> att = new HashMap<>();
+            att.put("name", name);
+            att.put("type", type);
+            att.put("bytes", bytes);
+            filesList.add(att);
+        }
+        for(int i = 0; i < receiversData.size(); i++){
+            User receiverUser = UserBase.getInstance().getUser(receivers.get(i));
+            Mail newEmail = new Mail(sender.getEmail(), receiverUser.getEmail(), subject, body, new Date(), priority);
+            senderData.getSent().addMail(newEmail.submit());
+            receiversData.get(i).getInbox().addMail(newEmail.submit());
+            attachmentRepo.addAttachment(new Attachment(filesList), newEmail.getId());
+        }
+        senderData.getDraft().removeMail(id);
+    }
+    public void updateDraft(int id, int token, String subject, String description, int priority,
+                            List<MultipartFile> files) throws IOException {
+        UserData senderData = this.userFacade.getUserDataByToken(token);
+        Mail drafted = senderData.getDraft().getMail(id);
+        drafted.setSubject(subject);
+        drafted.setBody(description);
+        drafted.setPriority(priority);
+        AttachmentRepo attachmentRepo = AttachmentRepo.getInstance();
+        List<Map<String, Object>> filesList = new ArrayList<>();
+        for(MultipartFile file:files){
+            String name = file.getOriginalFilename();
+            String type = file.getContentType();
+            byte[] bytes = file.getBytes();
+            Map<String, Object> att = new HashMap<>();
+            att.put("name", name);
+            att.put("type", type);
+            att.put("bytes", bytes);
+            filesList.add(att);
+        }
+        attachmentRepo.addAttachment(new Attachment(filesList), drafted.getId());
+    }
+    public void draftEmail(int token, String subject, String body, int priority, List<MultipartFile> files) throws IOException {
+        UserData senderData = this.userFacade.getUserDataByToken(token);
+        User sender = UserBase.getInstance().getLoggedUser(token);
+        Mail newEmail = new Mail(sender.getEmail(), "", subject, body, new Date(), priority);
+        senderData.getDraft().addMail(newEmail);
+        AttachmentRepo attachmentRepo = AttachmentRepo.getInstance();
+        List<Map<String, Object>> filesList = new ArrayList<>();
+        for(MultipartFile file:files){
+            String name = file.getOriginalFilename();
+            String type = file.getContentType();
+            byte[] bytes = file.getBytes();
+            Map<String, Object> att = new HashMap<>();
+            att.put("name", name);
+            att.put("type", type);
+            att.put("bytes", bytes);
+            filesList.add(att);
+        }
+        attachmentRepo.addAttachment(new Attachment(filesList), newEmail.getId());
 
+    }
     public void sendEmail(int token, List<String> receivers, String subject, String body, int priority,
                           List<MultipartFile> files) throws IOException {
         UserData senderData = this.userFacade.getUserDataByToken(token);
@@ -153,20 +193,6 @@ public class MailMediator {
             throw new RuntimeException("User is not logged in");
         AttachmentRepo attachmentRepo = AttachmentRepo.getInstance();
         Attachment att = attachmentRepo.getAttachment(id);
-        List<Map<String, Object>> files = att.getFiles();
-//        Map<String, Object> response = new HashMap<>();
-//        List<Map<String, Object>> attachments = new ArrayList<>();
-//
-//        for(MultipartFile file : files){
-//            Map<String, Object> attObject = new HashMap<>();
-//            byte[] bytes = file.getBytes();
-//            attObject.put("name", file.getOriginalFilename());
-//            attObject.put("type", file.getContentType());
-//            attObject.put("bytes", bytes);
-//            System.out.println(Arrays.toString(bytes));
-//            attachments.add(attObject);
-//        }
-        //response.put("attachments", attachments);
-        return files;
+        return att.getFiles();
     }
 }
