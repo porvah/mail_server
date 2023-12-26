@@ -24,40 +24,22 @@ class EmailService {
     })
   }
 
-  async draftEmail(token, subject, body, priority) {
+  async draftEmail(formdata) {
     const service = ApiService.getInstance()
 
-    return await service.makeRequest('draftemail', 'POST', {
-      token,
-      subject,
-      body,
-      priority
-    })
+    return await service.makeRequest('draftemail', 'POST', formdata, false, {})
   }
 
-  async updateDraftEmail(token, id, subject, body, priority) {
+  async updateDraftEmail(formdata) {
     const service = ApiService.getInstance()
 
-    return await service.makeRequest('updatedraft', 'PUT', {
-      token,
-      id,
-      subject,
-      body,
-      priority
-    })
+    return await service.makeRequest('updatedraft', 'PUT', formdata, false, {})
   }
 
-  async submitDraftEmail(token, id, receiver, subject, body, priority) {
+  async submitDraftEmail(formdata) {
     const service = ApiService.getInstance()
 
-    return await service.makeRequest('submitdraft', 'POST', {
-      token,
-      id,
-      receiver,
-      subject,
-      body,
-      priority
-    })
+    return await service.makeRequest('submitdraft', 'POST', formdata, false, {})
   }
 
   async moveMail(token, id, foldername) {

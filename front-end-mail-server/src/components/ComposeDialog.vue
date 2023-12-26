@@ -502,6 +502,7 @@ button {
   background-color: white;
   color: black;
   padding: 3px;
+  margin-bottom: 5px;
   border-radius: 6px;
 }
 </style>

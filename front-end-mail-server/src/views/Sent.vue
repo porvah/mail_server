@@ -12,7 +12,7 @@
         title="Search mail"
       />
 
-      <span @click="addFolder" class="material-symbols-outlined folder"> create_new_folder </span>
+      <!-- <span @click="addFolder" class="material-symbols-outlined folder"> create_new_folder </span> -->
 
       <span @click="deleteEmails" class="material-symbols-outlined delete"> delete </span>
     </div>
