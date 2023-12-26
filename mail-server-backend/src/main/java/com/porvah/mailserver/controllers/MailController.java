@@ -37,7 +37,6 @@ public class MailController {
             String name = (String) body.get("name");
             verificationProxy.signUpUser(name, email, password);
             return ResponseEntity.ok("{\"msg\" : \"Account created successfully\"}");
-            return ResponseEntity.ok("{\"msg\" : \"Account created successfully\"}");
         }catch (Exception e){
             return ResponseEntity.status(HttpStatus.ALREADY_REPORTED)
                     .body("{\"msg\" : \"Account is already created\"}");
@@ -51,7 +50,6 @@ public class MailController {
             int userId = verificationProxy.loginUser(email, password);
             return ResponseEntity.ok(userId);
         } catch (RuntimeException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("{\"msg\" : \"Failed to login.\"}");
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("{\"msg\" : \"Failed to login.\"}");
         }
     }
@@ -71,7 +69,6 @@ public class MailController {
             return ResponseEntity.ok(UserBase.getInstance().getLoggedUser(id));
         }catch (Exception e){
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("{\"msg\" : \"User is not logged in\"}");
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("{\"msg\" : \"User is not logged in\"}");
         }
     }
     @GetMapping("inbox")
@@ -82,7 +79,6 @@ public class MailController {
 
         }catch (Exception e){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{\"msg\" : \"Token not authorized\"}");
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{\"msg\" : \"Token not authorized\"}");
         }
     }
     @GetMapping("trash")
@@ -91,7 +87,6 @@ public class MailController {
         try {
             return ResponseEntity.ok(mediator.getTrash(token, SortType.values()[sort], RequiredPage.values()[req]));
         }catch (Exception e){
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{\"msg\" : \"Token not authorized\"}");
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{\"msg\" : \"Token not authorized\"}");
         }
     }
@@ -102,7 +97,6 @@ public class MailController {
             return ResponseEntity.ok(mediator.getSent(token, SortType.values()[sort], RequiredPage.values()[req]));
         }catch (Exception e){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{\"msg\" : \"Token not authorized\"}");
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{\"msg\" : \"Token not authorized\"}");
         }
     }
     @GetMapping("draft")
@@ -112,7 +106,6 @@ public class MailController {
             return ResponseEntity.ok(mediator.getDraft(token, SortType.values()[sort], RequiredPage.values()[req]));
         }catch (Exception e){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{\"msg\" : \"Token not authorized\"}");
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{\"msg\" : \"Token not authorized\"}");
         }
     }
     @GetMapping("folders")
@@ -120,7 +113,6 @@ public class MailController {
         try {
             return ResponseEntity.ok(mediator.getFolders(token));
         }catch (Exception e){
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{\"msg\" : \"Token not authorized\"}");
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{\"msg\" : \"Token not authorized\"}");
         }
     }
@@ -132,7 +124,6 @@ public class MailController {
             return ResponseEntity.ok(mediator.getFolderEmails(token, foldername, SortType.values()[sort],
                     RequiredPage.values()[req]));
         }catch (Exception e){
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{\"msg\" : \"Token not authorized\"}");
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{\"msg\" : \"Token not authorized\"}");
         }
     }
@@ -156,7 +147,6 @@ public class MailController {
             return ResponseEntity.ok("{\"msg\" : \"Folder is deleted successfully\"}");
         }catch (Exception e){
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body("{\"msg\" : \"Unauthorized token error\"}");
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("{\"msg\" : \"Unauthorized token error\"}");
         }
     }
     @PostMapping("sendemail")
@@ -171,7 +161,6 @@ public class MailController {
             return ResponseEntity.ok().body("{\"msg\" : \"Email Sent Successfully\"}");
         }catch (Exception e){
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("{\"msg\" : \"User not found\"}");
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("{\"msg\" : \"User not found\"}");
         }
     }
     @DeleteMapping("delete")
@@ -182,7 +171,6 @@ public class MailController {
             mediator.deleteEmail(token, id);
             return ResponseEntity.ok().body("{\"msg\" : \"Email deleted successfully\"}");
         }catch (Exception e){
-            return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body("{\"msg\" : \"Unexpected error\"}");
             return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body("{\"msg\" : \"Unexpected error\"}");
         }
     }
@@ -197,7 +185,6 @@ public class MailController {
             return ResponseEntity.ok().body("{\"msg\" : \"Email drafted successfully\"}");
         }catch (Exception e){
             return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body("{\"msg\" : \"Unexpected error\"}");
-            return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body("{\"msg\" : \"Unexpected error\"}");
         }
     }
     @PutMapping("updatedraft")
@@ -211,7 +198,6 @@ public class MailController {
             mediator.updateDraft(id, token, subject, description, priority);
             return ResponseEntity.ok().body("{\"msg\" : \"Email updated successfully\"}");
         }catch (Exception e){
-            return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body("{\"msg\" : \"Unexpected error\"}");
             return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body("{\"msg\" : \"Unexpected error\"}");
         }
     }
@@ -228,7 +214,6 @@ public class MailController {
             return ResponseEntity.ok().body("{\"msg\" : \"Drafted Email submitted successfully\"}");
         }catch (Exception e){
             return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body("{\"msg\" : \"Unexpected error\"}");
-            return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body("{\"msg\" : \"Unexpected error\"}");
         }
     }
     @PutMapping("movemails")
@@ -241,7 +226,6 @@ public class MailController {
             return ResponseEntity.ok("{\"msg\" : \"Mails were moved successfully\"}");
         }catch (Exception e){
             return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body("{\"msg\" : \"Unexpected error\"}");
-            return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body("{\"msg\" : \"Unexpected error\"}");
         }
     }
     @GetMapping("contacts")
@@ -252,7 +236,6 @@ public class MailController {
             if(sort == 0) Collections.reverse(contacts);
             return ResponseEntity.ok(contacts);
         }catch (Exception e){
-            return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body("{\"msg\" : \"Unexpected error\"}");
             return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body("{\"msg\" : \"Unexpected error\"}");
         }
     }
@@ -268,7 +251,6 @@ public class MailController {
             int contactId = userData.getContactCommandInvoker().executeCommand(addContactCommand);
             return ResponseEntity.ok("{\"msg\" : \"Contact created successfully\"}");
         }catch (Exception e){
-            return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body("{\"msg\" : \"Unexpected error\"}");
             return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body("{\"msg\" : \"Unexpected error\"}");
         }
     }
@@ -286,7 +268,6 @@ public class MailController {
                     + updatedContactId + " updated successfully\"}");
         }catch (Exception e){
             return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body("{\"msg\" : \"Unexpected error\"}");
-            return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body("{\"msg\" : \"Unexpected error\"}");
         }
     }
     @DeleteMapping("deletecontacts")
@@ -299,7 +280,6 @@ public class MailController {
             userData.getContactCommandInvoker().executeCommand(deleteContactsCommand);
             return ResponseEntity.ok("{\"msg\" : \"Contacts deleted successfully\"}");
         }catch (Exception e){
-            return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body("{\"msg\" : \"Unexpected error\"}");
             return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body("{\"msg\" : \"Unexpected error\"}");
         }
     }
