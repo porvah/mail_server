@@ -42,7 +42,7 @@
       :emails="filterEmails"
       :checkedEmails="selectedEmails"
       @selectEmail="handleSelectEmail"
-      page="sent-detail"
+      page="folder-mail-details"
       :key="selectedEmails"
     />
   </div>
@@ -96,10 +96,15 @@ export default {
     })
 
     const getFolderEmails = async (sort, page) => {
-      const response = await api.folder.getFolderEmails(store.getters.token, sort, folderName, page)
-      emails.value = response.list
-      current.value = response.current
-      total.value = response.total
+      await store.dispatch('getFolderMails', {
+        token: store.getters.token,
+        sort: sort,
+        curFolderName: props.name,
+        page: page
+      })
+      emails.value = store.getters.folderMails
+      current.value = store.getters.curFolderMails
+      total.value = store.getters.totalFolderMails
       sortValue.value = sort
     }
 
@@ -119,20 +124,39 @@ export default {
     const deleteEmails = async () => {
       const emailService = api.emailService
       await emailService.deleteEmail(store.getters.token, selectedEmails.value)
-      await getFolderEmails(0, 0)
+      await store.dispatch('updateAllFolders', { token: store.getters.token, sort: 0 })
     }
 
     const getNextPage = async () => {
-      await getInbox(sortValue.value, 1)
+      await getFolderEmails(sortValue.value, 1)
     }
 
     const getPreviousPage = async () => {
-      await getInbox(sortValue.value, 2)
+      await getFolderEmails(sortValue.value, 2)
     }
 
     onMounted(async () => {
       await getFolderEmails(0, 0)
     })
+
+    store.watch(
+      (state, getters) => getters.folderMails,
+      () => {
+        emails.value = store.getters.folderMails
+      }
+    )
+    store.watch(
+      (state, getters) => getters.curFolderMails,
+      () => {
+        current.value = store.getters.curFolderMails
+      }
+    )
+    store.watch(
+      (state, getters) => getters.totalFolderMails,
+      () => {
+        total.value = store.getters.totalFolderMails
+      }
+    )
 
     return {
       folderName,

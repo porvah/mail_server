@@ -119,6 +119,15 @@ const router = createRouter({
           }
         },
         {
+          path: 'foldermail/:id',
+          name: 'folder-mail-details',
+          component: EmailDetails,
+          props: true,
+          meta: {
+            requiredAuth: true
+          }
+        },
+        {
           path: 'trash',
           name: 'trash',
           component: Trash,
