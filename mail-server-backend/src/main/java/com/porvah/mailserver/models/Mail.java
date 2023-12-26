@@ -16,7 +16,6 @@ public class Mail implements ROMail{
     private String body;
     private Date sentDate;
     private int priority;
-    private List<File> attachments;
     public Mail(String sender, String receiver, String subject, String body, Date sentDate, int priority){
 //                List<File> attachments, int priority){
         this.sender = sender;

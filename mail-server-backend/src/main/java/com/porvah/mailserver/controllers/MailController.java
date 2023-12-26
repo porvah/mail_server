@@ -2,21 +2,15 @@ package com.porvah.mailserver.controllers;
 
 import com.porvah.mailserver.enums.RequiredPage;
 import com.porvah.mailserver.enums.SortType;
-import com.porvah.mailserver.interfaces.ROMail;
+
 import com.porvah.mailserver.models.*;
 import com.porvah.mailserver.models.ContactCommands.AddContactCommand;
-import com.porvah.mailserver.models.ContactCommands.ContactCommandInvoker;
 import com.porvah.mailserver.models.ContactCommands.DeleteContactsCommand;
 import com.porvah.mailserver.models.ContactCommands.UpdateContactCommand;
-import org.apache.tomcat.util.http.parser.HttpParser;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-
-import java.lang.reflect.Array;
-import java.lang.reflect.Proxy;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -152,41 +146,32 @@ public class MailController {
         }
     }
     @PostMapping("sendemail")
-    public ResponseEntity<?> sendEmail(@RequestBody Map<String, Object> body){
+    public ResponseEntity<?> sendEmail(@RequestParam("token") int token,
+                                       @RequestParam("files") List<MultipartFile> files,
+                                       @RequestParam("receiver") List<String> receiverEmails,
+                                       @RequestParam("subject") String subject,
+                                       @RequestParam("body") String description,
+                                       @RequestParam("priority") int priority
+                                       ){
         try {
-            int token = (int) body.get("token");
-            List<String> receiverEmails = (List<String>) body.get("receiver");
-            String subject = (String) body.get("subject");
-            String description = (String) body.get("body");
-            int priority = (int) body.get("priority");
-            mediator.sendEmail(token, receiverEmails, subject, description, priority);
+
+            mediator.sendEmail(token, receiverEmails, subject, description, priority, files);
             return ResponseEntity.ok().body("{\"msg\" : \"Email Sent Successfully\"}");
         }catch (Exception e){
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("{\"msg\" : \"User not found\"}");
         }
     }
 
-    @PostMapping(value = "sendattachment", consumes = MediaType.MULTIPART_FORM_DATA_VALUE,
-            produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> sendEmail(@RequestParam("token") int token, @RequestParam("id") int id,
-                                       @RequestParam("files") List<MultipartFile> files) {
-        try {
-            mediator.sendAttachment(token, id, files);
-            return ResponseEntity.ok().body("{\"msg\" : \"Attachments Sent Successfully\"}");
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("{\"msg\" : \"User not found\"}");
-        }
-    }
-
     @GetMapping("getattachment")
     public ResponseEntity<?> getAttachment(@RequestParam("token") int token, @RequestParam("id") int id) {
+        //System.out.println(token);
         try {
-            Attachment attachment = mediator.getAttachment(token, id);
+            List<Map<String, Object>> attachment = mediator.getAttachment(token, id);
+
             return ResponseEntity.ok(attachment);
         } catch (Exception e) {
             System.out.println(e.getMessage());
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("{\"msg\" : \"User not found\"}");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("{\"msg\" : \"error \"}"+ e.getMessage());
         }
     }
     @DeleteMapping("delete")
@@ -197,7 +182,7 @@ public class MailController {
             mediator.deleteEmail(token, id);
             return ResponseEntity.ok().body("{\"msg\" : \"Email deleted successfully\"}");
         }catch (Exception e){
-            return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body("{\"msg\" : \"Unexpected error\"}");
+            return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body("{\"msg\" : \"Unexpected error\"}"+ e.getMessage());
         }
     }
     @PostMapping("draftemail")
