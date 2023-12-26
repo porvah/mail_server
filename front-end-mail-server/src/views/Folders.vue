@@ -12,7 +12,7 @@
         {{ item }}
       </h2>
 
-      <span @click="deleteFolder" class="material-symbols-outlined delete"> delete </span>
+      <span @click="deleteFolder(item)" class="material-symbols-outlined delete"> delete </span>
     </div>
   </div>
 </template>
@@ -49,7 +49,10 @@ export default {
       folderInput.value = ''
     }
 
-    const deleteFolder = async () => {}
+    const deleteFolder = async (foldername) => {
+      await api.folder.deleteFolder(store.getters.token, foldername)
+      await getFolders()
+    }
 
     onMounted(async () => {
       await getFolders()

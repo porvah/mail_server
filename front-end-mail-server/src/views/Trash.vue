@@ -10,6 +10,23 @@
       @onSort="getTrash"
       title="Search mail"
     />
+
+    <div id="page">
+      <button @click="getPreviousPage">
+        <span class="material-symbols-outlined"> arrow_back_ios </span>
+
+        Previous
+      </button>
+
+      <div id="page-info">{{ current }} / {{ total }}</div>
+
+      <button @click="getNextPage">
+        <span class="material-symbols-outlined"> arrow_forward_ios </span>
+
+        Next
+      </button>
+    </div>
+
     <ListEmails :emails="filterEmails" page="trash-detail" />
   </div>
 </template>
@@ -25,10 +42,13 @@ export default {
   setup() {
     const store = useStore()
     const emails = ref([])
+    const current = ref(0)
+    const total = ref(0)
 
     const searchValue = ref('')
     const filterValue = ref('')
     const priorityValue = ref('Any Priority')
+    const sortValue = ref(0)
 
     const filterCategory = (email) => {
       switch (filterValue.value) {
@@ -53,13 +73,24 @@ export default {
       })
     })
 
-    const getTrash = async (sort) => {
-      await store.dispatch('getTrash', { token: store.getters.token, sort: sort })
+    const getTrash = async (sort, page) => {
+      await store.dispatch('getTrash', { token: store.getters.token, sort: sort, page })
       emails.value = store.getters.trashMails
+      current.value = store.getters.curTrash
+      total.value = store.getters.totalTrash
+      sortValue.value = sort
+    }
+
+    const getNextPage = async () => {
+      await getTrash(sortValue.value, 1)
+    }
+
+    const getPreviousPage = async () => {
+      await getTrash(sortValue.value, 2)
     }
 
     onMounted(async () => {
-      await getTrash(0)
+      await getTrash(0, 0)
     })
 
     store.watch(
@@ -68,8 +99,32 @@ export default {
         emails.value = store.getters.trashMails
       }
     )
+    store.watch(
+      (state, getters) => getters.curTrash,
+      () => {
+        current.value = store.getters.curTrash
+      }
+    )
+    store.watch(
+      (state, getters) => getters.totalTrash,
+      () => {
+        total.value = store.getters.totalTrash
+      }
+    )
 
-    return { emails, filterEmails, searchValue, filterValue, priorityValue, getTrash }
+    return {
+      emails,
+      filterEmails,
+      current,
+      total,
+
+      searchValue,
+      filterValue,
+      priorityValue,
+      getTrash,
+      getNextPage,
+      getPreviousPage
+    }
   }
 }
 </script>
@@ -82,5 +137,33 @@ export default {
 
   background-color: #eeeeeead;
   border-radius: 12px;
+}
+
+#page {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+#page button {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  padding: 6px;
+  margin: 0 6px;
+  color: white;
+  background-color: green;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+}
+
+#page-info {
+  padding: 6px;
+  border-radius: 12px;
+  color: white;
+  background-color: gray;
+  font-weight: bold;
+  font-size: 16px;
 }
 </style>
