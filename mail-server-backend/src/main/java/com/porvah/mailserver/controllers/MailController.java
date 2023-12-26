@@ -10,8 +10,10 @@ import com.porvah.mailserver.models.ContactCommands.DeleteContactsCommand;
 import com.porvah.mailserver.models.ContactCommands.UpdateContactCommand;
 import org.apache.tomcat.util.http.parser.HttpParser;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.lang.reflect.Array;
 import java.lang.reflect.Proxy;
@@ -160,6 +162,30 @@ public class MailController {
             mediator.sendEmail(token, receiverEmails, subject, description, priority);
             return ResponseEntity.ok().body("{\"msg\" : \"Email Sent Successfully\"}");
         }catch (Exception e){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("{\"msg\" : \"User not found\"}");
+        }
+    }
+
+    @PostMapping(value = "sendattachment", consumes = MediaType.MULTIPART_FORM_DATA_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> sendEmail(@RequestParam("token") int token, @RequestParam("id") int id,
+                                       @RequestParam("files") List<MultipartFile> files) {
+        try {
+            mediator.sendAttachment(token, id, files);
+            return ResponseEntity.ok().body("{\"msg\" : \"Attachments Sent Successfully\"}");
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("{\"msg\" : \"User not found\"}");
+        }
+    }
+
+    @GetMapping("getattachment")
+    public ResponseEntity<?> getAttachment(@RequestParam("token") int token, @RequestParam("id") int id) {
+        try {
+            Attachment attachment = mediator.getAttachment(token, id);
+            return ResponseEntity.ok(attachment);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("{\"msg\" : \"User not found\"}");
         }
     }
