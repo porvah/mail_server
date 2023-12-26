@@ -128,7 +128,7 @@ public class MailMediator {
 
     public void deleteFolder(int token, String folderName) {
         UserData senderData = this.userFacade.getUserDataByToken(token);
-        senderData.getCustomFolder(folderName);
+        senderData.removeCustomFolder(folderName);
     }
 
     public void sendAttachment(int token, int id, List<MultipartFile> files) {
