@@ -10,8 +10,10 @@ import com.porvah.mailserver.models.ContactCommands.DeleteContactsCommand;
 import com.porvah.mailserver.models.ContactCommands.UpdateContactCommand;
 import org.apache.tomcat.util.http.parser.HttpParser;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.lang.reflect.Array;
 import java.lang.reflect.Proxy;
@@ -161,6 +163,33 @@ public class MailController {
             return ResponseEntity.ok().body("{\"msg\" : \"Email Sent Successfully\"}");
         }catch (Exception e){
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("{\"msg\" : \"User not found\"}");
+        }
+    }
+
+    @PostMapping(value = "sendattachment", consumes = MediaType.MULTIPART_FORM_DATA_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> sendEmail(@RequestParam("token") int token, @RequestParam("id") int id,
+                                       @RequestParam("files") List<MultipartFile> files) {
+        try {
+
+            AttachmentRepo attachmentRepo = AttachmentRepo.getInstance();
+            attachmentRepo.addAttachment(new Attachment(files), id);
+            return ResponseEntity.ok().body("{\"mgs\" : \"Attachments Sent Successfully\"}");
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("{\"mgs\" : \"User not found\"}");
+        }
+    }
+
+    @GetMapping("getattachment")
+    public ResponseEntity<?> getAttachment(@RequestParam("token") int token, @RequestParam("id") int id) {
+        try {
+            AttachmentRepo attachmentRepo = AttachmentRepo.getInstance();
+            Attachment attachment = attachmentRepo.getAttachment(id);
+            return ResponseEntity.ok(attachment);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("{\"mgs\" : \"User not found\"}");
         }
     }
     @DeleteMapping("delete")
