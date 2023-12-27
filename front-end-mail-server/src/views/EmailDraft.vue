@@ -148,7 +148,7 @@ export default {
     const selectedContacts = ref([])
     const attachments = ref([])
 
-    const emailAdapter = new EmailServiceAdapter(api.emailService)
+    const emailAdapter = new EmailServiceAdapter()
     const priorityChoices = computed(() => ['1', '2', '3', '4', '5'])
 
     const addReceiver = () => {

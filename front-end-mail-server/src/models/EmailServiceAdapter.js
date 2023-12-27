@@ -1,9 +1,10 @@
+import EmailService from '@/api/services/EmailService'
 import store from '@/store'
 
-class EmailServiceAdapter {
-  constructor(emailService) {
-    this.emailService = emailService
-  }
+class EmailServiceAdapter extends EmailService {
+  // constructor(emailService) {
+  //   this.emailService = emailService
+  // }
 
   async sendEmail(email) {
     const token = store.getters.token
@@ -27,7 +28,7 @@ class EmailServiceAdapter {
       formdata.append('files', files[i])
     }
 
-    await this.emailService.sendEmail(formdata)
+    await super.sendEmail(formdata)
   }
 
   async draftEmail(email) {
@@ -47,7 +48,7 @@ class EmailServiceAdapter {
       formdata.append('files', files[i])
     }
 
-    await this.emailService.draftEmail(formdata)
+    await super.draftEmail(formdata)
   }
 
   async updateDraftEmail(email) {
@@ -69,7 +70,7 @@ class EmailServiceAdapter {
       formdata.append('files', files[i])
     }
 
-    await this.emailService.updateDraftEmail(formdata)
+    await super.updateDraftEmail(formdata)
   }
 
   async submitDraftEmail(email) {
@@ -96,7 +97,7 @@ class EmailServiceAdapter {
       formdata.append('files', files[i])
     }
 
-    await this.emailService.submitDraftEmail(formdata)
+    await super.submitDraftEmail(formdata)
   }
 }
 

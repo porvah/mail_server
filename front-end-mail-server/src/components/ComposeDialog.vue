@@ -143,7 +143,7 @@ export default {
     const allContacts = ref([])
     const selectedContacts = ref([])
 
-    const emailAdapter = new EmailServiceAdapter(api.emailService)
+    const emailAdapter = new EmailServiceAdapter()
     const priorityChoices = computed(() => ['1 (Low)', '2', '3', '4', '5 (High)'])
 
     const closeCompose = () => {
@@ -185,7 +185,6 @@ export default {
       if (!validateInput(false)) return
 
       const email = createEmail()
-      console.log(email)
       try {
         await emailAdapter.sendEmail(email)
         await store.dispatch('getSent', { token: store.getters.token, sort: 0, page: 0 })
