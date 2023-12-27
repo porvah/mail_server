@@ -85,4 +85,13 @@ public class MailFolder<T extends ROMail> {
         }
         throw new RuntimeException("mail not found");
     }
+
+    public void addMail(ROMail mail){
+        mails.add(mail);
+    }
+
+    public void removeMail(ROMail mail){
+        mails.remove(mail);
+    }
+
 }
