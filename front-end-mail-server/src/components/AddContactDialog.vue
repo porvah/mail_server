@@ -87,7 +87,7 @@ export default {
 
         ctx.emit('closeContact')
       } catch (e) {
-        errorMsg.value = JSON.parse(e).mgs
+        errorMsg.value = JSON.parse(e).msg
       }
     }
 
@@ -101,7 +101,7 @@ export default {
 
         ctx.emit('closeContact')
       } catch (e) {
-        errorMsg.value = JSON.parse(e).mgs
+        errorMsg.value = JSON.parse(e).msg
       }
     }
 
@@ -117,6 +117,11 @@ export default {
 
     const addReceiver = () => {
       if (emailField.value && emailField.value.length > 0) {
+        const newEmail = emailField.value.split('@')
+        if (newEmail.length != 2 || newEmail[0] === '' || newEmail[1] === '') {
+          errorMsg.value = 'Invalid email.'
+          return
+        }
         if (!contactEmails.value.includes(emailField.value)) {
           contactEmails.value.push(emailField.value)
         }
