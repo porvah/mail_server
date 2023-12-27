@@ -30,9 +30,8 @@ public class AttachmentRepo {
         return instance;
     }
 
-    public int addAttachment(Attachment attachment, int emailId){
+    public void addAttachment(Attachment attachment, int emailId){
         attachments.put(emailId, attachment);
-        return emailId;
     }
 
     public Attachment getAttachment(int emailId){
