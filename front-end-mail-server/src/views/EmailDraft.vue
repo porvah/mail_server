@@ -176,11 +176,7 @@ export default {
       email.body = emailDescription.value
       email.priority = Number(priorityChose.value)
 
-      if (files.value.length > 0) {
-        email.files = files.value
-      } else {
-        email.file = attachments.value
-      }
+      email.files = files.value
     }
 
     const submitDraftEmail = async () => {

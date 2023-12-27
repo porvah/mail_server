@@ -198,12 +198,16 @@ public class MailController {
     }
     @PostMapping("draftemail")
     public ResponseEntity<?> draftEmail(@RequestParam("token") int token,
-                                        @RequestParam("files") List<MultipartFile> files,
+                                        @RequestParam("files") Optional<List<MultipartFile>> files,
                                         @RequestParam("subject") String subject,
                                         @RequestParam("body") String description,
                                         @RequestParam("priority") int priority){
         try {
-            mediator.draftEmail(token, subject, description, priority, files);
+            List<MultipartFile> newList = new ArrayList<>();
+            if (files.isPresent()) {
+                newList = files.get();
+            }
+            mediator.draftEmail(token, subject, description, priority, newList);
             return ResponseEntity.ok().body("{\"msg\" : \"Email drafted successfully\"}");
         }catch (Exception e){
             return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body("{\"msg\" : \"Unexpected error\"}");
@@ -212,12 +216,16 @@ public class MailController {
     @PutMapping("updatedraft")
     public ResponseEntity<?> updateDraft(@RequestParam("id") int id,
                                          @RequestParam("token") int token,
-                                         @RequestParam("files") List<MultipartFile> files,
+                                         @RequestParam("files") Optional<List<MultipartFile>> files,
                                          @RequestParam("subject") String subject,
                                          @RequestParam("body") String description,
                                          @RequestParam("priority") int priority){
         try {
-            mediator.updateDraft(id, token, subject, description, priority, files);
+            List<MultipartFile> newList = new ArrayList<>();
+            if (files.isPresent()) {
+                newList = files.get();
+            }
+            mediator.updateDraft(id, token, subject, description, priority, newList);
             return ResponseEntity.ok().body("{\"msg\" : \"Email updated successfully\"}");
         }catch (Exception e){
             return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body("{\"msg\" : \"Unexpected error\"}");
@@ -227,12 +235,16 @@ public class MailController {
     public ResponseEntity<?> submitDraft(@RequestParam("id") int id,
                                          @RequestParam("token") int token,
                                          @RequestParam("receiver") List<String> receiverEmails,
-                                         @RequestParam("files") List<MultipartFile> files,
+                                         @RequestParam("files") Optional<List<MultipartFile>> files,
                                          @RequestParam("subject") String subject,
                                          @RequestParam("body") String description,
                                          @RequestParam("priority") int priority){
         try {
-            mediator.submitDraft(id, token, receiverEmails,subject, description, priority, files);
+            List<MultipartFile> newList = new ArrayList<>();
+            if (files.isPresent()) {
+                newList = files.get();
+            }
+            mediator.submitDraft(id, token, receiverEmails,subject, description, priority, newList);
             return ResponseEntity.ok().body("{\"msg\" : \"Drafted Email submitted successfully\"}");
         }catch (Exception e){
             return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body("{\"msg\" : \"Unexpected error\"}");
