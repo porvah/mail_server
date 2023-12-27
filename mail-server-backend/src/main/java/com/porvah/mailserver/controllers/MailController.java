@@ -32,7 +32,7 @@ public class MailController {
             verificationProxy.signUpUser(name, email, password);
             return ResponseEntity.ok("{\"msg\" : \"Account created successfully\"}");
         }catch (Exception e){
-            return ResponseEntity.status(HttpStatus.ALREADY_REPORTED)
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body("{\"msg\" : \"Account is already created\"}");
         }
     }
