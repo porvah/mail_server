@@ -10,11 +10,11 @@ public class UserBase {
     //Singleton
     private static UserBase instance;
 
-    private List<User> users;
+    private HashMap<String, User> users;
     private Map<Integer, User> loggedUsers;
 
     private UserBase() {
-        this.users = new ArrayList<>();
+        this.users = new HashMap<>();
         this.loggedUsers = new HashMap<>();
     }
 
@@ -26,17 +26,15 @@ public class UserBase {
     }
 
     public void addUser(User user) {
-        users.add(user);
+        this.users.put(user.getEmail(), user);
     }
 
     public User getUser(String email) {
 
-
-        for (User user : this.users) {
-            if (user.getEmail().equals(email)) {
-                return user;
-            }
+        if(this.containsUser(email)) {
+            return this.users.get(email);
         }
+        else
         throw new RuntimeException("Could not find user with email: " + email + " in database");
     }
 
@@ -57,10 +55,8 @@ public class UserBase {
 
 
     public boolean containsUser(String email){
-        for(User user : this.users){
-            if(user.getEmail().equals(email)){
-                return true;
-            }
+        if(this.users.containsKey(email)) {
+            return true;
         }
         return false;
     }
