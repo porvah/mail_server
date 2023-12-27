@@ -124,6 +124,7 @@ import { useStore } from 'vuex'
 import EmailModel from '../models/EmailModel'
 import api from '@/api'
 import EmailServiceAdapter from '@/models/EmailServiceAdapter'
+import EmailModelBuilder from '@/models/EmailModelBuilder'
 
 export default {
   setup() {
@@ -169,7 +170,7 @@ export default {
     }
 
     const createEmail = () => {
-      const email = new EmailModel()
+      const email = new EmailModelBuilder()
       return email
         .addSender(emailFrom)
         .addReceiver(receivers.value)
@@ -184,6 +185,7 @@ export default {
       if (!validateInput(false)) return
 
       const email = createEmail()
+      console.log(email)
       try {
         await emailAdapter.sendEmail(email)
         await store.dispatch('getSent', { token: store.getters.token, sort: 0, page: 0 })

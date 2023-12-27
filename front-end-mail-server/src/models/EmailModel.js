@@ -1,40 +1,80 @@
 class EmailModel {
   constructor() {
-    this.email = {}
+    this.id = null
+    this.sender = ''
+    this.receiver = []
+    this.subject = ''
+    this.body = ''
+    this.priority = 1
+    this.attachments = []
   }
 
-  addSender(sender) {
-    this.email.sender = sender
-    return this
+  getId() {
+    return this.id
   }
 
-  addReceiver(receiver) {
-    this.email.receiver = receiver
-    return this
+  getSender() {
+    return this.sender
   }
 
-  addSubject(subject) {
-    this.email.subject = subject
-    return this
+  getReceiver() {
+    return this.receiver
   }
 
-  addBody(body) {
-    this.email.body = body
-    return this
+  getSubject() {
+    return this.subject
   }
 
-  addPriority(priority) {
-    this.email.priority = priority
-    return this
+  getBody() {
+    return this.body
   }
 
-  addAttachments(files) {
-    this.email.files = files
-    return this
+  getPriority() {
+    return this.priority
   }
 
-  build() {
-    return this.email
+  getAttachments() {
+    return this.attachments
+  }
+
+  setId(id) {
+    this.id = id
+  }
+
+  setSender(sender) {
+    this.sender = sender
+  }
+
+  setReceiver(receiver) {
+    this.receiver = receiver
+  }
+
+  setSubject(subject) {
+    this.subject = subject
+  }
+
+  setBody(body) {
+    this.body = body
+  }
+
+  setPriority(priority) {
+    this.priority = priority
+  }
+
+  setAttachments(attachments) {
+    this.attachments = attachments
+  }
+
+  getEmail() {
+    return {
+      id: this.id,
+      sender: this.sender,
+      receiver: this.receiver,
+      subject: this.subject,
+      body: this.body,
+      priority: this.priority,
+      files: this.attachments
+    }
   }
 }
 
