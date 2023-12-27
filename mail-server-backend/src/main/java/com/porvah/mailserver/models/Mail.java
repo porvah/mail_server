@@ -1,35 +1,35 @@
 package com.porvah.mailserver.models;
 
 import com.porvah.mailserver.interfaces.ROMail;
+import org.springframework.stereotype.Component;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-
-public class mail implements ROMail{
-    private User sender;
-    private User receiver;
+public class Mail implements ROMail{
+    private static int counter = 0;
+    private int id;
+    private String sender;
+    private String receiver;
     private String subject;
     private String body;
     private Date sentDate;
     private int priority;
-    private List<File> attachments;
-    public mail(User sender, User receiver){
-        this.sender = sender;
-        this.receiver = receiver;
-        this.attachments = new ArrayList<>();
-    }
-    public mail(User sender, User receiver, String subject, String body, Date sentDate, List<File> attachments, int priority){
+    public Mail(String sender, String receiver, String subject, String body, Date sentDate, int priority){
         this.sender = sender;
         this.receiver = receiver;
         this.subject = subject;
         this.body = body;
         this.sentDate = sentDate;
-        this.attachments = attachments;
         this.priority = priority;
+        this.id = counter;
+        counter++;
     }
-    public User getSender(){
+    public int getId(){
+        return this.id;
+    }
+    public String getSender(){
         return this.sender;
     }
     public int getPriority(){
@@ -38,13 +38,13 @@ public class mail implements ROMail{
     public void setPriority(int priority){
         this.priority = priority;
     }
-    public void setSender(User sender){
+    public void setSender(String sender){
         this.sender = sender;
     }
-    public User getReceiver(){
+    public String getReceiver(){
         return this.receiver;
     }
-    public void setReceiver(User receiver){
+    public void setReceiver(String receiver){
         this.receiver = receiver;
     }
     public String getSubject(){
@@ -65,14 +65,8 @@ public class mail implements ROMail{
     public void setSentDate(Date date){
         this.sentDate = date;
     }
-    public List<File> getAttachments(){
-        return this.attachments;
-    }
-    public void setAttachments(List<File> files){
-        this.attachments = files;
-    }
     public ROMail submit(){
-        ROMail submitted = new mail(this.sender, this.receiver, this.subject, this.body, this.sentDate, this.attachments, this.priority);
+        ROMail submitted = this;
         return submitted;
     }
 }

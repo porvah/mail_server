@@ -1,17 +1,16 @@
 package com.porvah.mailserver.interfaces;
 
-import com.porvah.mailserver.models.User;
+import org.springframework.stereotype.Component;
 
 import java.io.File;
 import java.util.Date;
 import java.util.List;
-
 public interface ROMail {
-    public User getSender();
-    public User getReceiver();
+    public int getId();
+    public String getSender();
+    public String getReceiver();
     public String getSubject();
     public String getBody();
     public Date getSentDate();
-    public List<File> getAttachments();
     public int getPriority();
 }

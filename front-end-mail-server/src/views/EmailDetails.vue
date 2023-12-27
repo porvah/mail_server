@@ -4,7 +4,7 @@
 
     <div id="header">
       <div id="info">
-        <span class="material-symbols-outlined"> person </span>
+        <span @click="addContact" class="material-symbols-outlined"> person_add </span>
 
         <div id="sender-receiver">
           <h4 id="sender">{{ email.sender }}</h4>
@@ -16,27 +16,108 @@
       <div id="date">{{ email.date }}</div>
     </div>
 
-    <p>{{ email.description }}</p>
+    <p>{{ email.body }}</p>
+
+    <div id="attach-wrap">
+      <div v-for="file in attachments" class="attachments" :key="file.fileName">
+        <button @click="getFileDownloadUrl(file)">
+          <span class="material-symbols-outlined"> download </span>
+
+          {{ file.fileName }}
+        </button>
+      </div>
+    </div>
+
+    <AddContactDialog
+      v-if="showContactDialog"
+      @closeContact="closeContact"
+      :emails="[email.sender]"
+    />
   </div>
 </template>
 
 <script>
+import { ref, computed, onMounted } from 'vue'
+import { useRoute } from 'vue-router'
+import { useStore } from 'vuex'
+import AddContactDialog from '@/components/AddContactDialog.vue'
+import api from '@/api'
+
 export default {
   props: ['id'],
+  components: { AddContactDialog, AddContactDialog },
   setup(props) {
+    const store = useStore()
+    const route = useRoute()
+    const currentRouteName = computed(() => route.name)
     const emailId = props.id
+    const showContactDialog = ref(false)
+    const attachments = ref([])
 
-    const email = {
-      id: 0,
-      sender: 'mohamed@test.com',
-      receiver: 'ahmed@test.com',
-      subject: 'Testing email details',
-      description:
-        'Props attributes are written with a dash - to separate words (kebab-case) in the <template> tag, but kebab-case is not legal in JavaScript. So instead we need to write the attribute names as camelCase in JavaScript, and Vue understands this automatically!',
-      date: '12/13/2023 12:16'
+    const emailList = computed(() => {
+      switch (currentRouteName.value) {
+        case 'inbox-detail':
+          return store.getters.inboxMails
+        case 'sent-detail':
+          return store.getters.sentMails
+        case 'trash-detail':
+          return store.getters.trashMails
+        case 'draft-detail':
+          return store.getters.draftMails
+        case 'folder-mail-details':
+          return store.getters.folderMails
+        default:
+          return store.getters.inboxMails
+      }
+    })
+
+    const email = computed(() => {
+      return emailList.value.find((e) => e.id == emailId)
+    })
+
+    const getAttachments = async () => {
+      const response = await api.attachmentService.getAttachments(store.getters.token, emailId)
+      let files = []
+      for (let i = 0; i < response.length; ++i) {
+        files[i] = { bytes: response[i].bytes, fileName: response[i].name }
+      }
+
+      attachments.value = files
     }
 
-    return { emailId, email }
+    const getFileDownloadUrl = (file) => {
+      const unitArray = new Uint8Array(
+        atob(file.bytes)
+          .split('')
+          .map((c) => c.charCodeAt(0))
+      )
+      const blob = new Blob([unitArray], { type: file.fileName })
+
+      const downlaodLink = document.createElement('a')
+      downlaodLink.href = window.URL.createObjectURL(blob)
+
+      downlaodLink.download = file.fileName
+
+      document.body.appendChild(downlaodLink)
+
+      downlaodLink.click()
+
+      document.body.removeChild(downlaodLink)
+    }
+
+    const addContact = () => {
+      showContactDialog.value = true
+    }
+
+    const closeContact = () => {
+      showContactDialog.value = false
+    }
+
+    onMounted(async () => {
+      await getAttachments()
+    })
+
+    return { email, attachments, showContactDialog, addContact, closeContact, getFileDownloadUrl }
   }
 }
 </script>
@@ -77,6 +158,7 @@ export default {
   padding: 10px;
   margin-right: 10px;
   font-size: 30px;
+  cursor: pointer;
 }
 
 p {
@@ -90,5 +172,28 @@ p {
 
 #date {
   color: #666;
+}
+
+#attach-wrap {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.attachments button {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px;
+  margin: 10px;
+  color: white;
+  background-color: green;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+}
+
+.attachments button span {
+  padding-right: 8px;
 }
 </style>

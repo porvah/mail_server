@@ -7,37 +7,19 @@ public class VerificationProxy {
     private int curId = 0;
 
     public VerificationProxy() {
-        this.userBase = new UserBase();
+        this.userBase = UserBase.getInstance();
     }
-
-    public boolean signUpUser(String name, String email, String password) {
-
+    public void signUpUser(String name, String email, String password) {
         if(userBase.containsUser(email)){
-
-            User user = userBase.getUser(email);
-            if (user.getPassword().equals(password)) {
-                userBase.addLoggedUser(curId++, user);
-                return true;
-            } else {
-                return false;
-            }
+            throw new RuntimeException("User is already created");
         }
-
         User user = new User(email, password, name);
         userBase.addUser(user);
-        return true;
-
     }
-
     public int loginUser(String email, String password) {
-
-
         if(!userBase.containsUser(email)){
-            System.out.println("Not found");
             throw new RuntimeException("Could not find user with email: " + email + " in UserBase");
         }
-
-
         User user = userBase.getUser(email);
         if (user.getPassword().equals(password)) {
             userBase.addLoggedUser(curId, user);
@@ -45,13 +27,8 @@ public class VerificationProxy {
         } else {
             throw new RuntimeException("Wrong password");
         }
-
     }
-
     public void logoutUser(int userId) {
         userBase.removeLoggedUser(userId);
     }
-
-
-
 }

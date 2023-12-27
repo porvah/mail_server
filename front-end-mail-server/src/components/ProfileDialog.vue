@@ -18,14 +18,14 @@
 </template>
 
 <script>
-import { ref } from 'vue'
 import { useStore } from 'vuex'
 
 export default {
   setup() {
     const store = useStore()
-    const name = ref('mohamed')
-    const email = ref('mohamed@test.com')
+    const user = store.getters.user
+    const name = user.name
+    const email = user.email
 
     const closeProfile = () => {
       store.commit('closeProfileDialog')

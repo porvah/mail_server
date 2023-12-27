@@ -13,6 +13,10 @@ const mutations = {
   signup(state, { user, token }) {
     state.user = user
     state.token = token
+  },
+  logout(state) {
+    state.user = null
+    state.token = null
   }
 }
 
@@ -22,20 +26,24 @@ const actions = {
     const user = await api.auth.getUser(token)
 
     commit('login', { user, token })
-    console.log(user)
-    console.log(token)
   },
   async signup({ commit }, { name, email, password }) {
     const token = await api.auth.signup(name, email, password)
     const user = await api.auth.getUser(token)
 
     commit('signup', { user, token })
+  },
+  async logout({ commit }, { token }) {
+    await api.auth.logout(token)
+
+    commit('logout')
   }
 }
 
 const getters = {
   user: (state) => state.user,
-  token: (state) => state.token
+  token: (state) => state.token,
+  isAuthenticated: (state) => state.token != null
 }
 
 export default {

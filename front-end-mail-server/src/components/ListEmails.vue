@@ -1,26 +1,16 @@
 <template>
   <div id="list-emails"></div>
-  <Email :email="email" />
-  <Email :email="email" />
-  <Email :email="email" />
-  <Email :email="email" />
-  <Email :email="email" />
-  <Email :email="email" />
-  <Email :email="email" />
-  <Email :email="email" />
-  <Email :email="email" />
-  <Email :email="email" />
-  <Email :email="email" />
-  <Email :email="email" />
-  <Email :email="email" />
-  <Email :email="email" />
-  <Email :email="email" />
-  <Email :email="email" />
-  <Email :email="email" />
-  <Email :email="email" />
-  <Email :email="email" />
-  <Email :email="email" />
-  <Email :email="email" />
+  <div v-for="email in emails" class="email-div" :key="email.id">
+    <input
+      type="checkbox"
+      v-model="selectedEmails"
+      @change="$emit('selectEmail', email.id)"
+      :value="email.id"
+      class="email-checkbox"
+    />
+
+    <Email :email="email" :page="page" class="email-item" :key="email.id" />
+  </div>
 </template>
 
 <script>
@@ -28,21 +18,34 @@ import { ref } from 'vue'
 import Email from '@/components/Email.vue'
 
 export default {
+  props: ['emails', 'page', 'checkedEmails'],
   components: { Email },
-  setup() {
-    const email = ref({
-      id: 0,
-      sender: 'mohamed',
-      receiver: 'ahmed@test.com',
-      subject: 'Programming',
-      description:
-        'Props attributes are written with a dash - to separate words (kebab-case) in the <template> tag, but kebab-case is not legal in JavaScript. So instead we need to write the attribute names as camelCase in JavaScript, and Vue understands this automatically!',
-      date: '12/13/2023 12:16'
-    })
+  emits: ['selectEmail'],
+  setup(props) {
+    const selectedEmails = ref(props.checkedEmails)
 
-    return { email }
+    return {
+      selectedEmails
+    }
   }
 }
 </script>
 
-<style scoped></style>
+<style scoped>
+.email-div {
+  display: flex;
+  align-items: center;
+  padding-left: 10px;
+}
+
+.email-item {
+  width: 95%;
+}
+
+.email-checkbox {
+  cursor: pointer;
+  height: 20px;
+  width: 20px;
+  background-color: #eee;
+}
+</style>
