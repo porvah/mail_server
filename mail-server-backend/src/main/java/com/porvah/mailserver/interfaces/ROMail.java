@@ -12,6 +12,5 @@ public interface ROMail {
     public String getSubject();
     public String getBody();
     public Date getSentDate();
-//    public List<File> getAttachments();
     public int getPriority();
 }

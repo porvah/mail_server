@@ -26,7 +26,7 @@ public class MailFolder<T extends ROMail> {
         else if(req == RequiredPage.PREV) return this.iterator.getPrev((sort));
         else return this.iterator.reset(sort);
     }
-    String getName(){
+    public String getName(){
         return this.name;
     }
     public void addMail(T mail){
