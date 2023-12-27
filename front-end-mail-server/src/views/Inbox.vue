@@ -38,7 +38,6 @@
       :checkedEmails="selectedEmails"
       @selectEmail="handleSelectEmail"
       page="inbox-detail"
-      :key="selectedEmails"
     />
   </div>
 </template>

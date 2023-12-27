@@ -50,6 +50,10 @@ export default {
       await store.dispatch('updateAllFolders', { token: store.getters.token })
     }
 
+    const addFolder = () => {
+      store.commit('openFolderDialog', [props.email.id])
+    }
+
     const deleteEmail = async () => {
       const emailService = api.emailService
       await emailService.deleteEmail(store.getters.token, [props.email.id])
@@ -63,6 +67,7 @@ export default {
       body: props.email.body,
       sentDate: props.email.sentDate,
       goToEmail,
+      addFolder,
       restoreMail,
       deleteEmail
     }

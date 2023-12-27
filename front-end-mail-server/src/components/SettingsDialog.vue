@@ -8,11 +8,11 @@
       Logout
     </button>
 
-    <button @click="closeCompose" id="delete-btn" type="button">
+    <!-- <button @click="closeCompose" id="delete-btn" type="button">
       <span class="material-symbols-outlined"> delete_forever </span>
 
       Delete Account
-    </button>
+    </button> -->
 
     <button @click="closeSettings" id="close-btn" type="button">
       <span class="material-symbols-outlined"> cancel </span>
