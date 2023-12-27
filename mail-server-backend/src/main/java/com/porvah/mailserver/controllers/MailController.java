@@ -186,8 +186,10 @@ public class MailController {
         }
     }
     @PutMapping("restore")
-    public  ResponseEntity<?> restoreEmail(@RequestParam int token, @RequestParam List<Integer> id){
+    public  ResponseEntity<?> restoreEmail(@RequestBody Map<String, Object> body) {
         try{
+            int token = (int) body.get("token");
+            List<Integer> id = (List<Integer>) body.get("id");
             mediator.restoreEmail(token, id);
             return ResponseEntity.ok().body("{\"msg\" : \"Email restored successfully\"}");
         }catch(Exception e){

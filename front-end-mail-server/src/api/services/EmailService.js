@@ -55,7 +55,10 @@ class EmailService {
   async restoreMail(token, id) {
     const service = ApiService.getInstance()
 
-    return await service.makeRequest(`restore?token=${token}&id=${id}`, 'PUT')
+    return await service.makeRequest('restore', 'PUT', {
+      token,
+      id
+    })
   }
 }
 

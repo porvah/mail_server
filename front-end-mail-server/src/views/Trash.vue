@@ -124,7 +124,7 @@ export default {
     }
 
     const restoreMail = async () => {
-      await api.emailService.restoreMail(store.getters.token, props.email.id)
+      await api.emailService.restoreMail(store.getters.token, selectedEmails.value)
       await store.dispatch('updateAllFolders', { token: store.getters.token })
     }
 
