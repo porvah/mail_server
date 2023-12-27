@@ -18,7 +18,7 @@
       settings_backup_restore
     </span>
 
-    <h3 @click="goToEmail" class="sender">@{{ sender }}</h3>
+    <h3 @click="goToEmail" class="sender">{{ sender }}</h3>
 
     <h4 @click="goToEmail" class="subject">{{ subject }}:</h4>
 

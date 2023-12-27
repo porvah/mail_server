@@ -54,7 +54,7 @@ export default {
   props: ['title', 'searchValue', 'filterValue', 'priorityValue'],
   emits: ['update:searchValue', 'update:filterValue', 'update:priorityValue', 'onSort'],
   setup() {
-    const searchOptions = computed(() => ['Subject', 'Sender', 'Description', 'Tag'])
+    const searchOptions = computed(() => ['Subject', 'Sender', 'Description'])
     const priorityOptions = computed(() => ['Any Priority', '1 (Low)', '2', '3', '4', '5 (High)'])
 
     const sortChose = ref('')
