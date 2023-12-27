@@ -12,7 +12,9 @@
         title="Search mail"
       />
 
-      <span @click="addFolder" class="material-symbols-outlined folder"> create_new_folder </span>
+      <span @click="restoreMail" class="material-symbols-outlined folder">
+        settings_backup_restore
+      </span>
 
       <span @click="deleteEmails" class="material-symbols-outlined delete"> delete </span>
     </div>
@@ -121,6 +123,11 @@ export default {
       await getTrash(sortValue.value, 2)
     }
 
+    const restoreMail = async () => {
+      await api.emailService.restoreMail(store.getters.token, props.email.id)
+      await store.dispatch('updateAllFolders', { token: store.getters.token })
+    }
+
     onMounted(async () => {
       await getTrash(0, 0)
     })
@@ -158,7 +165,8 @@ export default {
       addFolder,
       deleteEmails,
       getPreviousPage,
-      handleSelectEmail
+      handleSelectEmail,
+      restoreMail
     }
   }
 }

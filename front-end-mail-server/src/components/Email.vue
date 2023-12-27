@@ -2,8 +2,20 @@
   <div id="email">
     <!-- <span class="material-symbols-outlined"> star </span> -->
 
-    <span v-if="page != 'sent-detail'" @click="addFolder" class="material-symbols-outlined">
+    <span
+      v-if="page != 'sent-detail' && page != 'trash-detail'"
+      @click="addFolder"
+      class="material-symbols-outlined"
+    >
       create_new_folder
+    </span>
+
+    <span
+      v-if="page == 'trash-detail'"
+      @click="restoreMail"
+      class="material-symbols-outlined restore"
+    >
+      settings_backup_restore
     </span>
 
     <h3 @click="goToEmail" class="sender">@{{ sender }}</h3>
@@ -33,8 +45,9 @@ export default {
       router.push({ name: props.page, params: { id: props.email.id } })
     }
 
-    const addFolder = () => {
-      store.commit('openFolderDialog', [props.email.id])
+    const restoreMail = async () => {
+      await api.emailService.restoreMail(store.getters.token, props.email.id)
+      await store.dispatch('updateAllFolders', { token: store.getters.token })
     }
 
     const deleteEmail = async () => {
@@ -50,7 +63,7 @@ export default {
       body: props.email.body,
       sentDate: props.email.sentDate,
       goToEmail,
-      addFolder,
+      restoreMail,
       deleteEmail
     }
   }
@@ -62,6 +75,13 @@ export default {
   display: flex;
   align-items: center;
   padding: 10px;
+}
+
+.restore {
+  color: white;
+  background-color: green;
+  padding: 4px;
+  border-radius: 10px;
 }
 
 .sender,

@@ -9,7 +9,7 @@
 
           <div id="email-to">
             <label>To:</label>
-            <select id="my-contact" multiple v-model="receivers">
+            <select v-if="allContacts.length" id="my-contact" multiple v-model="receivers">
               <option v-for="contact in allContacts" :key="contact">
                 {{ contact }}
               </option>
@@ -48,6 +48,7 @@
             </div>
           </div>
         </div>
+
         <div id="right">
           <label> Attachments </label>
 

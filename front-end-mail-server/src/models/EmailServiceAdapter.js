@@ -52,6 +52,7 @@ class EmailServiceAdapter {
 
   async updateDraftEmail(email) {
     const token = store.getters.token
+    const id = email.id
     const subject = email.subject
     const body = email.body
     const priority = email.priority
@@ -59,6 +60,7 @@ class EmailServiceAdapter {
 
     var formdata = new FormData()
     formdata.append('token', `${token}`)
+    formdata.append('id', `${id}`)
     formdata.append('body', `${body}`)
     formdata.append('priority', `${priority}`)
     formdata.append('subject', `${subject}`)

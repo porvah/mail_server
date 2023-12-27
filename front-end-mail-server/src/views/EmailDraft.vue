@@ -7,6 +7,12 @@
 
       <div id="email-to">
         <label>To:</label>
+        <select v-if="allContacts.length" id="my-contact" multiple v-model="receivers">
+          <option v-for="contact in allContacts" :key="contact">
+            {{ contact }}
+          </option>
+        </select>
+
         <button @click="addReceiver" id="add-receiver-btn" type="button">
           <span class="material-symbols-outlined"> add </span>
           Add
@@ -40,6 +46,62 @@
         </div>
       </div>
 
+      <div id="right">
+        <label> Attachments </label>
+
+        <div class="dropzone-container" @dragover="dragover" @dragleave="dragleave" @drop="drop">
+          <input
+            type="file"
+            multiple
+            name="file"
+            id="fileInput"
+            class="hidden-input"
+            @change="onChange"
+            ref="file"
+            accept=".pdf,.jpg,.jpeg,.png"
+          />
+
+          <label for="fileInput" class="file-label">
+            <div v-if="isDragging">Release to drop files here.</div>
+
+            <div v-else>Drop files here or <u>click here</u> to upload.</div>
+          </label>
+
+          <div class="preview-container mt-4" v-if="files.length">
+            <div v-for="file in files" :key="file.name" class="preview-card">
+              <div>
+                <img class="preview-img" :src="generateThumbnail(file)" />
+
+                <p :title="file.name">
+                  {{ makeName(file.name) }}
+                </p>
+              </div>
+
+              <div>
+                <button
+                  class="ml-2"
+                  type="button"
+                  @click="remove(files.indexOf(file))"
+                  title="Remove file"
+                >
+                  <b>&times;</b>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div id="attach-wrap">
+        <div v-for="file in attachments" class="attachments" :key="file.fileName">
+          <button @click="getFileDownloadUrl(file)">
+            <span class="material-symbols-outlined"> download </span>
+
+            {{ file.fileName }}
+          </button>
+        </div>
+      </div>
+
       <div v-if="errorMsg" id="error">{{ errorMsg }}</div>
 
       <div id="btns">
@@ -58,7 +120,7 @@
 </template>
 
 <script>
-import { computed, ref } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useStore } from 'vuex'
 import EmailServiceAdapter from '@/models/EmailServiceAdapter'
@@ -79,6 +141,12 @@ export default {
     const priorityChose = ref(email.priority)
     const receivers = ref([])
     const errorMsg = ref('')
+    const isDragging = ref(false)
+    const files = ref([])
+    const file = ref(null)
+    const allContacts = ref([])
+    const selectedContacts = ref([])
+    const attachments = ref([])
 
     const emailAdapter = new EmailServiceAdapter(api.emailService)
     const priorityChoices = computed(() => ['1', '2', '3', '4', '5'])
@@ -99,6 +167,7 @@ export default {
 
     const removeReceiver = (receiver) => {
       receivers.value = receivers.value.filter((r) => receiver != r)
+      selectedContacts.value = selectedContacts.value.filter((r) => receiver != r)
     }
 
     const updateEmail = () => {
@@ -106,6 +175,12 @@ export default {
       email.subject = emailSubject.value
       email.body = emailDescription.value
       email.priority = Number(priorityChose.value)
+
+      if (files.value.length > 0) {
+        email.files = files.value
+      } else {
+        email.file = attachments.value
+      }
     }
 
     const submitDraftEmail = async () => {
@@ -149,6 +224,92 @@ export default {
       return true
     }
 
+    const onChange = () => {
+      files.value = [...file.value.files]
+    }
+
+    const generateThumbnail = (f) => {
+      let fileSrc = URL.createObjectURL(f)
+      setTimeout(() => {
+        URL.revokeObjectURL(fileSrc)
+      }, 1000)
+      return fileSrc
+    }
+
+    const makeName = (name) => {
+      return (
+        name.split('.')[0].substring(0, 3) + '...' + name.split('.')[name.split('.').length - 1]
+      )
+    }
+
+    const remove = (i) => {
+      files.value.splice(i, 1)
+    }
+
+    const dragover = (e) => {
+      e.preventDefault()
+      isDragging.value = true
+    }
+
+    const dragleave = () => {
+      isDragging.value = false
+    }
+
+    const drop = (e) => {
+      e.preventDefault()
+      file.value.files = e.dataTransfer.files
+      onChange()
+      isDragging.value = false
+    }
+
+    const getAllContacts = () => {
+      const folders = store.getters.allContacts
+      const contactsSet = new Set()
+
+      for (let i = 0; i < folders.length; ++i) {
+        for (let j = 0; j < folders[i].emails.length; ++j) {
+          contactsSet.add(folders[i].emails[j])
+        }
+      }
+      allContacts.value = Array.from(contactsSet)
+    }
+
+    const getAttachments = async () => {
+      const response = await api.attachmentService.getAttachments(store.getters.token, emailId)
+      let files = []
+      for (let i = 0; i < response.length; ++i) {
+        files[i] = { bytes: response[i].bytes, fileName: response[i].name }
+      }
+
+      attachments.value = files
+    }
+
+    const getFileDownloadUrl = (file) => {
+      const unitArray = new Uint8Array(
+        atob(file.bytes)
+          .split('')
+          .map((c) => c.charCodeAt(0))
+      )
+      const blob = new Blob([unitArray], { type: file.fileName })
+
+      const downlaodLink = document.createElement('a')
+      downlaodLink.href = window.URL.createObjectURL(blob)
+
+      downlaodLink.download = file.fileName
+
+      document.body.appendChild(downlaodLink)
+
+      downlaodLink.click()
+
+      document.body.removeChild(downlaodLink)
+    }
+
+    getAllContacts()
+
+    onMounted(async () => {
+      await getAttachments()
+    })
+
     return {
       emailFrom,
       emailTo,
@@ -158,10 +319,24 @@ export default {
       priorityChose,
       priorityChoices,
       errorMsg,
+      isDragging,
+      files,
+      file,
+      allContacts,
+      selectedContacts,
+      attachments,
       addReceiver,
       removeReceiver,
       submitDraftEmail,
-      updateDraftEmail
+      updateDraftEmail,
+      onChange,
+      generateThumbnail,
+      makeName,
+      remove,
+      dragover,
+      dragleave,
+      drop,
+      getFileDownloadUrl
     }
   }
 }
@@ -293,5 +468,79 @@ button {
 #draft-btn {
   color: white;
   background-color: rgb(123, 78, 78);
+}
+
+.dropzone-container {
+  padding: 4rem;
+  background: #f7fafc;
+  border: 1px solid #e2e8f0;
+}
+.hidden-input {
+  opacity: 0;
+  overflow: hidden;
+  position: absolute;
+  width: 1px;
+  height: 1px;
+}
+.file-label {
+  font-size: 20px;
+  display: block;
+  cursor: pointer;
+}
+.preview-container {
+  display: flex;
+  margin-top: 2rem;
+}
+.preview-card {
+  display: flex;
+  border: 1px solid #a2a2a2;
+  padding: 5px;
+  margin-left: 5px;
+}
+.preview-img {
+  width: 50px;
+  height: 50px;
+  border-radius: 5px;
+  border: 1px solid #a2a2a2;
+  background-color: #a2a2a2;
+}
+
+#my-contact {
+  border: none;
+  background-color: gray;
+  color: white;
+  padding: 10px;
+  border-radius: 6px;
+}
+
+#my-contact option {
+  background-color: white;
+  color: black;
+  padding: 3px;
+  margin-bottom: 5px;
+  border-radius: 6px;
+}
+
+#attach-wrap {
+  /* display: flex; */
+  justify-content: center;
+  align-items: center;
+}
+
+.attachments button {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px;
+  margin: 10px;
+  color: white;
+  background-color: green;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+}
+
+.attachments button span {
+  padding-right: 8px;
 }
 </style>

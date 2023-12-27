@@ -51,6 +51,12 @@ class EmailService {
       foldername
     })
   }
+
+  async restoreMail(token, id) {
+    const service = ApiService.getInstance()
+
+    return await service.makeRequest(`restore?token=${token}&id=${id}`, 'PUT')
+  }
 }
 
 export default EmailService
