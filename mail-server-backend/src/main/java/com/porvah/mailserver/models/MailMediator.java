@@ -102,12 +102,16 @@ public class MailMediator {
             att.put("bytes", bytes);
             filesList.add(att);
         }
+        Attachment attachment = new Attachment(filesList);
         for(int i = 0; i < receiversData.size(); i++){
             User receiverUser = UserBase.getInstance().getUser(receivers.get(i));
             Mail newEmail = new Mail(sender.getEmail(), receiverUser.getEmail(), subject, body, new Date(), priority);
-            senderData.getSent().addMail(newEmail.submit());
-            receiversData.get(i).getInbox().addMail(newEmail.submit());
-            attachmentRepo.addAttachment(new Attachment(filesList), newEmail.getId());
+            ROMail submitted= newEmail.submit();
+            senderData.getSent().addMail(submitted);
+            attachmentRepo.addAttachment(attachment, submitted.getId());
+            submitted= newEmail.submit();
+            receiversData.get(i).getInbox().addMail(submitted);
+            attachmentRepo.addAttachment(attachment, submitted.getId());
         }
         senderData.getDraft().removeMail(id);
     }
@@ -156,25 +160,29 @@ public class MailMediator {
                           List<MultipartFile> files) throws IOException {
         UserData senderData = this.userFacade.getUserDataByToken(token);
         User sender = UserBase.getInstance().getLoggedUser(token);
+        List<Map<String, Object>> filesList = new ArrayList<>();
+        for(MultipartFile file:files){
+            String name = file.getOriginalFilename();
+            String type = file.getContentType();
+            byte[] bytes = file.getBytes();
+            Map<String, Object> att = new HashMap<>();
+            att.put("name", name);
+            att.put("type", type);
+            att.put("bytes", bytes);
+            filesList.add(att);
+        }
+        Attachment attachment = new Attachment(filesList);
         List<UserData> receiversData = this.userFacade.getUserDataByEmail(receivers);
         AttachmentRepo attachmentRepo = AttachmentRepo.getInstance();
         for(int i = 0; i < receiversData.size(); i++){
             User receiverUser = UserBase.getInstance().getUser(receivers.get(i));
             Mail newEmail = new Mail(sender.getEmail(), receiverUser.getEmail(), subject, body, new Date(), priority);
-            List<Map<String, Object>> filesList = new ArrayList<>();
-            for(MultipartFile file:files){
-                String name = file.getOriginalFilename();
-                String type = file.getContentType();
-                byte[] bytes = file.getBytes();
-                Map<String, Object> att = new HashMap<>();
-                att.put("name", name);
-                att.put("type", type);
-                att.put("bytes", bytes);
-                filesList.add(att);
-            }
-            attachmentRepo.addAttachment(new Attachment(filesList), newEmail.getId());
-            senderData.getSent().addMail(newEmail.submit());
-            receiversData.get(i).getInbox().addMail(newEmail.submit());
+            ROMail submitted = newEmail.submit();
+            attachmentRepo.addAttachment(attachment, submitted.getId());
+            senderData.getSent().addMail(submitted);
+            submitted = newEmail.submit();
+            attachmentRepo.addAttachment(attachment, submitted.getId());
+            receiversData.get(i).getInbox().addMail(submitted);
         }
     }
 

@@ -66,7 +66,7 @@ public class Mail implements ROMail{
         this.sentDate = date;
     }
     public ROMail submit(){
-        ROMail submitted = this;
+        ROMail submitted = new Mail(this.sender, this.receiver, this.subject, this.body, this.sentDate, this.priority);
         return submitted;
     }
 }
